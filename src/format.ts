@@ -1,7 +1,7 @@
 import colors from "colors";
 import _sortBy from "lodash/sortBy";
 
-import { DiffCell, DiffReport } from "./types";
+import { ContractDiffReport, DiffCell } from "./types";
 
 export enum TextAlign {
   LEFT = "left",
@@ -31,31 +31,43 @@ export const formatShellCell = (cell: DiffCell, length = 10) => {
   ];
 };
 
-export const formatShellDiff = (diffs: DiffReport[], summaryQuantile = 0.8) => {
+const selectSummaryDiffs = (
+  diffs: ContractDiffReport[],
+  minCircuitChangePercentage: number
+): ContractDiffReport[] =>
+  diffs
+    .map(({ functions, ...diff }) => ({
+      ...diff,
+      functions: functions.filter(
+        (method) =>
+          Math.abs(method.circuit_size.prcnt) >= minCircuitChangePercentage &&
+          (method.acir_opcodes.delta !== 0 || method.circuit_size.delta !== 0)
+      ),
+    }))
+    .filter((diff) => diff.functions.length > 0);
+
+export const formatShellDiff = (diffs: ContractDiffReport[], summaryQuantile = 0.8) => {
   const maxContractLength = Math.max(8, ...diffs.map(({ name }) => name.length));
   const maxMethodLength = Math.max(
     7,
-    ...diffs.flatMap(({ methods }) => methods.map(({ name }) => name.length))
+    ...diffs.flatMap(({ functions }) => functions.map(({ name }) => name.length))
   );
 
   const SHELL_SUMMARY_COLS = [
     { txt: "", length: 0 },
     { txt: "Contract", length: maxContractLength },
     { txt: "Method", length: maxMethodLength },
-    { txt: "Avg (+/-)", length: 33 },
+    { txt: "ACIR opcodes (+/-)", length: 33 },
+    { txt: "Circuit size (+/-)", length: 33 },
     { txt: "", length: 0 },
   ];
 
   const SHELL_DIFF_COLS = [
     { txt: "", length: 0 },
     { txt: "Contract", length: maxContractLength },
-    { txt: "Deployment Cost (+/-)", length: 33 },
     { txt: "Method", length: maxMethodLength },
-    { txt: "Min (+/-)", length: 33 },
-    { txt: "Avg (+/-)", length: 33 },
-    { txt: "Median (+/-)", length: 33 },
-    { txt: "Max (+/-)", length: 33 },
-    { txt: "# Calls (+/-)", length: 13 },
+    { txt: "ACIR opcodes (+/-)", length: 33 },
+    { txt: "Circuit size (+/-)", length: 33 },
     { txt: "", length: 0 },
   ];
 
@@ -82,11 +94,11 @@ export const formatShellDiff = (diffs: DiffReport[], summaryQuantile = 0.8) => {
     .trim();
 
   const sortedMethods = _sortBy(
-    diffs.flatMap((diff) => diff.methods),
-    (method) => Math.abs(method.avg.prcnt)
+    diffs.flatMap((diff) => diff.functions),
+    (method) => Math.abs(method.circuit_size.prcnt)
   );
-  const avgQuantile = Math.abs(
-    sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]?.avg.prcnt ?? 0
+  const circuitChangeQuantile = Math.abs(
+    sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]?.circuit_size.prcnt ?? 0
   );
 
   return (
@@ -100,35 +112,25 @@ export const formatShellDiff = (diffs: DiffReport[], summaryQuantile = 0.8) => {
     [
       "",
       summaryHeader,
-      ...diffs
-        .map(({ methods, ...diff }) => ({
-          ...diff,
-          methods: methods.filter(
-            (method) =>
-              method.min.current >= 500 &&
-              Math.abs(method.avg.prcnt) >= avgQuantile &&
-              (method.min.delta !== 0 || method.median.delta !== 0 || method.max.delta !== 0)
-          ),
-        }))
-        .filter((diff) => diff.methods.length > 0)
-        .flatMap((diff) =>
-          diff.methods
-            .map((method, methodIndex) =>
-              [
-                "",
-                colors.bold(
-                  colors.grey((methodIndex === 0 ? diff.name : "").padEnd(maxContractLength))
-                ),
-                colors.italic(method.name.padEnd(maxMethodLength)),
-                ...formatShellCell(method.avg),
-                "",
-              ]
-                .join(" | ")
-                .trim()
-            )
-            .join("\n")
-            .trim()
-        ),
+      ...selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) =>
+        diff.functions
+          .map((method, methodIndex) =>
+            [
+              "",
+              colors.bold(
+                colors.grey((methodIndex === 0 ? diff.name : "").padEnd(maxContractLength))
+              ),
+              colors.italic(method.name.padEnd(maxMethodLength)),
+              ...formatShellCell(method.acir_opcodes),
+              ...formatShellCell(method.circuit_size),
+              "",
+            ]
+              .join(" | ")
+              .trim()
+          )
+          .join("\n")
+          .trim()
+      ),
       "",
     ]
       .join(`\n${summarySeparator}\n`)
@@ -138,20 +140,16 @@ export const formatShellDiff = (diffs: DiffReport[], summaryQuantile = 0.8) => {
       "",
       diffHeader,
       ...diffs.map((diff) =>
-        diff.methods
+        diff.functions
           .map((method, methodIndex) =>
             [
               "",
               colors.bold(
                 colors.grey((methodIndex === 0 ? diff.name : "").padEnd(maxContractLength))
               ),
-              ...(methodIndex === 0 ? formatShellCell(diff.deploymentCost) : ["".padEnd(33)]),
               colors.italic(method.name.padEnd(maxMethodLength)),
-              ...formatShellCell(method.min),
-              ...formatShellCell(method.avg),
-              ...formatShellCell(method.median),
-              ...formatShellCell(method.max),
-              formatShellCell(method.calls, 6)[0],
+              ...formatShellCell(method.acir_opcodes),
+              ...formatShellCell(method.circuit_size),
               "",
             ]
               .join(" | ")
@@ -221,7 +219,9 @@ const MARKDOWN_SUMMARY_COLS = [
   { txt: "" },
   { txt: "Contract", align: TextAlign.LEFT },
   { txt: "Method", align: TextAlign.LEFT },
-  { txt: "Avg (+/-)", align: TextAlign.RIGHT },
+  { txt: "ACIR opcodes (+/-)", align: TextAlign.RIGHT },
+  { txt: "%", align: TextAlign.RIGHT },
+  { txt: "Circuit size (+/-)", align: TextAlign.RIGHT },
   { txt: "%", align: TextAlign.RIGHT },
   { txt: "" },
 ];
@@ -229,23 +229,17 @@ const MARKDOWN_SUMMARY_COLS = [
 const MARKDOWN_DIFF_COLS = [
   { txt: "" },
   { txt: "Contract", align: TextAlign.LEFT },
-  { txt: "Deployment Cost (+/-)", align: TextAlign.RIGHT },
   { txt: "Method", align: TextAlign.LEFT },
-  { txt: "Min (+/-)", align: TextAlign.RIGHT },
+  { txt: "ACIR opcodes (+/-)", align: TextAlign.RIGHT },
   { txt: "%", align: TextAlign.RIGHT },
-  { txt: "Avg (+/-)", align: TextAlign.RIGHT },
+  { txt: "Circuit size (+/-)", align: TextAlign.RIGHT },
   { txt: "%", align: TextAlign.RIGHT },
-  { txt: "Median (+/-)", align: TextAlign.RIGHT },
-  { txt: "%", align: TextAlign.RIGHT },
-  { txt: "Max (+/-)", align: TextAlign.RIGHT },
-  { txt: "%", align: TextAlign.RIGHT },
-  { txt: "# Calls (+/-)", align: TextAlign.RIGHT },
   { txt: "" },
 ];
 
 export const formatMarkdownDiff = (
   header: string,
-  diffs: DiffReport[],
+  diffs: ContractDiffReport[],
   repository: string,
   commitHash: string,
   refCommitHash?: string,
@@ -260,7 +254,7 @@ export const formatMarkdownDiff = (
         : ""),
   ];
   if (diffs.length === 0)
-    return diffReport.concat(["", "### There are no changes in gas cost"]).join("\n").trim();
+    return diffReport.concat(["", "### There are no changes in circuit sizes"]).join("\n").trim();
 
   const summaryHeader = MARKDOWN_SUMMARY_COLS.map((entry) => entry.txt)
     .join(" | ")
@@ -281,11 +275,11 @@ export const formatMarkdownDiff = (
     .trim();
 
   const sortedMethods = _sortBy(
-    diffs.flatMap((diff) => diff.methods),
-    (method) => Math.abs(method.avg.prcnt)
+    diffs.flatMap((diff) => diff.functions),
+    (method) => Math.abs(method.circuit_size.prcnt)
   );
-  const avgQuantile = Math.abs(
-    sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]?.avg.prcnt ?? 0
+  const circuitChangeQuantile = Math.abs(
+    sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]?.circuit_size.prcnt ?? 0
   );
 
   return diffReport
@@ -295,29 +289,18 @@ export const formatMarkdownDiff = (
       "",
       summaryHeader,
       summaryHeaderSeparator,
-      diffs
-        .map(({ methods, ...diff }) => ({
-          ...diff,
-          methods: methods.filter(
-            (method) =>
-              method.min.current >= 500 &&
-              Math.abs(method.avg.prcnt) >= avgQuantile &&
-              (method.min.delta !== 0 || method.median.delta !== 0 || method.max.delta !== 0)
-          ),
-        }))
-        .filter((diff) => diff.methods.length > 0)
-        .flatMap((diff) =>
-          [
-            "",
-            `**${diff.name}**`,
-            diff.methods.map((method) => `_${method.name}_`).join("<br />"),
-            ...formatMarkdownSummaryCell(diff.methods.map((method) => method.avg)),
-            "",
-          ]
-            .join(" | ")
-            .trim()
-        )
-        .join("\n"),
+      ...selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) =>
+        [
+          "",
+          `**${diff.name}**`,
+          diff.functions.map((method) => `_${method.name}_`).join("<br />"),
+          ...formatMarkdownSummaryCell(diff.functions.map((method) => method.acir_opcodes)),
+          ...formatMarkdownSummaryCell(diff.functions.map((method) => method.circuit_size)),
+          "",
+        ]
+          .join(" | ")
+          .trim()
+      ),
       "---",
       "",
       "<details>",
@@ -331,13 +314,9 @@ export const formatMarkdownDiff = (
           [
             "",
             `**${diff.name}**`,
-            formatMarkdownFullCell([diff.deploymentCost])[0],
-            diff.methods.map((method) => `_${method.name}_`).join("<br />"),
-            ...formatMarkdownFullCell(diff.methods.map((method) => method.min)),
-            ...formatMarkdownFullCell(diff.methods.map((method) => method.avg)),
-            ...formatMarkdownFullCell(diff.methods.map((method) => method.median)),
-            ...formatMarkdownFullCell(diff.methods.map((method) => method.max)),
-            formatMarkdownFullCell(diff.methods.map((method) => method.calls))[0],
+            diff.functions.map((method) => `_${method.name}_`).join("<br />"),
+            ...formatMarkdownFullCell(diff.functions.map((method) => method.acir_opcodes)),
+            ...formatMarkdownFullCell(diff.functions.map((method) => method.circuit_size)),
             "",
           ]
             .join(" | ")

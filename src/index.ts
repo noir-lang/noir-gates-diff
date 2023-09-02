@@ -7,17 +7,16 @@ import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
 import { formatMarkdownDiff, formatShellDiff } from "./format";
-import { loadReports, computeDiffs } from "./report";
-import { isSortCriteriaValid, isSortOrdersValid } from "./types";
+import { loadReports, computeContractDiffs } from "./report";
+
+// import { isSortCriteriaValid, isSortOrdersValid } from "./types";
 
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
-const ignore = core.getInput("ignore").split(",");
-const match = (core.getInput("match") || undefined)?.split(",");
 const header = core.getInput("header");
 const summaryQuantile = parseFloat(core.getInput("summaryQuantile"));
-const sortCriteria = core.getInput("sortCriteria").split(",");
-const sortOrders = core.getInput("sortOrders").split(",");
+// const sortCriteria = core.getInput("sortCriteria").split(",");
+// const sortOrders = core.getInput("sortOrders").split(",");
 const baseBranch = core.getInput("base");
 const headBranch = core.getInput("head");
 
@@ -35,8 +34,8 @@ let srcContent: string;
 let refCommitHash: string | undefined;
 
 async function run() {
-  if (!isSortCriteriaValid(sortCriteria)) return;
-  if (!isSortOrdersValid(sortOrders)) return;
+  // if (!isSortCriteriaValid(sortCriteria)) return;
+  // if (!isSortOrdersValid(sortOrders)) return;
 
   try {
     const headBranchEscaped = headBranch.replace(/[/\\]/g, "-");
@@ -104,8 +103,7 @@ async function run() {
           archive_format: "zip",
         });
 
-        // @ts-ignore data is unknown
-        const zip = new Zip(Buffer.from(res.data));
+        const zip = new Zip(Buffer.from(res.data as any));
         for (const entry of zip.getEntries()) {
           core.info(`Loading gas reports from "${entry.entryName}"`);
           srcContent = zip.readAsText(entry);
@@ -123,15 +121,14 @@ async function run() {
     const compareContent = fs.readFileSync(localReportPath, "utf8");
     srcContent ??= compareContent; // if no source gas reports were loaded, defaults to the current gas reports
 
-    const loadOptions = { ignorePatterns: ignore, matchPatterns: match };
     core.info(`Mapping reference gas reports`);
-    const sourceReports = loadReports(srcContent, loadOptions);
+    const sourceReports = loadReports(srcContent);
     core.info(`Mapping compared gas reports`);
-    const compareReports = loadReports(compareContent, loadOptions);
+    const compareReports = loadReports(compareContent);
     core.endGroup();
 
     core.startGroup("Compute gas diff");
-    const diffRows = computeDiffs(sourceReports, compareReports, sortCriteria, sortOrders);
+    const diffRows = computeContractDiffs(sourceReports.contracts, compareReports.contracts);
     core.info(`Format markdown of ${diffRows.length} diffs`);
     const markdown = formatMarkdownDiff(
       header,

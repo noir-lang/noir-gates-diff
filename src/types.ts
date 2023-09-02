@@ -1,43 +1,35 @@
 import * as core from "@actions/core";
 
-export interface MethodReport {
+export interface ProgramReport {
   name: string;
-  min: number;
-  avg: number;
-  median: number;
-  max: number;
-  calls: number;
+  acir_opcodes: number;
+  circuit_size: number;
 }
 
 export interface ContractReport {
   name: string;
-  filePath: string;
-  deploymentCost: number;
-  deploymentSize: number;
-  methods: {
-    [name: string]: MethodReport;
-  };
+  functions: ProgramReport[];
 }
 
-export interface GasReport {
-  [name: string]: ContractReport;
+export interface WorkspaceReport {
+  programs: ProgramReport[];
+  contracts: ContractReport[];
 }
 
-export interface DiffMethod {
+export interface WorkspaceDiffReport {
+  programs: DiffProgram[];
+  contracts: ContractDiffReport[];
+}
+
+export interface ContractDiffReport {
   name: string;
-  min: DiffCell;
-  avg: DiffCell;
-  median: DiffCell;
-  max: DiffCell;
-  calls: DiffCell;
+  functions: DiffProgram[];
 }
 
-export interface DiffReport {
+export interface DiffProgram {
   name: string;
-  filePath: string;
-  deploymentCost: DiffCell;
-  deploymentSize: DiffCell;
-  methods: DiffMethod[];
+  acir_opcodes: DiffCell;
+  circuit_size: DiffCell;
 }
 
 export interface DiffCell {
@@ -47,10 +39,10 @@ export interface DiffCell {
   prcnt: number;
 }
 
-export type SortCriterion = keyof DiffMethod;
+export type SortCriterion = keyof DiffProgram;
 export type SortOrder = "asc" | "desc";
 
-const validSortCriteria = ["name", "min", "avg", "median", "max", "calls"] as SortCriterion[];
+const validSortCriteria = ["name", "acir_opcodes", "circuit_size"] as SortCriterion[];
 const validSortOrders = ["asc", "desc"] as SortOrder[];
 
 export const isSortCriteriaValid = (sortCriteria: string[]): sortCriteria is SortCriterion[] => {

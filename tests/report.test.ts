@@ -1,16 +1,15 @@
-// import * as cp from "child_process";
 import * as fs from "fs";
 
-// import * as path from "path";
-// import * as process from "process";
-// import { expect, test } from "@jest/globals";
 import { formatMarkdownDiff, formatShellDiff } from "../src/format";
-import { loadReports, computeDiffs } from "../src/report";
+import { loadReports, computeContractDiffs } from "../src/report";
 
-const srcContent = fs.readFileSync("tests/mocks/gas_report.2.ansi", "utf8");
-const cmpContent = fs.readFileSync("tests/mocks/gas_report.1.ansi", "utf8");
+const srcContent = fs.readFileSync("tests/mocks/gas_report.2.json", "utf8");
+const cmpContent = fs.readFileSync("tests/mocks/gas_report.1.json", "utf8");
 
-describe("", () => {
+const srcContractReports = loadReports(srcContent).contracts;
+const cmpContractReports = loadReports(cmpContent).contracts;
+
+describe("Markdown format", () => {
   // shows how the runner will run a javascript action with env / stdout protocol
   // it("should run action", () => {
   //   const np = process.execPath;
@@ -31,46 +30,15 @@ describe("", () => {
   //   );
   // });
 
-  it("should compare 1 to 2 with shell format", () => {
-    const loadOptions = { ignorePatterns: ["test-foundry/**/*"] };
-    console.log(
-      formatShellDiff(
-        computeDiffs(
-          loadReports(srcContent, loadOptions),
-          loadReports(cmpContent, loadOptions),
-          [],
-          []
-        )
-      )
-    );
-  });
-
-  it("should compare 2 to 1 with shell format", () => {
-    const loadOptions = { ignorePatterns: ["**/User.sol"] };
-    console.log(
-      formatShellDiff(
-        computeDiffs(
-          loadReports(srcContent, loadOptions),
-          loadReports(cmpContent, loadOptions),
-          [],
-          []
-        )
-      )
-    );
-  });
-
   it("should compare 1 to 2 with markdown format", () => {
-    const loadOptions = { ignorePatterns: ["test-foundry/**/*"] };
+    const contractDiffs = computeContractDiffs(srcContractReports, cmpContractReports);
+    expect(contractDiffs.length).toBeGreaterThan(0);
+
     fs.writeFileSync(
       "tests/mocks/1-2.md",
       formatMarkdownDiff(
         "# Changes to gas cost",
-        computeDiffs(
-          loadReports(srcContent, loadOptions),
-          loadReports(cmpContent, loadOptions),
-          [],
-          []
-        ),
+        contractDiffs,
         "Rubilmax/foundry-gas-diff",
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
         undefined,
@@ -80,34 +48,40 @@ describe("", () => {
   });
 
   it("should compare 1 to 1 with markdown format", () => {
-    const loadOptions = { ignorePatterns: ["test-foundry/**/*"] };
+    const contractDiffs = computeContractDiffs(srcContractReports, srcContractReports);
+    expect(contractDiffs.length).toBe(0);
+
     fs.writeFileSync(
       "tests/mocks/1-1.md",
       formatMarkdownDiff(
         "# Changes to gas cost",
-        computeDiffs(
-          loadReports(srcContent, loadOptions),
-          loadReports(srcContent, loadOptions),
-          [],
-          []
-        ),
+        contractDiffs,
         "Rubilmax/foundry-gas-diff",
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf"
       )
     );
   });
+});
 
-  it("should compare 1 to 1 with shell format", () => {
-    const loadOptions = { ignorePatterns: ["test-foundry/**/*"] };
-    console.log(
-      formatShellDiff(
-        computeDiffs(
-          loadReports(srcContent, loadOptions),
-          loadReports(srcContent, loadOptions),
-          [],
-          []
-        )
-      )
-    );
+describe("Shell format", () => {
+  it("should compare 1 to 1", () => {
+    const contractDiffs = computeContractDiffs(srcContractReports, srcContractReports);
+    expect(contractDiffs.length).toBe(0);
+
+    console.log(formatShellDiff(contractDiffs));
+  });
+
+  it("should compare 1 to 2", () => {
+    const contractDiffs = computeContractDiffs(srcContractReports, cmpContractReports);
+    expect(contractDiffs.length).toBeGreaterThan(0);
+
+    console.log(formatShellDiff(contractDiffs));
+  });
+
+  it("should compare 2 to 1", () => {
+    const contractDiffs = computeContractDiffs(cmpContractReports, srcContractReports);
+    expect(contractDiffs.length).toBeGreaterThan(0);
+
+    console.log(formatShellDiff(contractDiffs));
   });
 });
