@@ -13,6 +13,16 @@ describe("Program diffs", () => {
   it("should diff 1 and 2 successfully", () => {
     const expectedDiff: DiffProgram[] = [
       {
+        name: "c",
+        acir_opcodes: { previous: 2, current: 4, delta: 2, prcnt: 100 },
+        circuit_size: { previous: 2, current: 8, delta: 6, prcnt: 300 },
+      },
+      {
+        name: "d",
+        acir_opcodes: { previous: 3, current: 4, delta: 1, prcnt: 33.333333333333336 },
+        circuit_size: { previous: 5, current: 8, delta: 3, prcnt: 60 },
+      },
+      {
         name: "b",
         acir_opcodes: { previous: 5, current: 4, delta: -1, prcnt: -20 },
         circuit_size: { previous: 10, current: 8, delta: -2, prcnt: -20 },

@@ -1,13 +1,13 @@
 import * as fs from "fs";
 
-import { formatMarkdownDiff, formatShellDiff } from "../src/format";
-import { loadReports, computeContractDiffs } from "../src/report";
+import { formatMarkdownDiff, formatShellDiff } from "../src/format/program";
+import { computeProgramDiffs, loadReports } from "../src/report";
 
 const srcContent = fs.readFileSync("tests/mocks/gas_report.2.json", "utf8");
 const cmpContent = fs.readFileSync("tests/mocks/gas_report.1.json", "utf8");
 
-const srcContractReports = loadReports(srcContent).contracts;
-const cmpContractReports = loadReports(cmpContent).contracts;
+const srcContractReports = loadReports(srcContent).programs;
+const cmpContractReports = loadReports(cmpContent).programs;
 
 describe("Markdown format", () => {
   // shows how the runner will run a javascript action with env / stdout protocol
@@ -31,11 +31,11 @@ describe("Markdown format", () => {
   // });
 
   it("should compare 1 to 2 with markdown format", () => {
-    const contractDiffs = computeContractDiffs(srcContractReports, cmpContractReports);
+    const contractDiffs = computeProgramDiffs(srcContractReports, cmpContractReports);
     expect(contractDiffs.length).toBeGreaterThan(0);
 
     fs.writeFileSync(
-      "tests/mocks/1-2.md",
+      "tests/mocks/1-2-program.md",
       formatMarkdownDiff(
         "# Changes to gas cost",
         contractDiffs,
@@ -48,11 +48,11 @@ describe("Markdown format", () => {
   });
 
   it("should compare 1 to 1 with markdown format", () => {
-    const contractDiffs = computeContractDiffs(srcContractReports, srcContractReports);
+    const contractDiffs = computeProgramDiffs(srcContractReports, srcContractReports);
     expect(contractDiffs.length).toBe(0);
 
     fs.writeFileSync(
-      "tests/mocks/1-1.md",
+      "tests/mocks/1-1-program.md",
       formatMarkdownDiff(
         "# Changes to gas cost",
         contractDiffs,
@@ -65,21 +65,21 @@ describe("Markdown format", () => {
 
 describe("Shell format", () => {
   it("should compare 1 to 1", () => {
-    const contractDiffs = computeContractDiffs(srcContractReports, srcContractReports);
+    const contractDiffs = computeProgramDiffs(srcContractReports, srcContractReports);
     expect(contractDiffs.length).toBe(0);
 
     console.log(formatShellDiff(contractDiffs));
   });
 
   it("should compare 1 to 2", () => {
-    const contractDiffs = computeContractDiffs(srcContractReports, cmpContractReports);
+    const contractDiffs = computeProgramDiffs(srcContractReports, cmpContractReports);
     expect(contractDiffs.length).toBeGreaterThan(0);
 
     console.log(formatShellDiff(contractDiffs));
   });
 
   it("should compare 2 to 1", () => {
-    const contractDiffs = computeContractDiffs(cmpContractReports, srcContractReports);
+    const contractDiffs = computeProgramDiffs(cmpContractReports, srcContractReports);
     expect(contractDiffs.length).toBeGreaterThan(0);
 
     console.log(formatShellDiff(contractDiffs));

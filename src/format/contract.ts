@@ -1,7 +1,7 @@
 import colors from "colors";
 import _sortBy from "lodash/sortBy";
 
-import { ContractDiffReport, DiffCell } from "./types";
+import { ContractDiffReport, DiffCell } from "../types";
 
 export enum TextAlign {
   LEFT = "left",

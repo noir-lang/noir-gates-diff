@@ -6,7 +6,7 @@ import * as artifact from "@actions/artifact";
 import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
-import { formatMarkdownDiff, formatShellDiff } from "./format";
+import { formatMarkdownDiff, formatShellDiff } from "./format/contract";
 import { loadReports, computeContractDiffs } from "./report";
 
 // import { isSortCriteriaValid, isSortOrdersValid } from "./types";
