@@ -38,26 +38,11 @@ async function run() {
   // if (!isSortOrdersValid(sortOrders)) return;
 
   try {
-    const headBranchEscaped = headBranch.replace(/[/\\]/g, "-");
-    const outReport = `${headBranchEscaped}.${report}`;
-
-    core.startGroup(`Upload new report from "${localReportPath}" as artifact named "${outReport}"`);
-    const uploadResponse = await artifactClient.uploadArtifact(
-      outReport,
-      [localReportPath],
-      dirname(localReportPath),
-      {
-        continueOnError: false,
-      }
-    );
-
-    if (uploadResponse.failedItems.length > 0) throw Error("Failed to upload gas report.");
-
-    core.info(`Artifact ${uploadResponse.artifactName} has been successfully uploaded!`);
+    // Upload the gates report to be used as a reference in later runs.
+    await uploadArtifact();
   } catch (error: any) {
     return core.setFailed(error.message);
   }
-  core.endGroup();
 
   // cannot use artifactClient because downloads are limited to uploads in the same workflow run
   // cf. https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#downloading-or-deleting-artifacts
@@ -151,6 +136,26 @@ async function run() {
   } catch (error: any) {
     core.setFailed(error.message);
   }
+}
+
+async function uploadArtifact() {
+  const headBranchEscaped = headBranch.replace(/[/\\]/g, "-");
+  const outReport = `${headBranchEscaped}.${report}`;
+
+  core.startGroup(`Upload new report from "${localReportPath}" as artifact named "${outReport}"`);
+  const uploadResponse = await artifactClient.uploadArtifact(
+    outReport,
+    [localReportPath],
+    dirname(localReportPath),
+    {
+      continueOnError: false,
+    }
+  );
+
+  if (uploadResponse.failedItems.length > 0) throw Error("Failed to upload gas report.");
+
+  core.info(`Artifact ${uploadResponse.artifactName} has been successfully uploaded!`);
+  core.endGroup();
 }
 
 run();
