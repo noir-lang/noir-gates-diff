@@ -3,7 +3,14 @@ import _sortBy from "lodash/sortBy";
 
 import { DiffCell, DiffProgram } from "../types";
 
-import { alignPattern, center, parenthesized, plusSign, TextAlign } from "./utils";
+import {
+  alignPattern,
+  center,
+  generateCommitInfo,
+  parenthesized,
+  plusSign,
+  TextAlign,
+} from "./utils";
 
 export const formatShellCell = (cell: DiffCell, length = 10) => {
   const format = colors[cell.delta > 0 ? "red" : cell.delta < 0 ? "green" : "reset"];
@@ -190,14 +197,7 @@ export const formatMarkdownDiff = (
   refCommitHash?: string,
   summaryQuantile = 0.8
 ) => {
-  const diffReport = [
-    header,
-    "",
-    `> Generated at commit: [${commitHash}](/${repository}/commit/${commitHash})` +
-      (refCommitHash
-        ? `, compared to commit: [${refCommitHash}](/${repository}/commit/${refCommitHash})`
-        : ""),
-  ];
+  const diffReport = [header, "", generateCommitInfo(repository, commitHash, refCommitHash)];
   if (diffs.length === 0)
     return diffReport.concat(["", "### There are no changes in circuit sizes"]).join("\n").trim();
 

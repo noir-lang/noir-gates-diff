@@ -21,3 +21,13 @@ export const alignPattern = (align = TextAlign.LEFT) => {
       return ":-:";
   }
 };
+
+export const generateCommitInfo = (
+  repository: string,
+  commitHash: string,
+  refCommitHash?: string
+): string =>
+  `> Generated at commit: [${commitHash}](/${repository}/commit/${commitHash})` +
+  (refCommitHash
+    ? `, compared to commit: [${refCommitHash}](/${repository}/commit/${refCommitHash})`
+    : "");
