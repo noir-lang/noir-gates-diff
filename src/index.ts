@@ -6,8 +6,8 @@ import * as artifact from "@actions/artifact";
 import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
-import { formatMarkdownDiff, formatShellDiff } from "./format/contract";
-import { loadReports, computeContractDiffs } from "./report";
+import { formatMarkdownDiff, formatShellDiff } from "./format/program";
+import { loadReports, computeProgramDiffs } from "./report";
 
 // import { isSortCriteriaValid, isSortOrdersValid } from "./types";
 
@@ -128,7 +128,7 @@ async function run() {
     core.endGroup();
 
     core.startGroup("Compute gas diff");
-    const diffRows = computeContractDiffs(referenceReports.contracts, compareReports.contracts);
+    const diffRows = computeProgramDiffs(referenceReports.programs, compareReports.programs);
     core.info(`Format markdown of ${diffRows.length} diffs`);
     const markdown = formatMarkdownDiff(
       header,
