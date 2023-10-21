@@ -3,14 +3,7 @@ import _sortBy from "lodash/sortBy";
 
 import { DiffCell, DiffProgram } from "../types";
 
-export enum TextAlign {
-  LEFT = "left",
-  RIGHT = "right",
-  CENTER = "center",
-}
-
-const center = (text: string, length: number) =>
-  text.padStart((text.length + length) / 2).padEnd(length);
+import { alignPattern, center, parenthesized, plusSign, TextAlign } from "./utils";
 
 export const formatShellCell = (cell: DiffCell, length = 10) => {
   const format = colors[cell.delta > 0 ? "red" : cell.delta < 0 ? "green" : "reset"];
@@ -18,7 +11,7 @@ export const formatShellCell = (cell: DiffCell, length = 10) => {
   return [
     cell.current.toLocaleString().padStart(length) +
       " " +
-      format(("(" + (plusSign(cell.delta) + cell.delta.toLocaleString()) + ")").padEnd(length)),
+      format(parenthesized(plusSign(cell.delta) + cell.delta.toLocaleString()).padEnd(length)),
     colors.bold(
       format(
         (
@@ -134,19 +127,6 @@ export const formatShellDiff = (diffs: DiffProgram[], summaryQuantile = 0.8) => 
       .join(`\n${diffSeparator}\n`)
       .trim()
   );
-};
-
-const plusSign = (num: number) => (num > 0 ? "+" : "");
-
-const alignPattern = (align = TextAlign.LEFT) => {
-  switch (align) {
-    case TextAlign.LEFT:
-      return ":-";
-    case TextAlign.RIGHT:
-      return "-:";
-    case TextAlign.CENTER:
-      return ":-:";
-  }
 };
 
 const formatMarkdownSummaryCell = (rows: DiffCell[]) => [
