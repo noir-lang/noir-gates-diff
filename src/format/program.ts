@@ -81,6 +81,30 @@ export const formatShellDiff = (diffs: DiffProgram[], summaryQuantile = 0.8) => 
       .percentage ?? 0
   );
 
+  const summaryRows = selectSummaryDiffs(diffs, circuitChangeQuantile).map((diff) =>
+    [
+      "",
+      colors.bold(colors.grey(diff.name.padEnd(maxProgramLength))),
+      ...formatShellCell(diff.acir_opcodes),
+      ...formatShellCell(diff.circuit_size),
+      "",
+    ]
+      .join(" | ")
+      .trim()
+  );
+
+  const fullReportRows = diffs.map((diff) =>
+    [
+      "",
+      colors.bold(colors.grey(diff.name.padEnd(maxProgramLength))),
+      ...formatShellCell(diff.acir_opcodes),
+      ...formatShellCell(diff.circuit_size),
+      "",
+    ]
+      .join(" | ")
+      .trim()
+  );
+
   return (
     colors.underline(
       colors.bold(
@@ -89,43 +113,9 @@ export const formatShellDiff = (diffs: DiffProgram[], summaryQuantile = 0.8) => 
         )
       )
     ) +
-    [
-      "",
-      summaryHeader,
-      ...selectSummaryDiffs(diffs, circuitChangeQuantile).map((diff) =>
-        [
-          "",
-          colors.bold(colors.grey(diff.name.padEnd(maxProgramLength))),
-          ...formatShellCell(diff.acir_opcodes),
-          ...formatShellCell(diff.circuit_size),
-          "",
-        ]
-          .join(" | ")
-          .trim()
-      ),
-      "",
-    ]
-      .join(`\n${summarySeparator}\n`)
-      .trim() +
+    ["", summaryHeader, ...summaryRows, ""].join(`\n${summarySeparator}\n`).trim() +
     colors.underline(colors.bold(colors.yellow("\n\nFull diff report 👇\n\n"))) +
-    [
-      "",
-      diffHeader,
-      ...diffs.map((diff) =>
-        [
-          "",
-          colors.bold(colors.grey(diff.name.padEnd(maxProgramLength))),
-          ...formatShellCell(diff.acir_opcodes),
-          ...formatShellCell(diff.circuit_size),
-          "",
-        ]
-          .join(" | ")
-          .trim()
-      ),
-      "",
-    ]
-      .join(`\n${diffSeparator}\n`)
-      .trim()
+    ["", diffHeader, ...fullReportRows, ""].join(`\n${diffSeparator}\n`).trim()
   );
 };
 
@@ -235,6 +225,30 @@ export const formatMarkdownDiff = (
       .percentage ?? 0
   );
 
+  const summaryRows = selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) =>
+    [
+      "",
+      `**${diff.name}**`,
+      ...formatMarkdownSummaryCell([diff.acir_opcodes]),
+      ...formatMarkdownSummaryCell([diff.circuit_size]),
+      "",
+    ]
+      .join(" | ")
+      .trim()
+  );
+
+  const fullReportRows = diffs.flatMap((diff) =>
+    [
+      "",
+      `**${diff.name}**`,
+      ...formatMarkdownFullCell([diff.acir_opcodes]),
+      ...formatMarkdownFullCell([diff.circuit_size]),
+      "",
+    ]
+      .join(" | ")
+      .trim()
+  );
+
   return diffReport
     .concat([
       "",
@@ -242,17 +256,7 @@ export const formatMarkdownDiff = (
       "",
       summaryHeader,
       summaryHeaderSeparator,
-      ...selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) =>
-        [
-          "",
-          `**${diff.name}**`,
-          ...formatMarkdownSummaryCell([diff.acir_opcodes]),
-          ...formatMarkdownSummaryCell([diff.circuit_size]),
-          "",
-        ]
-          .join(" | ")
-          .trim()
-      ),
+      ...summaryRows,
       "---",
       "",
       "<details>",
@@ -261,19 +265,7 @@ export const formatMarkdownDiff = (
       "",
       diffHeader,
       diffHeaderSeparator,
-      diffs
-        .flatMap((diff) =>
-          [
-            "",
-            `**${diff.name}**`,
-            ...formatMarkdownFullCell([diff.acir_opcodes]),
-            ...formatMarkdownFullCell([diff.circuit_size]),
-            "",
-          ]
-            .join(" | ")
-            .trim()
-        )
-        .join("\n"),
+      ...fullReportRows,
       "</details>",
       "",
     ])
