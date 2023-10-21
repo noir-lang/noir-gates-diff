@@ -37,8 +37,8 @@ const formatShellCell = (cell, length = 10) => {
         cell.current.toLocaleString().padStart(length) +
             " " +
             format(("(" + (plusSign(cell.delta) + cell.delta.toLocaleString()) + ")").padEnd(length)),
-        colors_1.default.bold(format((plusSign(cell.prcnt) +
-            (cell.prcnt === Infinity ? "∞" : cell.prcnt.toFixed(2)) +
+        colors_1.default.bold(format((plusSign(cell.percentage) +
+            (cell.percentage === Infinity ? "∞" : cell.percentage.toFixed(2)) +
             "%").padStart(9))),
     ];
 };
@@ -46,7 +46,7 @@ exports.formatShellCell = formatShellCell;
 const selectSummaryDiffs = (diffs, minCircuitChangePercentage) => diffs
     .map((_a) => {
     var { functions } = _a, diff = __rest(_a, ["functions"]);
-    return (Object.assign(Object.assign({}, diff), { functions: functions.filter((method) => Math.abs(method.circuit_size.prcnt) >= minCircuitChangePercentage &&
+    return (Object.assign(Object.assign({}, diff), { functions: functions.filter((method) => Math.abs(method.circuit_size.percentage) >= minCircuitChangePercentage &&
             (method.acir_opcodes.delta !== 0 || method.circuit_size.delta !== 0)) }));
 })
     .filter((diff) => diff.functions.length > 0);
@@ -82,8 +82,8 @@ const formatShellDiff = (diffs, summaryQuantile = 0.8) => {
     const diffSeparator = SHELL_DIFF_COLS.map(({ length }) => length > 0 ? "-".repeat(length + 2) : "")
         .join("|")
         .trim();
-    const sortedMethods = (0, sortBy_1.default)(diffs.flatMap((diff) => diff.functions), (method) => Math.abs(method.circuit_size.prcnt));
-    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.prcnt) !== null && _b !== void 0 ? _b : 0);
+    const sortedMethods = (0, sortBy_1.default)(diffs.flatMap((diff) => diff.functions), (method) => Math.abs(method.circuit_size.percentage));
+    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
     return (colors_1.default.underline(colors_1.default.bold(colors_1.default.yellow(`🧾 Summary (${Math.round((1 - summaryQuantile) * 100)}% most significant diffs)\n\n`))) +
         [
             "",
@@ -147,7 +147,7 @@ const formatMarkdownSummaryCell = (rows) => [
         (row.delta > 0 ? "❌" : row.delta < 0 ? "✅" : "➖"))
         .join("<br />"),
     rows
-        .map((row) => "**" + plusSign(row.prcnt) + (row.prcnt === Infinity ? "∞" : row.prcnt.toFixed(2)) + "%**")
+        .map((row) => "**" + plusSign(row.percentage) + (row.percentage === Infinity ? "∞" : row.percentage.toFixed(2)) + "%**")
         .join("<br />"),
 ];
 const formatMarkdownFullCell = (rows) => [
@@ -159,7 +159,7 @@ const formatMarkdownFullCell = (rows) => [
         ")")
         .join("<br />"),
     rows
-        .map((row) => "**" + plusSign(row.prcnt) + (row.prcnt === Infinity ? "∞" : row.prcnt.toFixed(2)) + "%**")
+        .map((row) => "**" + plusSign(row.percentage) + (row.percentage === Infinity ? "∞" : row.percentage.toFixed(2)) + "%**")
         .join("<br />"),
 ];
 const MARKDOWN_SUMMARY_COLS = [
@@ -206,8 +206,8 @@ const formatMarkdownDiff = (header, diffs, repository, commitHash, refCommitHash
     const diffHeaderSeparator = MARKDOWN_DIFF_COLS.map((entry) => entry.txt ? alignPattern(entry.align) : "")
         .join("|")
         .trim();
-    const sortedMethods = (0, sortBy_1.default)(diffs.flatMap((diff) => diff.functions), (method) => Math.abs(method.circuit_size.prcnt));
-    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.prcnt) !== null && _b !== void 0 ? _b : 0);
+    const sortedMethods = (0, sortBy_1.default)(diffs.flatMap((diff) => diff.functions), (method) => Math.abs(method.circuit_size.percentage));
+    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
     return diffReport
         .concat([
         "",
@@ -458,7 +458,7 @@ const variation = (current, previous) => {
         previous,
         current,
         delta,
-        prcnt: previous !== 0 ? (100 * delta) / previous : Infinity,
+        percentage: previous !== 0 ? (100 * delta) / previous : Infinity,
     };
 };
 exports.variation = variation;
@@ -485,7 +485,7 @@ const computeProgramDiffs = (sourceReports, compareReports) => {
         return computeProgramDiff(srcReport, cmpReport);
     })
         .filter((diff) => !isEmptyDiff(diff))
-        .sort((diff1, diff2) => Math.max(diff2.circuit_size.prcnt) - Math.max(diff1.circuit_size.prcnt));
+        .sort((diff1, diff2) => Math.max(diff2.circuit_size.percentage) - Math.max(diff1.circuit_size.percentage));
 };
 exports.computeProgramDiffs = computeProgramDiffs;
 const computeProgramDiff = (sourceReport, compareReport) => {
@@ -510,8 +510,8 @@ const computeContractDiffs = (sourceReports, compareReports) => {
         return computeContractDiff(srcReport, cmpReport);
     })
         .filter((diff) => diff.functions.length > 0)
-        .sort((diff1, diff2) => Math.max(...diff2.functions.map((functionDiff) => Math.abs(functionDiff.circuit_size.prcnt))) -
-        Math.max(...diff1.functions.map((functionDiff) => Math.abs(functionDiff.circuit_size.prcnt))));
+        .sort((diff1, diff2) => Math.max(...diff2.functions.map((functionDiff) => Math.abs(functionDiff.circuit_size.percentage))) -
+        Math.max(...diff1.functions.map((functionDiff) => Math.abs(functionDiff.circuit_size.percentage))));
 };
 exports.computeContractDiffs = computeContractDiffs;
 const computeContractDiff = (sourceReport, compareReport) => {
@@ -8691,7 +8691,7 @@ module.exports = {
     // 7 reserved for Tokenizing compression algorithm
     DEFLATED         : 8, // deflated
     ENHANCED_DEFLATED: 9, // enhanced deflated
-    PKWARE           : 10,// PKWare DCL imploded
+    PKWARE           : 10, // PKWare DCL imploded
     // 11 reserved by PKWARE
     BZIP2            : 12, //  compressed using BZIP2
     // 13 reserved by PKWARE
@@ -13350,7 +13350,7 @@ function isObject(o) {
 }
 
 function isPlainObject(o) {
-  var ctor,prot;
+  var ctor, prot;
 
   if (isObject(o) === false) return false;
 

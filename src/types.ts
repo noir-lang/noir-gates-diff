@@ -36,7 +36,7 @@ export interface DiffCell {
   previous: number;
   current: number;
   delta: number;
-  prcnt: number;
+  percentage: number;
 }
 
 export type SortCriterion = keyof DiffProgram;

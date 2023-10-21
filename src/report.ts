@@ -16,7 +16,7 @@ export const variation = (current: number, previous: number) => {
     previous,
     current,
     delta,
-    prcnt: previous !== 0 ? (100 * delta) / previous : Infinity,
+    percentage: previous !== 0 ? (100 * delta) / previous : Infinity,
   };
 };
 
@@ -52,7 +52,8 @@ export const computeProgramDiffs = (
     })
     .filter((diff) => !isEmptyDiff(diff))
     .sort(
-      (diff1, diff2) => Math.max(diff2.circuit_size.prcnt) - Math.max(diff1.circuit_size.prcnt)
+      (diff1, diff2) =>
+        Math.max(diff2.circuit_size.percentage) - Math.max(diff1.circuit_size.percentage)
     );
 };
 
@@ -92,10 +93,10 @@ export const computeContractDiffs = (
     .sort(
       (diff1, diff2) =>
         Math.max(
-          ...diff2.functions.map((functionDiff) => Math.abs(functionDiff.circuit_size.prcnt))
+          ...diff2.functions.map((functionDiff) => Math.abs(functionDiff.circuit_size.percentage))
         ) -
         Math.max(
-          ...diff1.functions.map((functionDiff) => Math.abs(functionDiff.circuit_size.prcnt))
+          ...diff1.functions.map((functionDiff) => Math.abs(functionDiff.circuit_size.percentage))
         )
     );
 };

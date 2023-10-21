@@ -22,8 +22,8 @@ export const formatShellCell = (cell: DiffCell, length = 10) => {
     colors.bold(
       format(
         (
-          plusSign(cell.prcnt) +
-          (cell.prcnt === Infinity ? "∞" : cell.prcnt.toFixed(2)) +
+          plusSign(cell.percentage) +
+          (cell.percentage === Infinity ? "∞" : cell.percentage.toFixed(2)) +
           "%"
         ).padStart(9)
       )
@@ -37,7 +37,7 @@ const selectSummaryDiffs = (
 ): DiffProgram[] =>
   diffs.filter(
     (method) =>
-      Math.abs(method.circuit_size.prcnt) >= minCircuitChangePercentage &&
+      Math.abs(method.circuit_size.percentage) >= minCircuitChangePercentage &&
       (method.acir_opcodes.delta !== 0 || method.circuit_size.delta !== 0)
   );
 
@@ -82,10 +82,10 @@ export const formatShellDiff = (diffs: DiffProgram[], summaryQuantile = 0.8) => 
     .join("|")
     .trim();
 
-  const sortedPrograms = _sortBy(diffs, (method) => Math.abs(method.circuit_size.prcnt));
+  const sortedPrograms = _sortBy(diffs, (method) => Math.abs(method.circuit_size.percentage));
   const circuitChangeQuantile = Math.abs(
-    sortedPrograms[Math.floor((sortedPrograms.length - 1) * summaryQuantile)]?.circuit_size.prcnt ??
-      0
+    sortedPrograms[Math.floor((sortedPrograms.length - 1) * summaryQuantile)]?.circuit_size
+      .percentage ?? 0
   );
 
   return (
@@ -162,7 +162,10 @@ const formatMarkdownSummaryCell = (rows: DiffCell[]) => [
   rows
     .map(
       (row) =>
-        "**" + plusSign(row.prcnt) + (row.prcnt === Infinity ? "∞" : row.prcnt.toFixed(2)) + "%**"
+        "**" +
+        plusSign(row.percentage) +
+        (row.percentage === Infinity ? "∞" : row.percentage.toFixed(2)) +
+        "%**"
     )
     .join("<br />"),
 ];
@@ -181,7 +184,10 @@ const formatMarkdownFullCell = (rows: DiffCell[]): string[] => [
   rows
     .map(
       (row) =>
-        "**" + plusSign(row.prcnt) + (row.prcnt === Infinity ? "∞" : row.prcnt.toFixed(2)) + "%**"
+        "**" +
+        plusSign(row.percentage) +
+        (row.percentage === Infinity ? "∞" : row.percentage.toFixed(2)) +
+        "%**"
     )
     .join("<br />"),
 ];
@@ -243,9 +249,10 @@ export const formatMarkdownDiff = (
     .join("|")
     .trim();
 
-  const sortedMethods = _sortBy(diffs, (program) => Math.abs(program.circuit_size.prcnt));
+  const sortedMethods = _sortBy(diffs, (program) => Math.abs(program.circuit_size.percentage));
   const circuitChangeQuantile = Math.abs(
-    sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]?.circuit_size.prcnt ?? 0
+    sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]?.circuit_size
+      .percentage ?? 0
   );
 
   return diffReport
