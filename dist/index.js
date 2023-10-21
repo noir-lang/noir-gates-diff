@@ -1,29 +1,207 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 6610:
+/***/ 1578:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.formatMarkdownDiff = exports.formatShellDiff = exports.formatShellCell = exports.TextAlign = void 0;
+exports.formatMarkdownDiff = exports.formatShellDiff = exports.formatShellCell = void 0;
 const colors_1 = __importDefault(__nccwpck_require__(3045));
 const sortBy_1 = __importDefault(__nccwpck_require__(9774));
+const utils_1 = __nccwpck_require__(9292);
+const formatShellCell = (cell, length = 10) => {
+    const format = colors_1.default[cell.delta > 0 ? "red" : cell.delta < 0 ? "green" : "reset"];
+    return [
+        cell.current.toLocaleString().padStart(length) +
+            " " +
+            format((0, utils_1.parenthesized)((0, utils_1.plusSign)(cell.delta) + cell.delta.toLocaleString()).padEnd(length)),
+        colors_1.default.bold(format(((0, utils_1.plusSign)(cell.percentage) +
+            (cell.percentage === Infinity ? "∞" : cell.percentage.toFixed(2)) +
+            "%").padStart(9))),
+    ];
+};
+exports.formatShellCell = formatShellCell;
+const selectSummaryDiffs = (diffs, minCircuitChangePercentage) => diffs.filter((method) => Math.abs(method.circuit_size.percentage) >= minCircuitChangePercentage &&
+    (method.acir_opcodes.delta !== 0 || method.circuit_size.delta !== 0));
+const formatShellDiff = (diffs, summaryQuantile = 0.8) => {
+    var _a, _b;
+    const maxProgramLength = Math.max(8, ...diffs.map(({ name }) => name.length));
+    const SHELL_SUMMARY_COLS = [
+        { txt: "", length: 0 },
+        { txt: "Program", length: maxProgramLength },
+        { txt: "ACIR opcodes (+/-)", length: 33 },
+        { txt: "Circuit size (+/-)", length: 33 },
+        { txt: "", length: 0 },
+    ];
+    const SHELL_DIFF_COLS = [
+        { txt: "", length: 0 },
+        { txt: "Program", length: maxProgramLength },
+        { txt: "ACIR opcodes (+/-)", length: 33 },
+        { txt: "Circuit size (+/-)", length: 33 },
+        { txt: "", length: 0 },
+    ];
+    const summaryHeader = SHELL_SUMMARY_COLS.map((entry) => colors_1.default.bold((0, utils_1.center)(entry.txt, entry.length || 0)))
+        .join(" | ")
+        .trim();
+    const summarySeparator = SHELL_SUMMARY_COLS.map(({ length }) => length > 0 ? "-".repeat(length + 2) : "")
+        .join("|")
+        .trim();
+    const diffHeader = SHELL_DIFF_COLS.map((entry) => colors_1.default.bold((0, utils_1.center)(entry.txt, entry.length || 0)))
+        .join(" | ")
+        .trim();
+    const diffSeparator = SHELL_DIFF_COLS.map(({ length }) => length > 0 ? "-".repeat(length + 2) : "")
+        .join("|")
+        .trim();
+    const sortedPrograms = (0, sortBy_1.default)(diffs, (method) => Math.abs(method.circuit_size.percentage));
+    const circuitChangeQuantile = Math.abs((_b = (_a = sortedPrograms[Math.floor((sortedPrograms.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
+    const summaryRows = selectSummaryDiffs(diffs, circuitChangeQuantile).map((diff) => [
+        "",
+        colors_1.default.bold(colors_1.default.grey(diff.name.padEnd(maxProgramLength))),
+        ...(0, exports.formatShellCell)(diff.acir_opcodes),
+        ...(0, exports.formatShellCell)(diff.circuit_size),
+        "",
+    ]
+        .join(" | ")
+        .trim());
+    const fullReportRows = diffs.map((diff) => [
+        "",
+        colors_1.default.bold(colors_1.default.grey(diff.name.padEnd(maxProgramLength))),
+        ...(0, exports.formatShellCell)(diff.acir_opcodes),
+        ...(0, exports.formatShellCell)(diff.circuit_size),
+        "",
+    ]
+        .join(" | ")
+        .trim());
+    return (colors_1.default.underline(colors_1.default.bold(colors_1.default.yellow(`🧾 Summary (${Math.round((1 - summaryQuantile) * 100)}% most significant diffs)\n\n`))) +
+        ["", summaryHeader, ...summaryRows, ""].join(`\n${summarySeparator}\n`).trim() +
+        colors_1.default.underline(colors_1.default.bold(colors_1.default.yellow("\n\nFull diff report 👇\n\n"))) +
+        ["", diffHeader, ...fullReportRows, ""].join(`\n${diffSeparator}\n`).trim());
+};
+exports.formatShellDiff = formatShellDiff;
+const formatMarkdownSummaryCell = (rows) => [
+    rows
+        .map((row) => (0, utils_1.plusSign)(row.delta) +
+        row.delta.toLocaleString() +
+        " " +
+        (row.delta > 0 ? "❌" : row.delta < 0 ? "✅" : "➖"))
+        .join("<br />"),
+    rows
+        .map((row) => "**" +
+        (0, utils_1.plusSign)(row.percentage) +
+        (row.percentage === Infinity ? "∞" : row.percentage.toFixed(2)) +
+        "%**")
+        .join("<br />"),
+];
+const formatMarkdownFullCell = (rows) => [
+    rows
+        .map((row) => row.current.toLocaleString() +
+        "&nbsp;(" +
+        (0, utils_1.plusSign)(row.delta) +
+        row.delta.toLocaleString() +
+        ")")
+        .join("<br />"),
+    rows
+        .map((row) => "**" +
+        (0, utils_1.plusSign)(row.percentage) +
+        (row.percentage === Infinity ? "∞" : row.percentage.toFixed(2)) +
+        "%**")
+        .join("<br />"),
+];
+const MARKDOWN_SUMMARY_COLS = [
+    { txt: "" },
+    { txt: "Program", align: utils_1.TextAlign.LEFT },
+    { txt: "ACIR opcodes (+/-)", align: utils_1.TextAlign.RIGHT },
+    { txt: "%", align: utils_1.TextAlign.RIGHT },
+    { txt: "Circuit size (+/-)", align: utils_1.TextAlign.RIGHT },
+    { txt: "%", align: utils_1.TextAlign.RIGHT },
+    { txt: "" },
+];
+const MARKDOWN_DIFF_COLS = [
+    { txt: "" },
+    { txt: "Program", align: utils_1.TextAlign.LEFT },
+    { txt: "ACIR opcodes (+/-)", align: utils_1.TextAlign.RIGHT },
+    { txt: "%", align: utils_1.TextAlign.RIGHT },
+    { txt: "Circuit size (+/-)", align: utils_1.TextAlign.RIGHT },
+    { txt: "%", align: utils_1.TextAlign.RIGHT },
+    { txt: "" },
+];
+const formatMarkdownDiff = (header, diffs, repository, commitHash, refCommitHash, summaryQuantile = 0.8) => {
+    var _a, _b;
+    const diffReport = [header, "", (0, utils_1.generateCommitInfo)(repository, commitHash, refCommitHash)];
+    if (diffs.length === 0)
+        return diffReport.concat(["", "### There are no changes in circuit sizes"]).join("\n").trim();
+    const summaryHeader = MARKDOWN_SUMMARY_COLS.map((entry) => entry.txt)
+        .join(" | ")
+        .trim();
+    const summaryHeaderSeparator = MARKDOWN_SUMMARY_COLS.map((entry) => entry.txt ? (0, utils_1.alignPattern)(entry.align) : "")
+        .join("|")
+        .trim();
+    const diffHeader = MARKDOWN_DIFF_COLS.map((entry) => entry.txt)
+        .join(" | ")
+        .trim();
+    const diffHeaderSeparator = MARKDOWN_DIFF_COLS.map((entry) => entry.txt ? (0, utils_1.alignPattern)(entry.align) : "")
+        .join("|")
+        .trim();
+    const sortedMethods = (0, sortBy_1.default)(diffs, (program) => Math.abs(program.circuit_size.percentage));
+    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
+    const summaryRows = selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) => [
+        "",
+        `**${diff.name}**`,
+        ...formatMarkdownSummaryCell([diff.acir_opcodes]),
+        ...formatMarkdownSummaryCell([diff.circuit_size]),
+        "",
+    ]
+        .join(" | ")
+        .trim());
+    const fullReportRows = diffs.flatMap((diff) => [
+        "",
+        `**${diff.name}**`,
+        ...formatMarkdownFullCell([diff.acir_opcodes]),
+        ...formatMarkdownFullCell([diff.circuit_size]),
+        "",
+    ]
+        .join(" | ")
+        .trim());
+    return diffReport
+        .concat([
+        "",
+        `### 🧾 Summary (${Math.round((1 - summaryQuantile) * 100)}% most significant diffs)`,
+        "",
+        summaryHeader,
+        summaryHeaderSeparator,
+        ...summaryRows,
+        "---",
+        "",
+        "<details>",
+        "<summary><strong>Full diff report</strong> 👇</summary>",
+        "<br />",
+        "",
+        diffHeader,
+        diffHeaderSeparator,
+        ...fullReportRows,
+        "</details>",
+        "",
+    ])
+        .join("\n")
+        .trim();
+};
+exports.formatMarkdownDiff = formatMarkdownDiff;
+
+
+/***/ }),
+
+/***/ 9292:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.generateCommitInfo = exports.alignPattern = exports.plusSign = exports.parenthesized = exports.center = exports.TextAlign = void 0;
 var TextAlign;
 (function (TextAlign) {
     TextAlign["LEFT"] = "left";
@@ -31,104 +209,11 @@ var TextAlign;
     TextAlign["CENTER"] = "center";
 })(TextAlign = exports.TextAlign || (exports.TextAlign = {}));
 const center = (text, length) => text.padStart((text.length + length) / 2).padEnd(length);
-const formatShellCell = (cell, length = 10) => {
-    const format = colors_1.default[cell.delta > 0 ? "red" : cell.delta < 0 ? "green" : "reset"];
-    return [
-        cell.current.toLocaleString().padStart(length) +
-            " " +
-            format(("(" + (plusSign(cell.delta) + cell.delta.toLocaleString()) + ")").padEnd(length)),
-        colors_1.default.bold(format((plusSign(cell.percentage) +
-            (cell.percentage === Infinity ? "∞" : cell.percentage.toFixed(2)) +
-            "%").padStart(9))),
-    ];
-};
-exports.formatShellCell = formatShellCell;
-const selectSummaryDiffs = (diffs, minCircuitChangePercentage) => diffs
-    .map((_a) => {
-    var { functions } = _a, diff = __rest(_a, ["functions"]);
-    return (Object.assign(Object.assign({}, diff), { functions: functions.filter((method) => Math.abs(method.circuit_size.percentage) >= minCircuitChangePercentage &&
-            (method.acir_opcodes.delta !== 0 || method.circuit_size.delta !== 0)) }));
-})
-    .filter((diff) => diff.functions.length > 0);
-const formatShellDiff = (diffs, summaryQuantile = 0.8) => {
-    var _a, _b;
-    const maxContractLength = Math.max(8, ...diffs.map(({ name }) => name.length));
-    const maxMethodLength = Math.max(7, ...diffs.flatMap(({ functions }) => functions.map(({ name }) => name.length)));
-    const SHELL_SUMMARY_COLS = [
-        { txt: "", length: 0 },
-        { txt: "Contract", length: maxContractLength },
-        { txt: "Method", length: maxMethodLength },
-        { txt: "ACIR opcodes (+/-)", length: 33 },
-        { txt: "Circuit size (+/-)", length: 33 },
-        { txt: "", length: 0 },
-    ];
-    const SHELL_DIFF_COLS = [
-        { txt: "", length: 0 },
-        { txt: "Contract", length: maxContractLength },
-        { txt: "Method", length: maxMethodLength },
-        { txt: "ACIR opcodes (+/-)", length: 33 },
-        { txt: "Circuit size (+/-)", length: 33 },
-        { txt: "", length: 0 },
-    ];
-    const summaryHeader = SHELL_SUMMARY_COLS.map((entry) => colors_1.default.bold(center(entry.txt, entry.length || 0)))
-        .join(" | ")
-        .trim();
-    const summarySeparator = SHELL_SUMMARY_COLS.map(({ length }) => length > 0 ? "-".repeat(length + 2) : "")
-        .join("|")
-        .trim();
-    const diffHeader = SHELL_DIFF_COLS.map((entry) => colors_1.default.bold(center(entry.txt, entry.length || 0)))
-        .join(" | ")
-        .trim();
-    const diffSeparator = SHELL_DIFF_COLS.map(({ length }) => length > 0 ? "-".repeat(length + 2) : "")
-        .join("|")
-        .trim();
-    const sortedMethods = (0, sortBy_1.default)(diffs.flatMap((diff) => diff.functions), (method) => Math.abs(method.circuit_size.percentage));
-    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
-    return (colors_1.default.underline(colors_1.default.bold(colors_1.default.yellow(`🧾 Summary (${Math.round((1 - summaryQuantile) * 100)}% most significant diffs)\n\n`))) +
-        [
-            "",
-            summaryHeader,
-            ...selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) => diff.functions
-                .map((method, methodIndex) => [
-                "",
-                colors_1.default.bold(colors_1.default.grey((methodIndex === 0 ? diff.name : "").padEnd(maxContractLength))),
-                colors_1.default.italic(method.name.padEnd(maxMethodLength)),
-                ...(0, exports.formatShellCell)(method.acir_opcodes),
-                ...(0, exports.formatShellCell)(method.circuit_size),
-                "",
-            ]
-                .join(" | ")
-                .trim())
-                .join("\n")
-                .trim()),
-            "",
-        ]
-            .join(`\n${summarySeparator}\n`)
-            .trim() +
-        colors_1.default.underline(colors_1.default.bold(colors_1.default.yellow("\n\nFull diff report 👇\n\n"))) +
-        [
-            "",
-            diffHeader,
-            ...diffs.map((diff) => diff.functions
-                .map((method, methodIndex) => [
-                "",
-                colors_1.default.bold(colors_1.default.grey((methodIndex === 0 ? diff.name : "").padEnd(maxContractLength))),
-                colors_1.default.italic(method.name.padEnd(maxMethodLength)),
-                ...(0, exports.formatShellCell)(method.acir_opcodes),
-                ...(0, exports.formatShellCell)(method.circuit_size),
-                "",
-            ]
-                .join(" | ")
-                .trim())
-                .join("\n")
-                .trim()),
-            "",
-        ]
-            .join(`\n${diffSeparator}\n`)
-            .trim());
-};
-exports.formatShellDiff = formatShellDiff;
+exports.center = center;
+const parenthesized = (input) => "(" + input + ")";
+exports.parenthesized = parenthesized;
 const plusSign = (num) => (num > 0 ? "+" : "");
+exports.plusSign = plusSign;
 const alignPattern = (align = TextAlign.LEFT) => {
     switch (align) {
         case TextAlign.LEFT:
@@ -139,119 +224,12 @@ const alignPattern = (align = TextAlign.LEFT) => {
             return ":-:";
     }
 };
-const formatMarkdownSummaryCell = (rows) => [
-    rows
-        .map((row) => plusSign(row.delta) +
-        row.delta.toLocaleString() +
-        " " +
-        (row.delta > 0 ? "❌" : row.delta < 0 ? "✅" : "➖"))
-        .join("<br />"),
-    rows
-        .map((row) => "**" + plusSign(row.percentage) + (row.percentage === Infinity ? "∞" : row.percentage.toFixed(2)) + "%**")
-        .join("<br />"),
-];
-const formatMarkdownFullCell = (rows) => [
-    rows
-        .map((row) => row.current.toLocaleString() +
-        "&nbsp;(" +
-        plusSign(row.delta) +
-        row.delta.toLocaleString() +
-        ")")
-        .join("<br />"),
-    rows
-        .map((row) => "**" + plusSign(row.percentage) + (row.percentage === Infinity ? "∞" : row.percentage.toFixed(2)) + "%**")
-        .join("<br />"),
-];
-const MARKDOWN_SUMMARY_COLS = [
-    { txt: "" },
-    { txt: "Contract", align: TextAlign.LEFT },
-    { txt: "Method", align: TextAlign.LEFT },
-    { txt: "ACIR opcodes (+/-)", align: TextAlign.RIGHT },
-    { txt: "%", align: TextAlign.RIGHT },
-    { txt: "Circuit size (+/-)", align: TextAlign.RIGHT },
-    { txt: "%", align: TextAlign.RIGHT },
-    { txt: "" },
-];
-const MARKDOWN_DIFF_COLS = [
-    { txt: "" },
-    { txt: "Contract", align: TextAlign.LEFT },
-    { txt: "Method", align: TextAlign.LEFT },
-    { txt: "ACIR opcodes (+/-)", align: TextAlign.RIGHT },
-    { txt: "%", align: TextAlign.RIGHT },
-    { txt: "Circuit size (+/-)", align: TextAlign.RIGHT },
-    { txt: "%", align: TextAlign.RIGHT },
-    { txt: "" },
-];
-const formatMarkdownDiff = (header, diffs, repository, commitHash, refCommitHash, summaryQuantile = 0.8) => {
-    var _a, _b;
-    const diffReport = [
-        header,
-        "",
-        `> Generated at commit: [${commitHash}](/${repository}/commit/${commitHash})` +
-            (refCommitHash
-                ? `, compared to commit: [${refCommitHash}](/${repository}/commit/${refCommitHash})`
-                : ""),
-    ];
-    if (diffs.length === 0)
-        return diffReport.concat(["", "### There are no changes in gas cost"]).join("\n").trim();
-    const summaryHeader = MARKDOWN_SUMMARY_COLS.map((entry) => entry.txt)
-        .join(" | ")
-        .trim();
-    const summaryHeaderSeparator = MARKDOWN_SUMMARY_COLS.map((entry) => entry.txt ? alignPattern(entry.align) : "")
-        .join("|")
-        .trim();
-    const diffHeader = MARKDOWN_DIFF_COLS.map((entry) => entry.txt)
-        .join(" | ")
-        .trim();
-    const diffHeaderSeparator = MARKDOWN_DIFF_COLS.map((entry) => entry.txt ? alignPattern(entry.align) : "")
-        .join("|")
-        .trim();
-    const sortedMethods = (0, sortBy_1.default)(diffs.flatMap((diff) => diff.functions), (method) => Math.abs(method.circuit_size.percentage));
-    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
-    return diffReport
-        .concat([
-        "",
-        `### 🧾 Summary (${Math.round((1 - summaryQuantile) * 100)}% most significant diffs)`,
-        "",
-        summaryHeader,
-        summaryHeaderSeparator,
-        ...selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) => [
-            "",
-            `**${diff.name}**`,
-            diff.functions.map((method) => `_${method.name}_`).join("<br />"),
-            ...formatMarkdownSummaryCell(diff.functions.map((method) => method.acir_opcodes)),
-            ...formatMarkdownSummaryCell(diff.functions.map((method) => method.circuit_size)),
-            "",
-        ]
-            .join(" | ")
-            .trim()),
-        "---",
-        "",
-        "<details>",
-        "<summary><strong>Full diff report</strong> 👇</summary>",
-        "<br />",
-        "",
-        diffHeader,
-        diffHeaderSeparator,
-        diffs
-            .flatMap((diff) => [
-            "",
-            `**${diff.name}**`,
-            diff.functions.map((method) => `_${method.name}_`).join("<br />"),
-            ...formatMarkdownFullCell(diff.functions.map((method) => method.acir_opcodes)),
-            ...formatMarkdownFullCell(diff.functions.map((method) => method.circuit_size)),
-            "",
-        ]
-            .join(" | ")
-            .trim())
-            .join("\n"),
-        "</details>",
-        "",
-    ])
-        .join("\n")
-        .trim();
-};
-exports.formatMarkdownDiff = formatMarkdownDiff;
+exports.alignPattern = alignPattern;
+const generateCommitInfo = (repository, commitHash, refCommitHash) => `> Generated at commit: [${commitHash}](/${repository}/commit/${commitHash})` +
+    (refCommitHash
+        ? `, compared to commit: [${refCommitHash}](/${repository}/commit/${refCommitHash})`
+        : "");
+exports.generateCommitInfo = generateCommitInfo;
 
 
 /***/ }),
@@ -310,7 +288,7 @@ const path_1 = __nccwpck_require__(1017);
 const artifact = __importStar(__nccwpck_require__(2605));
 const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
-const format_1 = __nccwpck_require__(6610);
+const program_1 = __nccwpck_require__(1578);
 const report_1 = __nccwpck_require__(8269);
 // import { isSortCriteriaValid, isSortOrdersValid } from "./types";
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
@@ -328,7 +306,7 @@ const artifactClient = artifact.create();
 const localReportPath = (0, path_1.resolve)(report);
 const { owner, repo } = github_1.context.repo;
 const repository = owner + "/" + repo;
-let srcContent;
+let referenceContent;
 let refCommitHash;
 function run() {
     var _a, e_1, _b, _c;
@@ -337,26 +315,18 @@ function run() {
         // if (!isSortCriteriaValid(sortCriteria)) return;
         // if (!isSortOrdersValid(sortOrders)) return;
         try {
-            const headBranchEscaped = headBranch.replace(/[/\\]/g, "-");
-            const outReport = `${headBranchEscaped}.${report}`;
-            core.startGroup(`Upload new report from "${localReportPath}" as artifact named "${outReport}"`);
-            const uploadResponse = yield artifactClient.uploadArtifact(outReport, [localReportPath], (0, path_1.dirname)(localReportPath), {
-                continueOnError: false,
-            });
-            if (uploadResponse.failedItems.length > 0)
-                throw Error("Failed to upload gas report.");
-            core.info(`Artifact ${uploadResponse.artifactName} has been successfully uploaded!`);
+            // Upload the gates report to be used as a reference in later runs.
+            yield uploadArtifact();
         }
         catch (error) {
             return core.setFailed(error.message);
         }
-        core.endGroup();
         // cannot use artifactClient because downloads are limited to uploads in the same workflow run
         // cf. https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#downloading-or-deleting-artifacts
-        let artifactId = null;
         if (github_1.context.eventName === "pull_request") {
             try {
                 core.startGroup(`Searching artifact "${baseReport}" on repository "${repository}", on branch "${baseBranch}"`);
+                let artifactId = null;
                 try {
                     // Artifacts are returned in most recent first order.
                     for (var _e = true, _f = __asyncValues(octokit.paginate.iterator(octokit.rest.actions.listArtifactsForRepo, {
@@ -401,7 +371,7 @@ function run() {
                     const zip = new adm_zip_1.default(Buffer.from(res.data));
                     for (const entry of zip.getEntries()) {
                         core.info(`Loading gas reports from "${entry.entryName}"`);
-                        srcContent = zip.readAsText(entry);
+                        referenceContent = zip.readAsText(entry);
                     }
                     core.endGroup();
                 }
@@ -416,18 +386,18 @@ function run() {
             core.startGroup("Load gas reports");
             core.info(`Loading gas reports from "${localReportPath}"`);
             const compareContent = fs.readFileSync(localReportPath, "utf8");
-            srcContent !== null && srcContent !== void 0 ? srcContent : (srcContent = compareContent); // if no source gas reports were loaded, defaults to the current gas reports
+            referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source gas reports were loaded, defaults to the current gas reports
             core.info(`Mapping reference gas reports`);
-            const sourceReports = (0, report_1.loadReports)(srcContent);
+            const referenceReports = (0, report_1.loadReports)(referenceContent);
             core.info(`Mapping compared gas reports`);
             const compareReports = (0, report_1.loadReports)(compareContent);
             core.endGroup();
             core.startGroup("Compute gas diff");
-            const diffRows = (0, report_1.computeContractDiffs)(sourceReports.contracts, compareReports.contracts);
+            const diffRows = (0, report_1.computeProgramDiffs)(referenceReports.programs, compareReports.programs);
             core.info(`Format markdown of ${diffRows.length} diffs`);
-            const markdown = (0, format_1.formatMarkdownDiff)(header, diffRows, repository, github_1.context.sha, refCommitHash, summaryQuantile);
+            const markdown = (0, program_1.formatMarkdownDiff)(header, diffRows, repository, github_1.context.sha, refCommitHash, summaryQuantile);
             core.info(`Format shell of ${diffRows.length} diffs`);
-            const shell = (0, format_1.formatShellDiff)(diffRows, summaryQuantile);
+            const shell = (0, program_1.formatShellDiff)(diffRows, summaryQuantile);
             core.endGroup();
             console.log(shell);
             if (diffRows.length > 0) {
@@ -438,6 +408,20 @@ function run() {
         catch (error) {
             core.setFailed(error.message);
         }
+    });
+}
+function uploadArtifact() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const headBranchEscaped = headBranch.replace(/[/\\]/g, "-");
+        const outReport = `${headBranchEscaped}.${report}`;
+        core.startGroup(`Upload new report from "${localReportPath}" as artifact named "${outReport}"`);
+        const uploadResponse = yield artifactClient.uploadArtifact(outReport, [localReportPath], (0, path_1.dirname)(localReportPath), {
+            continueOnError: false,
+        });
+        if (uploadResponse.failedItems.length > 0)
+            throw Error("Failed to upload gas report.");
+        core.info(`Artifact ${uploadResponse.artifactName} has been successfully uploaded!`);
+        core.endGroup();
     });
 }
 run();
@@ -8691,7 +8675,7 @@ module.exports = {
     // 7 reserved for Tokenizing compression algorithm
     DEFLATED         : 8, // deflated
     ENHANCED_DEFLATED: 9, // enhanced deflated
-    PKWARE           : 10, // PKWare DCL imploded
+    PKWARE           : 10,// PKWare DCL imploded
     // 11 reserved by PKWARE
     BZIP2            : 12, //  compressed using BZIP2
     // 13 reserved by PKWARE
@@ -13350,7 +13334,7 @@ function isObject(o) {
 }
 
 function isPlainObject(o) {
-  var ctor, prot;
+  var ctor,prot;
 
   if (isObject(o) === false) return false;
 
