@@ -12,11 +12,11 @@ export interface ProgramReport {
 
 export interface ContractReport {
   name: string;
-  functions: CircuitReport[];
+  functions: ProgramReport[];
 }
 
 export interface WorkspaceReport {
-  programs: CircuitReport[];
+  programs: ProgramReport[];
   contracts: ContractReport[];
 }
 
