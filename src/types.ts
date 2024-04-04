@@ -1,18 +1,22 @@
 import * as core from "@actions/core";
 
-export interface ProgramReport {
+export interface CircuitReport {
   name: string;
   acir_opcodes: number;
   circuit_size: number;
 }
 
+export interface ProgramReport {
+  functions: CircuitReport[];
+}
+
 export interface ContractReport {
   name: string;
-  functions: ProgramReport[];
+  functions: CircuitReport[];
 }
 
 export interface WorkspaceReport {
-  programs: ProgramReport[];
+  programs: CircuitReport[];
   contracts: ContractReport[];
 }
 

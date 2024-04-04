@@ -113,7 +113,10 @@ async function run() {
     core.endGroup();
 
     core.startGroup("Compute gas diff");
-    const diffRows = computeProgramDiffs(referenceReports.programs, compareReports.programs);
+    const diffRows = computeProgramDiffs(
+      referenceReports.programs[0].functions,
+      compareReports.programs[0].functions
+    );
     core.info(`Format markdown of ${diffRows.length} diffs`);
     const markdown = formatMarkdownDiff(
       header,
