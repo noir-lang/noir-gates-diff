@@ -7,7 +7,6 @@ import {
   CircuitReport,
   WorkspaceDiffReport,
   WorkspaceReport,
-  OldWorkspaceReport,
 } from "./types";
 
 export const variation = (current: number, previous: number) => {
@@ -19,10 +18,6 @@ export const variation = (current: number, previous: number) => {
     delta,
     percentage: previous !== 0 ? (100 * delta) / previous : Infinity,
   };
-};
-
-export const loadOldReport = (content: string): OldWorkspaceReport => {
-  return JSON.parse(content);
 };
 
 export const loadReports = (content: string): WorkspaceReport => {
