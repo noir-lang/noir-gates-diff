@@ -20,12 +20,6 @@ export interface WorkspaceReport {
   contracts: ContractReport[];
 }
 
-// Temporary workspace to get CI to pass when comparing against the old master report
-export interface OldWorkspaceReport {
-  programs: CircuitReport[];
-  contracts: ContractReport[];
-}
-
 export interface WorkspaceDiffReport {
   programs: DiffProgram[];
   contracts: ContractDiffReport[];
