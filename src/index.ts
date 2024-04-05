@@ -118,8 +118,8 @@ async function run() {
       referenceReports.programs,
       compareReports.programs[0].functions
     );
-    core.info(`reference reports: ${referenceReports}`);
-    core.info(`compare reports: ${compareReports}`);
+    core.info(`reference reports len: ${referenceReports.programs.length}`);
+    core.info(`compare reports len: ${compareReports.programs[0].functions}`);
     core.info(`Format markdown of ${diffRows.length} diffs`);
     const markdown = formatMarkdownDiff(
       header,
