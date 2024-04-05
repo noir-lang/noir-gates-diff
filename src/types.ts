@@ -1,9 +1,13 @@
 import * as core from "@actions/core";
 
-export interface ProgramReport {
+export interface CircuitReport {
   name: string;
   acir_opcodes: number;
   circuit_size: number;
+}
+
+export interface ProgramReport {
+  functions: CircuitReport[];
 }
 
 export interface ContractReport {
@@ -13,6 +17,12 @@ export interface ContractReport {
 
 export interface WorkspaceReport {
   programs: ProgramReport[];
+  contracts: ContractReport[];
+}
+
+// Temporary workspace to get CI to pass when comparing against the old master report
+export interface OldWorkspaceReport {
+  programs: CircuitReport[];
   contracts: ContractReport[];
 }
 

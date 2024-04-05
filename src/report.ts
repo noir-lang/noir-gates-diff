@@ -4,9 +4,10 @@ import {
   ContractDiffReport,
   ContractReport,
   DiffProgram,
-  ProgramReport,
+  CircuitReport,
   WorkspaceDiffReport,
   WorkspaceReport,
+  OldWorkspaceReport,
 } from "./types";
 
 export const variation = (current: number, previous: number) => {
@@ -20,6 +21,10 @@ export const variation = (current: number, previous: number) => {
   };
 };
 
+export const loadOldReport = (content: string): OldWorkspaceReport => {
+  return JSON.parse(content);
+};
+
 export const loadReports = (content: string): WorkspaceReport => {
   return JSON.parse(content);
 };
@@ -28,13 +33,16 @@ export const computedWorkspaceDiff = (
   sourceReport: WorkspaceReport,
   compareReport: WorkspaceReport
 ): WorkspaceDiffReport => ({
-  programs: computeProgramDiffs(sourceReport.programs, compareReport.programs),
+  programs: computeProgramDiffs(
+    sourceReport.programs[0].functions,
+    compareReport.programs[0].functions
+  ),
   contracts: computeContractDiffs(sourceReport.contracts, compareReport.contracts),
 });
 
 export const computeProgramDiffs = (
-  sourceReports: ProgramReport[],
-  compareReports: ProgramReport[]
+  sourceReports: CircuitReport[],
+  compareReports: CircuitReport[]
 ): DiffProgram[] => {
   const sourceReportNames = sourceReports.map((report) => report.name);
   const commonReportNames = compareReports
@@ -58,8 +66,8 @@ export const computeProgramDiffs = (
 };
 
 const computeProgramDiff = (
-  sourceReport: ProgramReport,
-  compareReport: ProgramReport
+  sourceReport: CircuitReport,
+  compareReport: CircuitReport
 ): DiffProgram => {
   return {
     name: sourceReport.name,
@@ -105,7 +113,10 @@ const computeContractDiff = (
   sourceReport: ContractReport,
   compareReport: ContractReport
 ): ContractDiffReport => {
-  const functionDiffs = computeProgramDiffs(sourceReport.functions, compareReport.functions);
+  const functionDiffs = computeProgramDiffs(
+    sourceReport.functions[0].functions,
+    compareReport.functions[0].functions
+  );
 
   return {
     name: sourceReport.name,
