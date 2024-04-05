@@ -388,12 +388,15 @@ function run() {
             const compareContent = fs.readFileSync(localReportPath, "utf8");
             referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source gas reports were loaded, defaults to the current gas reports
             core.info(`Mapping reference gas reports`);
-            const referenceReports = (0, report_1.loadReports)(referenceContent);
+            core.info(`Using old workspace report`);
+            const referenceReports = (0, report_1.loadOldReport)(referenceContent);
             core.info(`Mapping compared gas reports`);
             const compareReports = (0, report_1.loadReports)(compareContent);
             core.endGroup();
             core.startGroup("Compute gas diff");
-            const diffRows = (0, report_1.computeProgramDiffs)(referenceReports.programs, compareReports.programs);
+            core.info(`reference reports len: ${referenceReports.programs.length}`);
+            core.info(`compare reports len: ${compareReports.programs[0].functions}`);
+            const diffRows = (0, report_1.computeProgramDiffs)(referenceReports.programs, compareReports.programs[0].functions);
             core.info(`Format markdown of ${diffRows.length} diffs`);
             const markdown = (0, program_1.formatMarkdownDiff)(header, diffRows, repository, github_1.context.sha, refCommitHash, summaryQuantile);
             core.info(`Format shell of ${diffRows.length} diffs`);
@@ -435,7 +438,7 @@ run();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.computeContractDiffs = exports.computeProgramDiffs = exports.computedWorkspaceDiff = exports.loadReports = exports.variation = void 0;
+exports.computeContractDiffs = exports.computeProgramDiffs = exports.computedWorkspaceDiff = exports.loadReports = exports.loadOldReport = exports.variation = void 0;
 const variation = (current, previous) => {
     const delta = current - previous;
     return {
@@ -446,12 +449,16 @@ const variation = (current, previous) => {
     };
 };
 exports.variation = variation;
+const loadOldReport = (content) => {
+    return JSON.parse(content);
+};
+exports.loadOldReport = loadOldReport;
 const loadReports = (content) => {
     return JSON.parse(content);
 };
 exports.loadReports = loadReports;
 const computedWorkspaceDiff = (sourceReport, compareReport) => ({
-    programs: (0, exports.computeProgramDiffs)(sourceReport.programs, compareReport.programs),
+    programs: (0, exports.computeProgramDiffs)(sourceReport.programs[0].functions, compareReport.programs[0].functions),
     contracts: (0, exports.computeContractDiffs)(sourceReport.contracts, compareReport.contracts),
 });
 exports.computedWorkspaceDiff = computedWorkspaceDiff;
@@ -499,7 +506,7 @@ const computeContractDiffs = (sourceReports, compareReports) => {
 };
 exports.computeContractDiffs = computeContractDiffs;
 const computeContractDiff = (sourceReport, compareReport) => {
-    const functionDiffs = (0, exports.computeProgramDiffs)(sourceReport.functions, compareReport.functions);
+    const functionDiffs = (0, exports.computeProgramDiffs)(sourceReport.functions[0].functions, compareReport.functions[0].functions);
     return {
         name: sourceReport.name,
         functions: functionDiffs,
