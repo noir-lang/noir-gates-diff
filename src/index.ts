@@ -7,7 +7,7 @@ import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
 import { formatMarkdownDiff, formatShellDiff } from "./format/program";
-import { loadReports, computeProgramDiffs } from "./report";
+import { loadReports, computeProgramDiffs, loadOldReport } from "./report";
 
 // import { isSortCriteriaValid, isSortOrdersValid } from "./types";
 
@@ -104,18 +104,18 @@ async function run() {
     core.startGroup("Load gas reports");
     core.info(`Loading gas reports from "${localReportPath}"`);
     const compareContent = fs.readFileSync(localReportPath, "utf8");
-    referenceContent = compareContent;
-    // referenceContent ??= compareContent; // if no source gas reports were loaded, defaults to the current gas reports
+    referenceContent ??= compareContent; // if no source gas reports were loaded, defaults to the current gas reports
 
     core.info(`Mapping reference gas reports`);
-    const referenceReports = loadReports(referenceContent);
+    core.info(`Using old workspace report`);
+    const referenceReports = loadOldReport(referenceContent);
     core.info(`Mapping compared gas reports`);
     const compareReports = loadReports(compareContent);
     core.endGroup();
 
     core.startGroup("Compute gas diff");
     const diffRows = computeProgramDiffs(
-      referenceReports.programs[0].functions,
+      referenceReports.programs,
       compareReports.programs[0].functions
     );
     core.info(`reference reports: ${referenceReports}`);
