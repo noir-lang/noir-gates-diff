@@ -7,6 +7,7 @@ import {
   CircuitReport,
   WorkspaceDiffReport,
   WorkspaceReport,
+  ProgramReport,
 } from "./types";
 
 export const variation = (current: number, previous: number) => {
@@ -28,16 +29,13 @@ export const computedWorkspaceDiff = (
   sourceReport: WorkspaceReport,
   compareReport: WorkspaceReport
 ): WorkspaceDiffReport => ({
-  programs: computeProgramDiffs(
-    sourceReport.programs[0].functions,
-    compareReport.programs[0].functions
-  ),
+  programs: computeProgramDiffs(sourceReport.programs, compareReport.programs),
   contracts: computeContractDiffs(sourceReport.contracts, compareReport.contracts),
 });
 
 export const computeProgramDiffs = (
-  sourceReports: CircuitReport[],
-  compareReports: CircuitReport[]
+  sourceReports: ProgramReport[],
+  compareReports: ProgramReport[]
 ): DiffProgram[] => {
   const sourceReportNames = sourceReports.map((report) => report.name);
   const commonReportNames = compareReports
@@ -51,7 +49,8 @@ export const computeProgramDiffs = (
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const cmpReport = compareReports.find((report) => report.name == reportName)!;
 
-      return computeProgramDiff(srcReport, cmpReport);
+      // For now we fetch just the main of each program
+      return computeCircuitDiff(srcReport.functions[0], cmpReport.functions[0]);
     })
     .filter((diff) => !isEmptyDiff(diff))
     .sort(
@@ -60,7 +59,7 @@ export const computeProgramDiffs = (
     );
 };
 
-const computeProgramDiff = (
+const computeCircuitDiff = (
   sourceReport: CircuitReport,
   compareReport: CircuitReport
 ): DiffProgram => {
@@ -108,10 +107,7 @@ const computeContractDiff = (
   sourceReport: ContractReport,
   compareReport: ContractReport
 ): ContractDiffReport => {
-  const functionDiffs = computeProgramDiffs(
-    sourceReport.functions[0].functions,
-    compareReport.functions[0].functions
-  );
+  const functionDiffs = computeProgramDiffs(sourceReport.functions, compareReport.functions);
 
   return {
     name: sourceReport.name,
