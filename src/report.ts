@@ -50,7 +50,7 @@ export const computeProgramDiffs = (
       const cmpReport = compareReports.find((report) => report.name == reportName)!;
 
       // For now we fetch just the main of each program
-      return computeCircuitDiff(srcReport.functions[0], cmpReport.functions[0]);
+      return computeCircuitDiff(srcReport.functions[0], cmpReport.functions[0], reportName);
     })
     .filter((diff) => !isEmptyDiff(diff))
     .sort(
@@ -61,10 +61,12 @@ export const computeProgramDiffs = (
 
 const computeCircuitDiff = (
   sourceReport: CircuitReport,
-  compareReport: CircuitReport
+  compareReport: CircuitReport,
+  // We want the name of the package that represents the entire program in our report
+  reportName: string
 ): DiffProgram => {
   return {
-    name: sourceReport.name,
+    name: reportName,
     acir_opcodes: variation(compareReport.acir_opcodes, sourceReport.acir_opcodes),
     circuit_size: variation(compareReport.circuit_size, sourceReport.circuit_size),
   };
