@@ -104,7 +104,7 @@ async function run() {
     core.startGroup("Load gas reports");
     core.info(`Loading gas reports from "${localReportPath}"`);
     const compareContent = fs.readFileSync(localReportPath, "utf8");
-    referenceContent ??= compareContent; // if no source gas reports were loaded, defaults to the current gas reports
+    referenceContent = compareContent; // if no source gas reports were loaded, defaults to the current gas reports
 
     core.info(`Mapping reference gas reports`);
     const referenceReports = loadReports(referenceContent);
