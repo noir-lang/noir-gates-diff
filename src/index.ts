@@ -110,6 +110,7 @@ async function run() {
     // const referenceReports = loadReports(referenceContent);
     core.info(`Mapping compared gas reports`);
     const compareReports = loadReports(compareContent);
+    core.info(`Got ${compareReports.programs.length} programs`);
     core.info(`Mapping reference gas reports`);
     core.info(`Making dummy reference report`);
     const referenceReports = compareReports.programs.map((program) => {
