@@ -8,6 +8,7 @@ import { context, getOctokit } from "@actions/github";
 
 import { formatMarkdownDiff, formatShellDiff } from "./format/program";
 import { loadReports, computeProgramDiffs } from "./report";
+import { CircuitReport, ProgramReport, WorkspaceReport } from "./types";
 
 // import { isSortCriteriaValid, isSortOrdersValid } from "./types";
 
@@ -104,16 +105,24 @@ async function run() {
     core.startGroup("Load gas reports");
     core.info(`Loading gas reports from "${localReportPath}"`);
     const compareContent = fs.readFileSync(localReportPath, "utf8");
-    referenceContent = compareContent; // if no source gas reports were loaded, defaults to the current gas reports
+    referenceContent ??= compareContent; // if no source gas reports were loaded, defaults to the current gas reports
 
-    core.info(`Mapping reference gas reports`);
-    const referenceReports = loadReports(referenceContent);
+    // const referenceReports = loadReports(referenceContent);
     core.info(`Mapping compared gas reports`);
     const compareReports = loadReports(compareContent);
+    core.info(`Mapping reference gas reports`);
+    core.info(`Making dummy reference report`);
+    const referenceReports = compareReports.programs.map((program) => {
+      const programReport = {
+        name: program.name,
+        functions: [{ name: "name", acir_opcodes: 0, circuit_size: 0 }],
+      };
+      return programReport;
+    });
     core.endGroup();
 
     core.startGroup("Compute gas diff");
-    const diffRows = computeProgramDiffs(referenceReports.programs, compareReports.programs);
+    const diffRows = computeProgramDiffs(referenceReports, compareReports.programs);
     core.info(`Format markdown of ${diffRows.length} diffs`);
     const markdown = formatMarkdownDiff(
       header,
