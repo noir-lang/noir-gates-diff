@@ -115,7 +115,7 @@ async function run() {
     const referenceReports = compareReports.programs.map((program) => {
       const programReport = {
         name: program.name,
-        functions: [{ name: "name", acir_opcodes: 0, circuit_size: 0 }],
+        functions: [{ name: "main", acir_opcodes: 0, circuit_size: 0 }],
       };
       return programReport;
     });
