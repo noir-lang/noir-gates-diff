@@ -72,14 +72,6 @@ describe("Shell format", () => {
   });
 
   it("should compare 1 to 2", () => {
-    // const srcContractReports = cmpContractReports.map((program) => {
-    //   const circuitReport = { name: "main", acir_opcodes: 0, circuit_size: 0 };
-    //   const programReport = {
-    //     package_name: program.package_name,
-    //     functions: [circuitReport],
-    //   };
-    //   return programReport;
-    // });
     const contractDiffs = computeProgramDiffs(srcContractReports, cmpContractReports);
     expect(contractDiffs.length).toBeGreaterThan(0);
 
