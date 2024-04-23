@@ -109,7 +109,24 @@ const computeContractDiff = (
   sourceReport: ContractReport,
   compareReport: ContractReport
 ): ContractDiffReport => {
-  const functionDiffs = computeProgramDiffs(sourceReport.functions, compareReport.functions);
+  // TODO(https://github.com/noir-lang/noir/issues/4720): Settle on how to display contract functions with non-inlined Acir calls
+  // Right now we assume each contract function does not have non-inlined functions.
+  // Thus, we simply re-assign each `CircuitReport` to a `ProgramReport` to easily reuse `computeProgramDiffs`
+  const sourceFunctionsAsProgram = sourceReport.functions.map((func) => {
+    const programReport: ProgramReport = {
+      package_name: func.name,
+      functions: [func],
+    };
+    return programReport;
+  });
+  const compareFunctionsAsProgram = compareReport.functions.map((func) => {
+    const programReport: ProgramReport = {
+      package_name: func.name,
+      functions: [func],
+    };
+    return programReport;
+  });
+  const functionDiffs = computeProgramDiffs(sourceFunctionsAsProgram, compareFunctionsAsProgram);
 
   return {
     name: sourceReport.name,
