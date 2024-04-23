@@ -107,26 +107,17 @@ async function run() {
     const compareContent = fs.readFileSync(localReportPath, "utf8");
     referenceContent ??= compareContent; // if no source gas reports were loaded, defaults to the current gas reports
 
-    // TODO: Bring this back after master has a correct report as it currently
-    // has a report with only "main" report names
-    // const referenceReports = loadReports(referenceContent);
     core.info(`Mapping compared gas reports`);
     const compareReports = loadReports(compareContent);
-    core.info(`Got ${compareReports.programs.length} programs`);
+    core.info(`Got ${compareReports.programs.length} compare programs`);
+
     core.info(`Mapping reference gas reports`);
-    core.info(`Making dummy reference report`);
-    const referenceReports = compareReports.programs.map((program) => {
-      const circuitReport: CircuitReport = { name: "main", acir_opcodes: 1, circuit_size: 1 };
-      const programReport: ProgramReport = {
-        package_name: program.package_name,
-        functions: [circuitReport],
-      };
-      return programReport;
-    });
+    const referenceReports = loadReports(referenceContent);
+    core.info(`Got ${compareReports.programs.length} reference programs`);
     core.endGroup();
 
     core.startGroup("Compute gas diff");
-    const diffRows = computeProgramDiffs(referenceReports, compareReports.programs);
+    const diffRows = computeProgramDiffs(referenceReports.programs, compareReports.programs);
     core.info(`Format markdown of ${diffRows.length} diffs`);
     const markdown = formatMarkdownDiff(
       header,
