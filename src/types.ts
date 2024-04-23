@@ -8,13 +8,14 @@ export interface CircuitReport {
 
 export interface ProgramReport {
   // Name of the program package
-  name: string;
+  package_name: string;
   functions: CircuitReport[];
 }
 
 export interface ContractReport {
   name: string;
-  functions: ProgramReport[];
+  // TODO(https://github.com/noir-lang/noir/issues/4720): Settle on how to display contract functions with non-inlined Acir calls
+  functions: CircuitReport[];
 }
 
 export interface WorkspaceReport {

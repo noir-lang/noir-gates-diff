@@ -72,9 +72,37 @@ describe("Shell format", () => {
   });
 
   it("should compare 1 to 2", () => {
+    const srcContractReports = cmpContractReports.map((program) => {
+      const circuitReport = { name: "main", acir_opcodes: 0, circuit_size: 0 };
+      const programReport = {
+        package_name: program.package_name,
+        functions: [circuitReport],
+      };
+      return programReport;
+    });
     const contractDiffs = computeProgramDiffs(srcContractReports, cmpContractReports);
+    console.log(`Format markdown of ${contractDiffs.length} diffs`);
     expect(contractDiffs.length).toBeGreaterThan(0);
 
+    console.log(formatShellDiff(contractDiffs));
+  });
+
+  it("should compare fresh full report", () => {
+    const cmpContent = fs.readFileSync("tests/mocks/full_gas_report.json", "utf8");
+    const cmpContractReports = loadReports(cmpContent).programs;
+    const srcContractReports = cmpContractReports.map((program) => {
+      const circuitReport = { name: "main", acir_opcodes: 0, circuit_size: 0 };
+      const programReport = {
+        package_name: program.package_name,
+        functions: [circuitReport],
+      };
+      return programReport;
+    });
+    console.log(`Source report length: ${srcContractReports.length}`);
+    console.log(`Compare report length: ${cmpContractReports.length}`);
+    const contractDiffs = computeProgramDiffs(srcContractReports, cmpContractReports);
+    console.log(`Format markdown of ${contractDiffs.length} diffs`);
+    expect(contractDiffs.length).toBeGreaterThan(0);
     console.log(formatShellDiff(contractDiffs));
   });
 

@@ -37,17 +37,17 @@ export const computeProgramDiffs = (
   sourceReports: ProgramReport[],
   compareReports: ProgramReport[]
 ): DiffProgram[] => {
-  const sourceReportNames = sourceReports.map((report) => report.name);
+  const sourceReportNames = sourceReports.map((report) => report.package_name);
   const commonReportNames = compareReports
-    .map((report) => report.name)
+    .map((report) => report.package_name)
     .filter((name) => sourceReportNames.includes(name));
 
   return commonReportNames
     .map((reportName) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const srcReport = sourceReports.find((report) => report.name == reportName)!;
+      const srcReport = sourceReports.find((report) => report.package_name == reportName)!;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const cmpReport = compareReports.find((report) => report.name == reportName)!;
+      const cmpReport = compareReports.find((report) => report.package_name == reportName)!;
 
       // For now we fetch just the main of each program
       return computeCircuitDiff(srcReport.functions[0], cmpReport.functions[0], reportName);
@@ -109,7 +109,24 @@ const computeContractDiff = (
   sourceReport: ContractReport,
   compareReport: ContractReport
 ): ContractDiffReport => {
-  const functionDiffs = computeProgramDiffs(sourceReport.functions, compareReport.functions);
+  // TODO(https://github.com/noir-lang/noir/issues/4720): Settle on how to display contract functions with non-inlined Acir calls
+  // Right now we assume each contract function does not have non-inlined functions.
+  // Thus, we simply re-assign each `CircuitReport` to a `ProgramReport` to easily reuse `computeProgramDiffs`
+  const sourceFunctionsAsProgram = sourceReport.functions.map((func) => {
+    const programReport: ProgramReport = {
+      package_name: func.name,
+      functions: [func],
+    };
+    return programReport;
+  });
+  const compareFunctionsAsProgram = compareReport.functions.map((func) => {
+    const programReport: ProgramReport = {
+      package_name: func.name,
+      functions: [func],
+    };
+    return programReport;
+  });
+  const functionDiffs = computeProgramDiffs(sourceFunctionsAsProgram, compareFunctionsAsProgram);
 
   return {
     name: sourceReport.name,
