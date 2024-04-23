@@ -8,9 +8,6 @@ import { context, getOctokit } from "@actions/github";
 
 import { formatMarkdownDiff, formatShellDiff } from "./format/program";
 import { loadReports, computeProgramDiffs } from "./report";
-import { CircuitReport, ProgramReport, WorkspaceReport } from "./types";
-
-// import { isSortCriteriaValid, isSortOrdersValid } from "./types";
 
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
