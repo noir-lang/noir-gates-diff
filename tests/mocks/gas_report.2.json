@@ -1,84 +1,134 @@
 {
     "programs": [
-        {
-            "name": "a",
+      {
+        "name": "a",
+        "functions": [
+          {
+            "name": "main",
             "acir_opcodes": 1,
             "circuit_size": 7
-        },
-        {
-            "name": "b",
+          }
+        ]
+      },
+      {
+        "name": "b",
+        "functions": [
+          {
+            "name": "main",
             "acir_opcodes": 5,
             "circuit_size": 10
-        },
-        {
-            "name": "c",
+          }
+        ]
+      },
+      {
+        "name": "c",
+        "functions": [
+          {
+            "name": "main",
             "acir_opcodes": 2,
             "circuit_size": 2
-        },
-        {
-            "name": "d",
+          }
+        ]
+      },
+      {
+        "name": "d",
+        "functions": [
+          {
+            "name": "main",
             "acir_opcodes": 3,
             "circuit_size": 5
-        }
+          }
+        ]
+      }
     ],
     "contracts": [
         {
-            "name": "a",
+            "name": "foo",
             "functions": [
                 {
                     "name": "a",
-                    "acir_opcodes": 1,
-                    "circuit_size": 7
+                    "functions": [
+                      {
+                        "name": "a",
+                        "acir_opcodes": 1,
+                        "circuit_size": 2
+                      }
+                    ]
                 },
                 {
                     "name": "b",
-                    "acir_opcodes": 5,
-                    "circuit_size": 10
+                    "functions": [
+                      {
+                        "name": "b",
+                        "acir_opcodes": 5,
+                        "circuit_size": 10
+                      }
+                    ]
                 },
                 {
                     "name": "c",
-                    "acir_opcodes": 500,
-                    "circuit_size": 1000
+                    "functions": [
+                      {
+                        "name": "c",
+                        "acir_opcodes": 500,
+                        "circuit_size": 1000
+                      }
+                    ]
                 },
                 {
                     "name": "d",
-                    "acir_opcodes": 500,
-                    "circuit_size": 1000
+                    "functions": [
+                      {
+                        "name": "d",
+                        "acir_opcodes": 500,
+                        "circuit_size": 1000
+                      }
+                    ]
                 },
                 {
                     "name": "e",
-                    "acir_opcodes": 500,
-                    "circuit_size": 1000
+                    "functions": [
+                      {
+                        "name": "e",
+                        "acir_opcodes": 50,
+                        "circuit_size": 100
+                      }
+                    ]
                 },
                 {
                     "name": "f",
-                    "acir_opcodes": 50,
-                    "circuit_size": 100
-                },
-                {
-                    "name": "g",
-                    "acir_opcodes": 55,
-                    "circuit_size": 100
-                },
-                {
-                    "name": "h",
-                    "acir_opcodes": 50,
-                    "circuit_size": 101
+                    "functions": [
+                      {
+                        "name": "f",
+                        "acir_opcodes": 50,
+                        "circuit_size": 100
+                      }
+                    ]
                 }
             ]
         },
         {
-            "name": "b",
+            "name": "bar",
             "functions": [
                 {
                     "name": "a",
-                    "acir_opcodes": 1,
-                    "circuit_size": 7
+                    "functions": [
+                      {
+                        "name": "a",
+                        "acir_opcodes": 1,
+                        "circuit_size": 7
+                      }
+                    ]
                 },
                 {
                     "name": "b",
-                    "acir_opcodes": 1,
-                    "circuit_size": 2
+                    "functions": [
+                      {
+                        "name": "b",
+                        "acir_opcodes": 1,
+                        "circuit_size": 2
+                      }
+                    ]
                 }
             ]
         }
