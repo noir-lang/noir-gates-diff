@@ -387,25 +387,15 @@ function run() {
             core.info(`Loading gas reports from "${localReportPath}"`);
             const compareContent = fs.readFileSync(localReportPath, "utf8");
             referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source gas reports were loaded, defaults to the current gas reports
-            // TODO: Bring this back after master has a correct report as it currently
-            // has a report with only "main" report names
-            // const referenceReports = loadReports(referenceContent);
             core.info(`Mapping compared gas reports`);
             const compareReports = (0, report_1.loadReports)(compareContent);
-            core.info(`Got ${compareReports.programs.length} programs`);
+            core.info(`Got ${compareReports.programs.length} compare programs`);
             core.info(`Mapping reference gas reports`);
-            core.info(`Making dummy reference report`);
-            const referenceReports = compareReports.programs.map((program) => {
-                const circuitReport = { name: "main", acir_opcodes: 1, circuit_size: 1 };
-                const programReport = {
-                    package_name: program.package_name,
-                    functions: [circuitReport],
-                };
-                return programReport;
-            });
+            const referenceReports = (0, report_1.loadReports)(referenceContent);
+            core.info(`Got ${compareReports.programs.length} reference programs`);
             core.endGroup();
             core.startGroup("Compute gas diff");
-            const diffRows = (0, report_1.computeProgramDiffs)(referenceReports, compareReports.programs);
+            const diffRows = (0, report_1.computeProgramDiffs)(referenceReports.programs, compareReports.programs);
             core.info(`Format markdown of ${diffRows.length} diffs`);
             const markdown = (0, program_1.formatMarkdownDiff)(header, diffRows, repository, github_1.context.sha, refCommitHash, summaryQuantile);
             core.info(`Format shell of ${diffRows.length} diffs`);
