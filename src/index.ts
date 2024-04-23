@@ -41,8 +41,8 @@ async function run() {
   try {
     // Upload the gates report to be used as a reference in later runs.
     await uploadArtifact();
-  } catch (error: any) {
-    return core.setFailed(error.message);
+  } catch (error) {
+    return core.setFailed((error as Error).message);
   }
 
   // cannot use artifactClient because downloads are limited to uploads in the same workflow run
@@ -89,15 +89,15 @@ async function run() {
           archive_format: "zip",
         });
 
-        const zip = new Zip(Buffer.from(res.data as any));
+        const zip = new Zip(Buffer.from(res.data as ArrayBuffer));
         for (const entry of zip.getEntries()) {
           core.info(`Loading gas reports from "${entry.entryName}"`);
           referenceContent = zip.readAsText(entry);
         }
         core.endGroup();
       } else core.error(`No workflow run found with an artifact named "${baseReport}"`);
-    } catch (error: any) {
-      return core.setFailed(error.message);
+    } catch (error) {
+      return core.setFailed((error as Error).message);
     }
   }
 
@@ -137,8 +137,8 @@ async function run() {
       core.setOutput("shell", shell);
       core.setOutput("markdown", markdown);
     }
-  } catch (error: any) {
-    core.setFailed(error.message);
+  } catch (error) {
+    core.setFailed((error as Error).message);
   }
 }
 
