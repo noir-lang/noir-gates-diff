@@ -8,7 +8,7 @@ export interface CircuitReport {
 
 export interface ProgramReport {
   // Name of the program package
-  name: string;
+  package_name: string;
   functions: CircuitReport[];
 }
 

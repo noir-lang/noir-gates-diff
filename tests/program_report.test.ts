@@ -75,7 +75,7 @@ describe("Shell format", () => {
     const srcContractReports = cmpContractReports.map((program) => {
       const circuitReport = { name: "main", acir_opcodes: 0, circuit_size: 0 };
       const programReport = {
-        name: program.name,
+        name: program.package_name,
         functions: [circuitReport],
       };
       return programReport;

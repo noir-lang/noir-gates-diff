@@ -114,9 +114,9 @@ async function run() {
     core.info(`Mapping reference gas reports`);
     core.info(`Making dummy reference report`);
     const referenceReports = compareReports.programs.map((program) => {
-      const circuitReport = { name: "1_mul", acir_opcodes: 0, circuit_size: 0 };
-      const programReport = {
-        name: program.name,
+      const circuitReport: CircuitReport = { name: "main", acir_opcodes: 0, circuit_size: 0 };
+      const programReport: ProgramReport = {
+        package_name: program.package_name,
         functions: [circuitReport],
       };
       return programReport;

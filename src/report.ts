@@ -37,17 +37,17 @@ export const computeProgramDiffs = (
   sourceReports: ProgramReport[],
   compareReports: ProgramReport[]
 ): DiffProgram[] => {
-  const sourceReportNames = sourceReports.map((report) => report.name);
+  const sourceReportNames = sourceReports.map((report) => report.package_name);
   const commonReportNames = compareReports
-    .map((report) => report.name)
+    .map((report) => report.package_name)
     .filter((name) => sourceReportNames.includes(name));
 
   return commonReportNames
     .map((reportName) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const srcReport = sourceReports.find((report) => report.name == reportName)!;
+      const srcReport = sourceReports.find((report) => report.package_name == reportName)!;
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const cmpReport = compareReports.find((report) => report.name == reportName)!;
+      const cmpReport = compareReports.find((report) => report.package_name == reportName)!;
 
       // For now we fetch just the main of each program
       return computeCircuitDiff(srcReport.functions[0], cmpReport.functions[0], reportName);
