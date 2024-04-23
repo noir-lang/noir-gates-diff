@@ -107,7 +107,7 @@ async function run() {
     const compareContent = fs.readFileSync(localReportPath, "utf8");
     referenceContent ??= compareContent; // if no source gas reports were loaded, defaults to the current gas reports
 
-    // TODO: Bring this back after master has a correct report as it currently 
+    // TODO: Bring this back after master has a correct report as it currently
     // has a report with only "main" report names
     // const referenceReports = loadReports(referenceContent);
     core.info(`Mapping compared gas reports`);

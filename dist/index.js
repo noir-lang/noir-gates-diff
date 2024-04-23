@@ -387,13 +387,25 @@ function run() {
             core.info(`Loading gas reports from "${localReportPath}"`);
             const compareContent = fs.readFileSync(localReportPath, "utf8");
             referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source gas reports were loaded, defaults to the current gas reports
-            core.info(`Mapping reference gas reports`);
-            const referenceReports = (0, report_1.loadReports)(referenceContent);
+            // TODO: Bring this back after master has a correct report as it currently
+            // has a report with only "main" report names
+            // const referenceReports = loadReports(referenceContent);
             core.info(`Mapping compared gas reports`);
             const compareReports = (0, report_1.loadReports)(compareContent);
+            core.info(`Got ${compareReports.programs.length} programs`);
+            core.info(`Mapping reference gas reports`);
+            core.info(`Making dummy reference report`);
+            const referenceReports = compareReports.programs.map((program) => {
+                const circuitReport = { name: "main", acir_opcodes: 0, circuit_size: 0 };
+                const programReport = {
+                    package_name: program.package_name,
+                    functions: [circuitReport],
+                };
+                return programReport;
+            });
             core.endGroup();
             core.startGroup("Compute gas diff");
-            const diffRows = (0, report_1.computeProgramDiffs)(referenceReports.programs[0].functions, compareReports.programs[0].functions);
+            const diffRows = (0, report_1.computeProgramDiffs)(referenceReports, compareReports.programs);
             core.info(`Format markdown of ${diffRows.length} diffs`);
             const markdown = (0, program_1.formatMarkdownDiff)(header, diffRows, repository, github_1.context.sha, refCommitHash, summaryQuantile);
             core.info(`Format shell of ${diffRows.length} diffs`);
@@ -451,30 +463,33 @@ const loadReports = (content) => {
 };
 exports.loadReports = loadReports;
 const computedWorkspaceDiff = (sourceReport, compareReport) => ({
-    programs: (0, exports.computeProgramDiffs)(sourceReport.programs[0].functions, compareReport.programs[0].functions),
+    programs: (0, exports.computeProgramDiffs)(sourceReport.programs, compareReport.programs),
     contracts: (0, exports.computeContractDiffs)(sourceReport.contracts, compareReport.contracts),
 });
 exports.computedWorkspaceDiff = computedWorkspaceDiff;
 const computeProgramDiffs = (sourceReports, compareReports) => {
-    const sourceReportNames = sourceReports.map((report) => report.name);
+    const sourceReportNames = sourceReports.map((report) => report.package_name);
     const commonReportNames = compareReports
-        .map((report) => report.name)
+        .map((report) => report.package_name)
         .filter((name) => sourceReportNames.includes(name));
     return commonReportNames
         .map((reportName) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const srcReport = sourceReports.find((report) => report.name == reportName);
+        const srcReport = sourceReports.find((report) => report.package_name == reportName);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const cmpReport = compareReports.find((report) => report.name == reportName);
-        return computeProgramDiff(srcReport, cmpReport);
+        const cmpReport = compareReports.find((report) => report.package_name == reportName);
+        // For now we fetch just the main of each program
+        return computeCircuitDiff(srcReport.functions[0], cmpReport.functions[0], reportName);
     })
         .filter((diff) => !isEmptyDiff(diff))
         .sort((diff1, diff2) => Math.max(diff2.circuit_size.percentage) - Math.max(diff1.circuit_size.percentage));
 };
 exports.computeProgramDiffs = computeProgramDiffs;
-const computeProgramDiff = (sourceReport, compareReport) => {
+const computeCircuitDiff = (sourceReport, compareReport, 
+// We want the name of the package that represents the entire program in our report
+reportName) => {
     return {
-        name: sourceReport.name,
+        name: reportName,
         acir_opcodes: (0, exports.variation)(compareReport.acir_opcodes, sourceReport.acir_opcodes),
         circuit_size: (0, exports.variation)(compareReport.circuit_size, sourceReport.circuit_size),
     };
@@ -499,7 +514,24 @@ const computeContractDiffs = (sourceReports, compareReports) => {
 };
 exports.computeContractDiffs = computeContractDiffs;
 const computeContractDiff = (sourceReport, compareReport) => {
-    const functionDiffs = (0, exports.computeProgramDiffs)(sourceReport.functions[0].functions, compareReport.functions[0].functions);
+    // TODO(https://github.com/noir-lang/noir/issues/4720): Settle on how to display contract functions with non-inlined Acir calls
+    // Right now we assume each contract function does not have non-inlined functions.
+    // Thus, we simply re-assign each `CircuitReport` to a `ProgramReport` to easily reuse `computeProgramDiffs`
+    const sourceFunctionsAsProgram = sourceReport.functions.map((func) => {
+        const programReport = {
+            package_name: func.name,
+            functions: [func],
+        };
+        return programReport;
+    });
+    const compareFunctionsAsProgram = compareReport.functions.map((func) => {
+        const programReport = {
+            package_name: func.name,
+            functions: [func],
+        };
+        return programReport;
+    });
+    const functionDiffs = (0, exports.computeProgramDiffs)(sourceFunctionsAsProgram, compareFunctionsAsProgram);
     return {
         name: sourceReport.name,
         functions: functionDiffs,
