@@ -290,7 +290,6 @@ const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
 const program_1 = __nccwpck_require__(1578);
 const report_1 = __nccwpck_require__(8269);
-// import { isSortCriteriaValid, isSortOrdersValid } from "./types";
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
 const header = core.getInput("header");
