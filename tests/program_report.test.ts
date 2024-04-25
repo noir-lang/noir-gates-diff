@@ -78,6 +78,23 @@ describe("Shell format", () => {
     console.log(formatShellDiff(contractDiffs));
   });
 
+  // This test is just to make sure that we are accurately resetting our reference
+  // report in case it gets malformed
+  it("should compare fresh report", () => {
+    const srcContractReports = cmpContractReports.map((program) => {
+      const circuitReport = { name: "main", acir_opcodes: 1, circuit_size: 1 };
+      const programReport = {
+        package_name: program.package_name,
+        functions: [circuitReport],
+      };
+      return programReport;
+    });
+    const contractDiffs = computeProgramDiffs(srcContractReports, cmpContractReports);
+    expect(contractDiffs.length).toBeGreaterThan(0);
+
+    console.log(formatShellDiff(contractDiffs));
+  });
+
   it("should compare 2 to 1", () => {
     const contractDiffs = computeProgramDiffs(cmpContractReports, srcContractReports);
     expect(contractDiffs.length).toBeGreaterThan(0);
