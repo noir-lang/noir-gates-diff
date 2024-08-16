@@ -10,7 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.formatMarkdownDiffNew = exports.formatBrilligRows = exports.formatCircuitRows = exports.formatMarkdownDiff = exports.formatShellDiffBrillig = exports.formatShellBrilligRows = exports.formatShellDiff = exports.formatShellCircuitRows = exports.formatShellCell = void 0;
+exports.formatMarkdownDiff = exports.formatBrilligRows = exports.formatCircuitRows = exports.formatShellDiffBrillig = exports.formatShellBrilligRows = exports.formatShellDiff = exports.formatShellCircuitRows = exports.formatShellCell = void 0;
 const colors_1 = __importDefault(__nccwpck_require__(3045));
 const sortBy_1 = __importDefault(__nccwpck_require__(9774));
 const utils_1 = __nccwpck_require__(9292);
@@ -207,67 +207,6 @@ const MARKDOWN_DIFF_COLS_BRILLIG = [
     { txt: "%", align: utils_1.TextAlign.RIGHT },
     { txt: "" },
 ];
-const formatMarkdownDiff = (header, diffs, repository, commitHash, refCommitHash, summaryQuantile = 0.8) => {
-    var _a, _b;
-    const diffReport = [header, "", (0, utils_1.generateCommitInfo)(repository, commitHash, refCommitHash)];
-    if (diffs.length === 0)
-        return diffReport.concat(["", "### There are no changes in circuit sizes"]).join("\n").trim();
-    const summaryHeader = MARKDOWN_SUMMARY_COLS_CIRCUIT.map((entry) => entry.txt)
-        .join(" | ")
-        .trim();
-    const summaryHeaderSeparator = MARKDOWN_SUMMARY_COLS_CIRCUIT.map((entry) => entry.txt ? (0, utils_1.alignPattern)(entry.align) : "")
-        .join("|")
-        .trim();
-    const diffHeader = MARKDOWN_DIFF_COLS_CIRCUIT.map((entry) => entry.txt)
-        .join(" | ")
-        .trim();
-    const diffHeaderSeparator = MARKDOWN_DIFF_COLS_CIRCUIT.map((entry) => entry.txt ? (0, utils_1.alignPattern)(entry.align) : "")
-        .join("|")
-        .trim();
-    const sortedMethods = (0, sortBy_1.default)(diffs, (program) => Math.abs(program.circuit_size.percentage));
-    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
-    const summaryRows = selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) => [
-        "",
-        `**${diff.name}**`,
-        ...formatMarkdownSummaryCell([diff.opcodes]),
-        ...formatMarkdownSummaryCell([diff.circuit_size]),
-        "",
-    ]
-        .join(" | ")
-        .trim());
-    const fullReportRows = diffs.flatMap((diff) => [
-        "",
-        `**${diff.name}**`,
-        ...formatMarkdownFullCell([diff.opcodes]),
-        ...formatMarkdownFullCell([diff.circuit_size]),
-        "",
-    ]
-        .join(" | ")
-        .trim());
-    return diffReport
-        .concat([
-        "",
-        `### 🧾 Summary (${Math.round((1 - summaryQuantile) * 100)}% most significant diffs)`,
-        "",
-        summaryHeader,
-        summaryHeaderSeparator,
-        ...summaryRows,
-        "---",
-        "",
-        "<details>",
-        "<summary><strong>Full diff report</strong> 👇</summary>",
-        "<br />",
-        "",
-        diffHeader,
-        diffHeaderSeparator,
-        ...fullReportRows,
-        "</details>",
-        "",
-    ])
-        .join("\n")
-        .trim();
-};
-exports.formatMarkdownDiff = formatMarkdownDiff;
 const formatCircuitRows = (diffs, summaryQuantile = 0.8) => {
     var _a, _b;
     const sortedMethods = (0, sortBy_1.default)(diffs, (program) => Math.abs(program.circuit_size.percentage));
@@ -302,7 +241,7 @@ const formatBrilligRows = (diffs, summaryQuantile = 0.8) => {
     return [summaryRows, fullReportRows];
 };
 exports.formatBrilligRows = formatBrilligRows;
-const formatMarkdownDiffNew = (header, repository, commitHash, summaryRows, fullReportRows, 
+const formatMarkdownDiff = (header, repository, commitHash, summaryRows, fullReportRows, 
 // Flag to distinguish the markdown columns that should be used
 circuitReport, refCommitHash, summaryQuantile = 0.8) => {
     const diffReport = [header, "", (0, utils_1.generateCommitInfo)(repository, commitHash, refCommitHash)];
@@ -353,7 +292,7 @@ circuitReport, refCommitHash, summaryQuantile = 0.8) => {
         .join("\n")
         .trim();
 };
-exports.formatMarkdownDiffNew = formatMarkdownDiffNew;
+exports.formatMarkdownDiff = formatMarkdownDiff;
 
 
 /***/ }),
@@ -582,7 +521,7 @@ function run() {
             }
             core.info(`Format markdown of ${numDiffs} diffs`);
             // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
-            const markdown = (0, program_1.formatMarkdownDiffNew)(header, repository, github_1.context.sha, summaryRows, fullReportRows, !brillig_report, refCommitHash, summaryQuantile);
+            const markdown = (0, program_1.formatMarkdownDiff)(header, repository, github_1.context.sha, summaryRows, fullReportRows, !brillig_report, refCommitHash, summaryQuantile);
             core.info(`Format shell of ${numDiffs} diffs`);
             let shell;
             if (brillig_report) {
