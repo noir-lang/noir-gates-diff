@@ -1,6 +1,15 @@
 import * as fs from "fs";
 
-import { formatMarkdownDiff, formatShellDiff } from "../src/format/program";
+import {
+  formatBrilligRows,
+  formatCircuitRows,
+  formatMarkdownDiff,
+  formatMarkdownDiffNew,
+  formatShellBrilligRows,
+  formatShellCircuitRows,
+  formatShellDiff,
+  formatShellDiffBrillig,
+} from "../src/format/program";
 import { computeProgramDiffs, loadReports } from "../src/report";
 
 const srcContent = fs.readFileSync("tests/mocks/gas_report.2.json", "utf8");
@@ -31,16 +40,37 @@ describe("Markdown format", () => {
   // });
 
   it("should compare 1 to 2 with markdown format", () => {
-    const contractDiffs = computeProgramDiffs(srcContractReports, cmpContractReports);
-    expect(contractDiffs.length).toBeGreaterThan(0);
+    const [circuitDiffs, brilligDiffs] = computeProgramDiffs(
+      srcContractReports,
+      cmpContractReports
+    );
+    expect(circuitDiffs.length).toBeGreaterThan(0);
 
+    const [summaryRows, fullReportRows] = formatCircuitRows(circuitDiffs, 0.8);
     fs.writeFileSync(
-      "tests/mocks/1-2-program.md",
-      formatMarkdownDiff(
+      "tests/mocks/1-2-program-acir.md",
+      formatMarkdownDiffNew(
         "# Changes to gas cost",
-        contractDiffs,
         "Rubilmax/foundry-gas-diff",
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
+        summaryRows,
+        fullReportRows,
+        true,
+        undefined,
+        0.8
+      )
+    );
+
+    const [summaryRowsBrillig, fullReportRowsBrillig] = formatBrilligRows(brilligDiffs, 0.8);
+    fs.writeFileSync(
+      "tests/mocks/1-2-program-brillig.md",
+      formatMarkdownDiffNew(
+        "# Changes to gas cost",
+        "Rubilmax/foundry-gas-diff",
+        "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
+        summaryRowsBrillig,
+        fullReportRowsBrillig,
+        false,
         undefined,
         0.8
       )
@@ -48,16 +78,37 @@ describe("Markdown format", () => {
   });
 
   it("should compare 1 to 1 with markdown format", () => {
-    const contractDiffs = computeProgramDiffs(srcContractReports, srcContractReports);
-    expect(contractDiffs.length).toBe(0);
+    const [circuitDiffs, brilligDiffs] = computeProgramDiffs(
+      srcContractReports,
+      srcContractReports
+    );
+    expect(circuitDiffs.length).toBe(0);
 
+    const [summaryRows, fullReportRows] = formatCircuitRows(circuitDiffs, 0.8);
     fs.writeFileSync(
-      "tests/mocks/1-1-program.md",
-      formatMarkdownDiff(
+      "tests/mocks/1-1-program-acir.md",
+      formatMarkdownDiffNew(
         "# Changes to gas cost",
-        contractDiffs,
         "Rubilmax/foundry-gas-diff",
-        "d62d23148ca73df77cd4378ee1b3c17f1f303dbf"
+        "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
+        summaryRows,
+        fullReportRows,
+        true
+      )
+    );
+
+    const [summaryRowsBrillig, fullReportRowsBrillig] = formatBrilligRows(brilligDiffs, 0.8);
+    fs.writeFileSync(
+      "tests/mocks/1-1-program-brillig.md",
+      formatMarkdownDiffNew(
+        "# Changes to gas cost",
+        "Rubilmax/foundry-gas-diff",
+        "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
+        summaryRowsBrillig,
+        fullReportRowsBrillig,
+        false,
+        undefined,
+        0.8
       )
     );
   });
@@ -65,40 +116,70 @@ describe("Markdown format", () => {
 
 describe("Shell format", () => {
   it("should compare 1 to 1", () => {
-    const contractDiffs = computeProgramDiffs(srcContractReports, srcContractReports);
-    expect(contractDiffs.length).toBe(0);
+    const [circuitDiffs, brilligDiffs] = computeProgramDiffs(
+      srcContractReports,
+      srcContractReports
+    );
+    expect(circuitDiffs.length).toBe(0);
 
-    console.log(formatShellDiff(contractDiffs));
+    const [summaryRows, fullReportRows] = formatShellCircuitRows(circuitDiffs);
+    console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
+
+    const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
+    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
   });
 
   it("should compare 1 to 2", () => {
-    const contractDiffs = computeProgramDiffs(srcContractReports, cmpContractReports);
-    expect(contractDiffs.length).toBeGreaterThan(0);
+    const [circuitDiffs, brilligDiffs] = computeProgramDiffs(
+      srcContractReports,
+      cmpContractReports
+    );
+    expect(circuitDiffs.length).toBeGreaterThan(0);
 
-    console.log(formatShellDiff(contractDiffs));
+    const [summaryRows, fullReportRows] = formatShellCircuitRows(circuitDiffs);
+    console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
+
+    const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
+    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
   });
 
   // This test is just to make sure that we are accurately resetting our reference
   // report in case it gets malformed
   it("should compare fresh report", () => {
     const srcContractReports = cmpContractReports.map((program) => {
-      const circuitReport = { name: "main", acir_opcodes: 1, circuit_size: 1 };
+      const circuitReport = { name: "main", opcodes: 1, circuit_size: 1 };
+      const unconstrainedReport = { name: "main", opcodes: 1 };
       const programReport = {
         package_name: program.package_name,
         functions: [circuitReport],
+        unconstrained_functions: [unconstrainedReport],
       };
       return programReport;
     });
-    const contractDiffs = computeProgramDiffs(srcContractReports, cmpContractReports);
-    expect(contractDiffs.length).toBeGreaterThan(0);
+    const [circuitDiffs, brilligDiffs] = computeProgramDiffs(
+      srcContractReports,
+      cmpContractReports
+    );
+    expect(circuitDiffs.length).toBeGreaterThan(0);
 
-    console.log(formatShellDiff(contractDiffs));
+    const [summaryRows, fullReportRows] = formatShellCircuitRows(circuitDiffs);
+    console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
+
+    const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
+    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
   });
 
   it("should compare 2 to 1", () => {
-    const contractDiffs = computeProgramDiffs(cmpContractReports, srcContractReports);
-    expect(contractDiffs.length).toBeGreaterThan(0);
+    const [circuitDiffs, brilligDiffs] = computeProgramDiffs(
+      cmpContractReports,
+      srcContractReports
+    );
+    expect(circuitDiffs.length).toBeGreaterThan(0);
 
-    console.log(formatShellDiff(contractDiffs));
+    const [summaryRows, fullReportRows] = formatShellCircuitRows(circuitDiffs);
+    console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
+
+    const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
+    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
   });
 });

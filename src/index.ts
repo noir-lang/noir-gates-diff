@@ -6,7 +6,15 @@ import * as artifact from "@actions/artifact";
 import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
-import { formatMarkdownDiff, formatShellDiff } from "./format/program";
+import {
+  formatBrilligRows,
+  formatCircuitRows,
+  formatMarkdownDiffNew,
+  formatShellBrilligRows,
+  formatShellCircuitRows,
+  formatShellDiff,
+  formatShellDiffBrillig,
+} from "./format/program";
 import { loadReports, computeProgramDiffs } from "./report";
 
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
@@ -114,23 +122,82 @@ async function run() {
     core.endGroup();
 
     core.startGroup("Compute gas diff");
-    const diffRows = computeProgramDiffs(referenceReports.programs, compareReports.programs);
-    core.info(`Format markdown of ${diffRows.length} diffs`);
-    const markdown = formatMarkdownDiff(
+    const [diffCircuitRows, diffBrilligRows] = computeProgramDiffs(
+      referenceReports.programs,
+      compareReports.programs
+    );
+
+    // NOTE: This is hacky but we are assuming that if a workspace report was generated using
+    // `--force-brillig` then we should have a single unconstrained function marked with "main".
+    // If we compiled our entire workspace to Brillig then we can generate a Brillig report instead of a circuit report.
+    let brillig_report = false;
+    if (
+      referenceReports.programs.length > 0 &&
+      referenceReports.programs[0].unconstrained_functions.length === 1 &&
+      referenceReports.programs[0].unconstrained_functions[0].name === "main"
+    ) {
+      brillig_report = true;
+    }
+    console.log("brillig_report: ", brillig_report);
+
+    let numDiffs = diffCircuitRows.length;
+    let summaryRows;
+    let fullReportRows;
+    if (brillig_report) {
+      numDiffs = diffBrilligRows.length;
+      core.info(`Format Brillig markdown rows`);
+      [summaryRows, fullReportRows] = formatBrilligRows(diffBrilligRows, summaryQuantile);
+    } else {
+      core.info(`Format ACIR markdown rows`);
+      [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
+    }
+
+    core.info(`Format markdown of ${numDiffs} diffs`);
+    // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
+    const markdown = formatMarkdownDiffNew(
       header,
-      diffRows,
       repository,
       context.sha,
+      summaryRows,
+      fullReportRows,
+      !brillig_report,
       refCommitHash,
       summaryQuantile
     );
-    core.info(`Format shell of ${diffRows.length} diffs`);
-    const shell = formatShellDiff(diffRows, summaryQuantile);
+    core.info(`Format shell of ${numDiffs} diffs`);
+
+    let shell;
+    if (brillig_report) {
+      core.info(`Format Brillig diffs`);
+      const [summaryRowsShell, fullReportRowsShell] = formatShellBrilligRows(
+        diffBrilligRows,
+        summaryQuantile
+      );
+      shell = formatShellDiffBrillig(
+        diffCircuitRows,
+        summaryRowsShell,
+        fullReportRowsShell,
+        summaryQuantile
+      );
+    } else {
+      core.info(`Format ACIR diffs`);
+      const [summaryRowsShell, fullReportRowsShell] = formatShellCircuitRows(
+        diffCircuitRows,
+        summaryQuantile
+      );
+      shell = formatShellDiff(
+        diffCircuitRows,
+        summaryRowsShell,
+        fullReportRowsShell,
+        summaryQuantile
+      );
+    }
+
     core.endGroup();
 
     console.log(shell);
 
-    if (diffRows.length > 0) {
+    if (diffCircuitRows.length > 0) {
       core.setOutput("shell", shell);
       core.setOutput("markdown", markdown);
     }

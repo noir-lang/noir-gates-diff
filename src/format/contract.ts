@@ -41,7 +41,7 @@ const selectSummaryDiffs = (
       functions: functions.filter(
         (method) =>
           Math.abs(method.circuit_size.percentage) >= minCircuitChangePercentage &&
-          (method.acir_opcodes.delta !== 0 || method.circuit_size.delta !== 0)
+          (method.opcodes.delta !== 0 || method.circuit_size.delta !== 0)
       ),
     }))
     .filter((diff) => diff.functions.length > 0);
@@ -109,7 +109,7 @@ export const formatShellDiff = (diffs: ContractDiffReport[], summaryQuantile = 0
           "",
           colors.bold(colors.grey((methodIndex === 0 ? diff.name : "").padEnd(maxContractLength))),
           colors.italic(method.name.padEnd(maxMethodLength)),
-          ...formatShellCell(method.acir_opcodes),
+          ...formatShellCell(method.opcodes),
           ...formatShellCell(method.circuit_size),
           "",
         ]
@@ -127,7 +127,7 @@ export const formatShellDiff = (diffs: ContractDiffReport[], summaryQuantile = 0
           "",
           colors.bold(colors.grey((methodIndex === 0 ? diff.name : "").padEnd(maxContractLength))),
           colors.italic(method.name.padEnd(maxMethodLength)),
-          ...formatShellCell(method.acir_opcodes),
+          ...formatShellCell(method.opcodes),
           ...formatShellCell(method.circuit_size),
           "",
         ]
@@ -261,7 +261,7 @@ export const formatMarkdownDiff = (
       "",
       `**${diff.name}**`,
       diff.functions.map((method) => `_${method.name}_`).join("<br />"),
-      ...formatMarkdownSummaryCell(diff.functions.map((method) => method.acir_opcodes)),
+      ...formatMarkdownSummaryCell(diff.functions.map((method) => method.opcodes)),
       ...formatMarkdownSummaryCell(diff.functions.map((method) => method.circuit_size)),
       "",
     ]
@@ -274,7 +274,7 @@ export const formatMarkdownDiff = (
       "",
       `**${diff.name}**`,
       diff.functions.map((method) => `_${method.name}_`).join("<br />"),
-      ...formatMarkdownFullCell(diff.functions.map((method) => method.acir_opcodes)),
+      ...formatMarkdownFullCell(diff.functions.map((method) => method.opcodes)),
       ...formatMarkdownFullCell(diff.functions.map((method) => method.circuit_size)),
       "",
     ]
