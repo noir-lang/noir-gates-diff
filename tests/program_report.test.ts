@@ -4,7 +4,6 @@ import {
   formatBrilligRows,
   formatCircuitRows,
   formatMarkdownDiff,
-  formatMarkdownDiffNew,
   formatShellBrilligRows,
   formatShellCircuitRows,
   formatShellDiff,
@@ -49,7 +48,7 @@ describe("Markdown format", () => {
     const [summaryRows, fullReportRows] = formatCircuitRows(circuitDiffs, 0.8);
     fs.writeFileSync(
       "tests/mocks/1-2-program-acir.md",
-      formatMarkdownDiffNew(
+      formatMarkdownDiff(
         "# Changes to gas cost",
         "Rubilmax/foundry-gas-diff",
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
@@ -64,7 +63,7 @@ describe("Markdown format", () => {
     const [summaryRowsBrillig, fullReportRowsBrillig] = formatBrilligRows(brilligDiffs, 0.8);
     fs.writeFileSync(
       "tests/mocks/1-2-program-brillig.md",
-      formatMarkdownDiffNew(
+      formatMarkdownDiff(
         "# Changes to gas cost",
         "Rubilmax/foundry-gas-diff",
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
@@ -87,7 +86,7 @@ describe("Markdown format", () => {
     const [summaryRows, fullReportRows] = formatCircuitRows(circuitDiffs, 0.8);
     fs.writeFileSync(
       "tests/mocks/1-1-program-acir.md",
-      formatMarkdownDiffNew(
+      formatMarkdownDiff(
         "# Changes to gas cost",
         "Rubilmax/foundry-gas-diff",
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
@@ -100,7 +99,7 @@ describe("Markdown format", () => {
     const [summaryRowsBrillig, fullReportRowsBrillig] = formatBrilligRows(brilligDiffs, 0.8);
     fs.writeFileSync(
       "tests/mocks/1-1-program-brillig.md",
-      formatMarkdownDiffNew(
+      formatMarkdownDiff(
         "# Changes to gas cost",
         "Rubilmax/foundry-gas-diff",
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",

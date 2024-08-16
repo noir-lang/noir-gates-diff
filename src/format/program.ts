@@ -324,90 +324,6 @@ const MARKDOWN_DIFF_COLS_BRILLIG = [
   { txt: "" },
 ];
 
-export const formatMarkdownDiff = (
-  header: string,
-  diffs: DiffCircuit[],
-  repository: string,
-  commitHash: string,
-  refCommitHash?: string,
-  summaryQuantile = 0.8
-) => {
-  const diffReport = [header, "", generateCommitInfo(repository, commitHash, refCommitHash)];
-  if (diffs.length === 0)
-    return diffReport.concat(["", "### There are no changes in circuit sizes"]).join("\n").trim();
-
-  const summaryHeader = MARKDOWN_SUMMARY_COLS_CIRCUIT.map((entry) => entry.txt)
-    .join(" | ")
-    .trim();
-  const summaryHeaderSeparator = MARKDOWN_SUMMARY_COLS_CIRCUIT.map((entry) =>
-    entry.txt ? alignPattern(entry.align) : ""
-  )
-    .join("|")
-    .trim();
-
-  const diffHeader = MARKDOWN_DIFF_COLS_CIRCUIT.map((entry) => entry.txt)
-    .join(" | ")
-    .trim();
-  const diffHeaderSeparator = MARKDOWN_DIFF_COLS_CIRCUIT.map((entry) =>
-    entry.txt ? alignPattern(entry.align) : ""
-  )
-    .join("|")
-    .trim();
-
-  const sortedMethods = _sortBy(diffs, (program) => Math.abs(program.circuit_size.percentage));
-  const circuitChangeQuantile = Math.abs(
-    sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]?.circuit_size
-      .percentage ?? 0
-  );
-
-  const summaryRows = selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) =>
-    [
-      "",
-      `**${diff.name}**`,
-      ...formatMarkdownSummaryCell([diff.opcodes]),
-      ...formatMarkdownSummaryCell([diff.circuit_size]),
-      "",
-    ]
-      .join(" | ")
-      .trim()
-  );
-
-  const fullReportRows = diffs.flatMap((diff) =>
-    [
-      "",
-      `**${diff.name}**`,
-      ...formatMarkdownFullCell([diff.opcodes]),
-      ...formatMarkdownFullCell([diff.circuit_size]),
-      "",
-    ]
-      .join(" | ")
-      .trim()
-  );
-
-  return diffReport
-    .concat([
-      "",
-      `### 🧾 Summary (${Math.round((1 - summaryQuantile) * 100)}% most significant diffs)`,
-      "",
-      summaryHeader,
-      summaryHeaderSeparator,
-      ...summaryRows,
-      "---",
-      "",
-      "<details>",
-      "<summary><strong>Full diff report</strong> 👇</summary>",
-      "<br />",
-      "",
-      diffHeader,
-      diffHeaderSeparator,
-      ...fullReportRows,
-      "</details>",
-      "",
-    ])
-    .join("\n")
-    .trim();
-};
-
 export const formatCircuitRows = (
   diffs: DiffCircuit[],
   summaryQuantile = 0.8
@@ -465,7 +381,7 @@ export const formatBrilligRows = (
   return [summaryRows, fullReportRows];
 };
 
-export const formatMarkdownDiffNew = (
+export const formatMarkdownDiff = (
   header: string,
   repository: string,
   commitHash: string,

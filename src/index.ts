@@ -9,7 +9,7 @@ import { context, getOctokit } from "@actions/github";
 import {
   formatBrilligRows,
   formatCircuitRows,
-  formatMarkdownDiffNew,
+  formatMarkdownDiff,
   formatShellBrilligRows,
   formatShellCircuitRows,
   formatShellDiff,
@@ -154,7 +154,7 @@ async function run() {
 
     core.info(`Format markdown of ${numDiffs} diffs`);
     // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
-    const markdown = formatMarkdownDiffNew(
+    const markdown = formatMarkdownDiff(
       header,
       repository,
       context.sha,
