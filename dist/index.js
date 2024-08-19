@@ -119,13 +119,13 @@ const formatShellDiffBrillig = (diffs, summaryRows, fullReportRows, summaryQuant
     const SHELL_SUMMARY_COLS = [
         { txt: "", length: 0 },
         { txt: "Program", length: maxProgramLength },
-        { txt: "ACIR opcodes (+/-)", length: 33 },
+        { txt: "Brillig opcodes (+/-)", length: 33 },
         { txt: "", length: 0 },
     ];
     const SHELL_DIFF_COLS = [
         { txt: "", length: 0 },
         { txt: "Program", length: maxProgramLength },
-        { txt: "ACIR opcodes (+/-)", length: 33 },
+        { txt: "Brillig opcodes (+/-)", length: 33 },
         { txt: "", length: 0 },
     ];
     const summaryHeader = SHELL_SUMMARY_COLS.map((entry) => colors_1.default.bold((0, utils_1.center)(entry.txt, entry.length || 0)))
@@ -395,6 +395,7 @@ const report_1 = __nccwpck_require__(8269);
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
 const header = core.getInput("header");
+const brillig_report = core.getInput("brillig_report");
 const summaryQuantile = parseFloat(core.getInput("summaryQuantile"));
 // const sortCriteria = core.getInput("sortCriteria").split(",");
 // const sortOrders = core.getInput("sortOrders").split(",");
@@ -497,16 +498,6 @@ function run() {
             core.endGroup();
             core.startGroup("Compute gas diff");
             const [diffCircuitRows, diffBrilligRows] = (0, report_1.computeProgramDiffs)(referenceReports.programs, compareReports.programs);
-            // NOTE: This is hacky but we are assuming that if a workspace report was generated using
-            // `--force-brillig` then we should have a single unconstrained function marked with "main".
-            // If we compiled our entire workspace to Brillig then we can generate a Brillig report instead of a circuit report.
-            let brillig_report = false;
-            if (referenceReports.programs.length > 0 &&
-                referenceReports.programs[0].unconstrained_functions.length === 1 &&
-                referenceReports.programs[0].unconstrained_functions[0].name === "main") {
-                brillig_report = true;
-            }
-            console.log("brillig_report: ", brillig_report);
             let numDiffs = diffCircuitRows.length;
             let summaryRows;
             let fullReportRows;

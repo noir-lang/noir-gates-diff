@@ -20,6 +20,7 @@ import { loadReports, computeProgramDiffs } from "./report";
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
 const header = core.getInput("header");
+const brillig_report = core.getInput("brillig_report");
 const summaryQuantile = parseFloat(core.getInput("summaryQuantile"));
 // const sortCriteria = core.getInput("sortCriteria").split(",");
 // const sortOrders = core.getInput("sortOrders").split(",");
@@ -126,19 +127,6 @@ async function run() {
       referenceReports.programs,
       compareReports.programs
     );
-
-    // NOTE: This is hacky but we are assuming that if a workspace report was generated using
-    // `--force-brillig` then we should have a single unconstrained function marked with "main".
-    // If we compiled our entire workspace to Brillig then we can generate a Brillig report instead of a circuit report.
-    let brillig_report = false;
-    if (
-      referenceReports.programs.length > 0 &&
-      referenceReports.programs[0].unconstrained_functions.length === 1 &&
-      referenceReports.programs[0].unconstrained_functions[0].name === "main"
-    ) {
-      brillig_report = true;
-    }
-    console.log("brillig_report: ", brillig_report);
 
     let numDiffs = diffCircuitRows.length;
     let summaryRows;

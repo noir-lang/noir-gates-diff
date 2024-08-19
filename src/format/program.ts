@@ -198,14 +198,14 @@ export const formatShellDiffBrillig = (
   const SHELL_SUMMARY_COLS = [
     { txt: "", length: 0 },
     { txt: "Program", length: maxProgramLength },
-    { txt: "ACIR opcodes (+/-)", length: 33 },
+    { txt: "Brillig opcodes (+/-)", length: 33 },
     { txt: "", length: 0 },
   ];
 
   const SHELL_DIFF_COLS = [
     { txt: "", length: 0 },
     { txt: "Program", length: maxProgramLength },
-    { txt: "ACIR opcodes (+/-)", length: 33 },
+    { txt: "Brillig opcodes (+/-)", length: 33 },
     { txt: "", length: 0 },
   ];
 
