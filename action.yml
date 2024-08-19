@@ -20,7 +20,7 @@ inputs:
     required: false
   report:
     description: Report freshly generated to compare to reference.
-    default: gatesreport.json
+    default: gates_report.json
     required: false
   header:
     description: The top section displayed in the markdown output.
@@ -31,6 +31,9 @@ inputs:
     description: The quantile threshold to filter avg gas cost diffs to display in the summary top section.
     default: 0.8
     required: false
+  brillig_report:
+    description: States whether we want to generate a report of ACIR opcodes or Brillig opcodes.
+    default: false
   # sortCriteria:
   #   description: The list of criteria to order diff rows by in the report (name | min | avg | median | max | calls), separated by a comma. Must have the same length as sortOrders.
   #   required: false

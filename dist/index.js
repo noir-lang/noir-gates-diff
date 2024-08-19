@@ -10,7 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.formatMarkdownDiff = exports.formatShellDiff = exports.formatShellCell = void 0;
+exports.formatMarkdownDiff = exports.formatBrilligRows = exports.formatCircuitRows = exports.formatShellDiffBrillig = exports.formatShellBrilligRows = exports.formatShellDiff = exports.formatShellCircuitRows = exports.formatShellCell = void 0;
 const colors_1 = __importDefault(__nccwpck_require__(3045));
 const sortBy_1 = __importDefault(__nccwpck_require__(9774));
 const utils_1 = __nccwpck_require__(9292);
@@ -27,9 +27,36 @@ const formatShellCell = (cell, length = 10) => {
 };
 exports.formatShellCell = formatShellCell;
 const selectSummaryDiffs = (diffs, minCircuitChangePercentage) => diffs.filter((method) => Math.abs(method.circuit_size.percentage) >= minCircuitChangePercentage &&
-    (method.acir_opcodes.delta !== 0 || method.circuit_size.delta !== 0));
-const formatShellDiff = (diffs, summaryQuantile = 0.8) => {
+    (method.opcodes.delta !== 0 || method.circuit_size.delta !== 0));
+const selectSummaryDiffsBrillig = (diffs, minCircuitChangePercentage) => diffs.filter((method) => Math.abs(method.opcodes.percentage) >= minCircuitChangePercentage &&
+    method.opcodes.delta !== 0);
+const formatShellCircuitRows = (diffs, summaryQuantile = 0.8) => {
     var _a, _b;
+    const maxProgramLength = Math.max(8, ...diffs.map(({ name }) => name.length));
+    const sortedPrograms = (0, sortBy_1.default)(diffs, (method) => Math.abs(method.circuit_size.percentage));
+    const circuitChangeQuantile = Math.abs((_b = (_a = sortedPrograms[Math.floor((sortedPrograms.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
+    const summaryRows = selectSummaryDiffs(diffs, circuitChangeQuantile).map((diff) => [
+        "",
+        colors_1.default.bold(colors_1.default.grey(diff.name.padEnd(maxProgramLength))),
+        ...(0, exports.formatShellCell)(diff.opcodes),
+        ...(0, exports.formatShellCell)(diff.circuit_size),
+        "",
+    ]
+        .join(" | ")
+        .trim());
+    const fullReportRows = diffs.map((diff) => [
+        "",
+        colors_1.default.bold(colors_1.default.grey(diff.name.padEnd(maxProgramLength))),
+        ...(0, exports.formatShellCell)(diff.opcodes),
+        ...(0, exports.formatShellCell)(diff.circuit_size),
+        "",
+    ]
+        .join(" | ")
+        .trim());
+    return [summaryRows, fullReportRows];
+};
+exports.formatShellCircuitRows = formatShellCircuitRows;
+const formatShellDiff = (diffs, summaryRows, fullReportRows, summaryQuantile = 0.8) => {
     const maxProgramLength = Math.max(8, ...diffs.map(({ name }) => name.length));
     const SHELL_SUMMARY_COLS = [
         { txt: "", length: 0 },
@@ -57,13 +84,21 @@ const formatShellDiff = (diffs, summaryQuantile = 0.8) => {
     const diffSeparator = SHELL_DIFF_COLS.map(({ length }) => length > 0 ? "-".repeat(length + 2) : "")
         .join("|")
         .trim();
-    const sortedPrograms = (0, sortBy_1.default)(diffs, (method) => Math.abs(method.circuit_size.percentage));
-    const circuitChangeQuantile = Math.abs((_b = (_a = sortedPrograms[Math.floor((sortedPrograms.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
-    const summaryRows = selectSummaryDiffs(diffs, circuitChangeQuantile).map((diff) => [
+    return (colors_1.default.underline(colors_1.default.bold(colors_1.default.yellow(`🧾 Summary (${Math.round((1 - summaryQuantile) * 100)}% most significant diffs)\n\n`))) +
+        ["", summaryHeader, ...summaryRows, ""].join(`\n${summarySeparator}\n`).trim() +
+        colors_1.default.underline(colors_1.default.bold(colors_1.default.yellow("\n\nFull diff report 👇\n\n"))) +
+        ["", diffHeader, ...fullReportRows, ""].join(`\n${diffSeparator}\n`).trim());
+};
+exports.formatShellDiff = formatShellDiff;
+const formatShellBrilligRows = (diffs, summaryQuantile = 0.8) => {
+    var _a, _b;
+    const maxProgramLength = Math.max(8, ...diffs.map(({ name }) => name.length));
+    const sortedPrograms = (0, sortBy_1.default)(diffs, (method) => Math.abs(method.opcodes.percentage));
+    const circuitChangeQuantile = Math.abs((_b = (_a = sortedPrograms[Math.floor((sortedPrograms.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.opcodes.percentage) !== null && _b !== void 0 ? _b : 0);
+    const summaryRows = selectSummaryDiffsBrillig(diffs, circuitChangeQuantile).map((diff) => [
         "",
         colors_1.default.bold(colors_1.default.grey(diff.name.padEnd(maxProgramLength))),
-        ...(0, exports.formatShellCell)(diff.acir_opcodes),
-        ...(0, exports.formatShellCell)(diff.circuit_size),
+        ...(0, exports.formatShellCell)(diff.opcodes),
         "",
     ]
         .join(" | ")
@@ -71,18 +106,46 @@ const formatShellDiff = (diffs, summaryQuantile = 0.8) => {
     const fullReportRows = diffs.map((diff) => [
         "",
         colors_1.default.bold(colors_1.default.grey(diff.name.padEnd(maxProgramLength))),
-        ...(0, exports.formatShellCell)(diff.acir_opcodes),
-        ...(0, exports.formatShellCell)(diff.circuit_size),
+        ...(0, exports.formatShellCell)(diff.opcodes),
         "",
     ]
         .join(" | ")
         .trim());
+    return [summaryRows, fullReportRows];
+};
+exports.formatShellBrilligRows = formatShellBrilligRows;
+const formatShellDiffBrillig = (diffs, summaryRows, fullReportRows, summaryQuantile = 0.8) => {
+    const maxProgramLength = Math.max(8, ...diffs.map(({ name }) => name.length));
+    const SHELL_SUMMARY_COLS = [
+        { txt: "", length: 0 },
+        { txt: "Program", length: maxProgramLength },
+        { txt: "Brillig opcodes (+/-)", length: 33 },
+        { txt: "", length: 0 },
+    ];
+    const SHELL_DIFF_COLS = [
+        { txt: "", length: 0 },
+        { txt: "Program", length: maxProgramLength },
+        { txt: "Brillig opcodes (+/-)", length: 33 },
+        { txt: "", length: 0 },
+    ];
+    const summaryHeader = SHELL_SUMMARY_COLS.map((entry) => colors_1.default.bold((0, utils_1.center)(entry.txt, entry.length || 0)))
+        .join(" | ")
+        .trim();
+    const summarySeparator = SHELL_SUMMARY_COLS.map(({ length }) => length > 0 ? "-".repeat(length + 2) : "")
+        .join("|")
+        .trim();
+    const diffHeader = SHELL_DIFF_COLS.map((entry) => colors_1.default.bold((0, utils_1.center)(entry.txt, entry.length || 0)))
+        .join(" | ")
+        .trim();
+    const diffSeparator = SHELL_DIFF_COLS.map(({ length }) => length > 0 ? "-".repeat(length + 2) : "")
+        .join("|")
+        .trim();
     return (colors_1.default.underline(colors_1.default.bold(colors_1.default.yellow(`🧾 Summary (${Math.round((1 - summaryQuantile) * 100)}% most significant diffs)\n\n`))) +
         ["", summaryHeader, ...summaryRows, ""].join(`\n${summarySeparator}\n`).trim() +
         colors_1.default.underline(colors_1.default.bold(colors_1.default.yellow("\n\nFull diff report 👇\n\n"))) +
         ["", diffHeader, ...fullReportRows, ""].join(`\n${diffSeparator}\n`).trim());
 };
-exports.formatShellDiff = formatShellDiff;
+exports.formatShellDiffBrillig = formatShellDiffBrillig;
 const formatMarkdownSummaryCell = (rows) => [
     rows
         .map((row) => (0, utils_1.plusSign)(row.delta) +
@@ -112,7 +175,7 @@ const formatMarkdownFullCell = (rows) => [
         "%**")
         .join("<br />"),
 ];
-const MARKDOWN_SUMMARY_COLS = [
+const MARKDOWN_SUMMARY_COLS_CIRCUIT = [
     { txt: "" },
     { txt: "Program", align: utils_1.TextAlign.LEFT },
     { txt: "ACIR opcodes (+/-)", align: utils_1.TextAlign.RIGHT },
@@ -121,7 +184,7 @@ const MARKDOWN_SUMMARY_COLS = [
     { txt: "%", align: utils_1.TextAlign.RIGHT },
     { txt: "" },
 ];
-const MARKDOWN_DIFF_COLS = [
+const MARKDOWN_DIFF_COLS_CIRCUIT = [
     { txt: "" },
     { txt: "Program", align: utils_1.TextAlign.LEFT },
     { txt: "ACIR opcodes (+/-)", align: utils_1.TextAlign.RIGHT },
@@ -130,11 +193,70 @@ const MARKDOWN_DIFF_COLS = [
     { txt: "%", align: utils_1.TextAlign.RIGHT },
     { txt: "" },
 ];
-const formatMarkdownDiff = (header, diffs, repository, commitHash, refCommitHash, summaryQuantile = 0.8) => {
+const MARKDOWN_SUMMARY_COLS_BRILLIG = [
+    { txt: "" },
+    { txt: "Program", align: utils_1.TextAlign.LEFT },
+    { txt: "Brillig opcodes (+/-)", align: utils_1.TextAlign.RIGHT },
+    { txt: "%", align: utils_1.TextAlign.RIGHT },
+    { txt: "" },
+];
+const MARKDOWN_DIFF_COLS_BRILLIG = [
+    { txt: "" },
+    { txt: "Program", align: utils_1.TextAlign.LEFT },
+    { txt: "Brillig opcodes (+/-)", align: utils_1.TextAlign.RIGHT },
+    { txt: "%", align: utils_1.TextAlign.RIGHT },
+    { txt: "" },
+];
+const formatCircuitRows = (diffs, summaryQuantile = 0.8) => {
     var _a, _b;
+    const sortedMethods = (0, sortBy_1.default)(diffs, (program) => Math.abs(program.circuit_size.percentage));
+    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
+    const summaryRows = selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) => [
+        "",
+        `**${diff.name}**`,
+        ...formatMarkdownSummaryCell([diff.opcodes]),
+        ...formatMarkdownSummaryCell([diff.circuit_size]),
+        "",
+    ]
+        .join(" | ")
+        .trim());
+    const fullReportRows = diffs.flatMap((diff) => [
+        "",
+        `**${diff.name}**`,
+        ...formatMarkdownFullCell([diff.opcodes]),
+        ...formatMarkdownFullCell([diff.circuit_size]),
+        "",
+    ]
+        .join(" | ")
+        .trim());
+    return [summaryRows, fullReportRows];
+};
+exports.formatCircuitRows = formatCircuitRows;
+const formatBrilligRows = (diffs, summaryQuantile = 0.8) => {
+    var _a, _b;
+    const sortedMethods = (0, sortBy_1.default)(diffs, (program) => Math.abs(program.opcodes.percentage));
+    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.opcodes.percentage) !== null && _b !== void 0 ? _b : 0);
+    const summaryRows = selectSummaryDiffsBrillig(diffs, circuitChangeQuantile).flatMap((diff) => ["", `**${diff.name}**`, ...formatMarkdownSummaryCell([diff.opcodes]), ""].join(" | ").trim());
+    const fullReportRows = diffs.flatMap((diff) => ["", `**${diff.name}**`, ...formatMarkdownFullCell([diff.opcodes]), ""].join(" | ").trim());
+    return [summaryRows, fullReportRows];
+};
+exports.formatBrilligRows = formatBrilligRows;
+const formatMarkdownDiff = (header, repository, commitHash, summaryRows, fullReportRows, 
+// Flag to distinguish the markdown columns that should be used
+circuitReport, refCommitHash, summaryQuantile = 0.8) => {
     const diffReport = [header, "", (0, utils_1.generateCommitInfo)(repository, commitHash, refCommitHash)];
-    if (diffs.length === 0)
+    if (fullReportRows.length === 0)
         return diffReport.concat(["", "### There are no changes in circuit sizes"]).join("\n").trim();
+    let MARKDOWN_SUMMARY_COLS;
+    let MARKDOWN_DIFF_COLS;
+    if (circuitReport) {
+        MARKDOWN_SUMMARY_COLS = MARKDOWN_SUMMARY_COLS_CIRCUIT;
+        MARKDOWN_DIFF_COLS = MARKDOWN_DIFF_COLS_CIRCUIT;
+    }
+    else {
+        MARKDOWN_SUMMARY_COLS = MARKDOWN_SUMMARY_COLS_BRILLIG;
+        MARKDOWN_DIFF_COLS = MARKDOWN_DIFF_COLS_BRILLIG;
+    }
     const summaryHeader = MARKDOWN_SUMMARY_COLS.map((entry) => entry.txt)
         .join(" | ")
         .trim();
@@ -147,26 +269,6 @@ const formatMarkdownDiff = (header, diffs, repository, commitHash, refCommitHash
     const diffHeaderSeparator = MARKDOWN_DIFF_COLS.map((entry) => entry.txt ? (0, utils_1.alignPattern)(entry.align) : "")
         .join("|")
         .trim();
-    const sortedMethods = (0, sortBy_1.default)(diffs, (program) => Math.abs(program.circuit_size.percentage));
-    const circuitChangeQuantile = Math.abs((_b = (_a = sortedMethods[Math.floor((sortedMethods.length - 1) * summaryQuantile)]) === null || _a === void 0 ? void 0 : _a.circuit_size.percentage) !== null && _b !== void 0 ? _b : 0);
-    const summaryRows = selectSummaryDiffs(diffs, circuitChangeQuantile).flatMap((diff) => [
-        "",
-        `**${diff.name}**`,
-        ...formatMarkdownSummaryCell([diff.acir_opcodes]),
-        ...formatMarkdownSummaryCell([diff.circuit_size]),
-        "",
-    ]
-        .join(" | ")
-        .trim());
-    const fullReportRows = diffs.flatMap((diff) => [
-        "",
-        `**${diff.name}**`,
-        ...formatMarkdownFullCell([diff.acir_opcodes]),
-        ...formatMarkdownFullCell([diff.circuit_size]),
-        "",
-    ]
-        .join(" | ")
-        .trim());
     return diffReport
         .concat([
         "",
@@ -293,6 +395,7 @@ const report_1 = __nccwpck_require__(8269);
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
 const header = core.getInput("header");
+const brillig_report = core.getInput("brillig_report");
 const summaryQuantile = parseFloat(core.getInput("summaryQuantile"));
 // const sortCriteria = core.getInput("sortCriteria").split(",");
 // const sortOrders = core.getInput("sortOrders").split(",");
@@ -394,14 +497,37 @@ function run() {
             core.info(`Got ${compareReports.programs.length} reference programs`);
             core.endGroup();
             core.startGroup("Compute gas diff");
-            const diffRows = (0, report_1.computeProgramDiffs)(referenceReports.programs, compareReports.programs);
-            core.info(`Format markdown of ${diffRows.length} diffs`);
-            const markdown = (0, program_1.formatMarkdownDiff)(header, diffRows, repository, github_1.context.sha, refCommitHash, summaryQuantile);
-            core.info(`Format shell of ${diffRows.length} diffs`);
-            const shell = (0, program_1.formatShellDiff)(diffRows, summaryQuantile);
+            const [diffCircuitRows, diffBrilligRows] = (0, report_1.computeProgramDiffs)(referenceReports.programs, compareReports.programs);
+            let numDiffs = diffCircuitRows.length;
+            let summaryRows;
+            let fullReportRows;
+            if (brillig_report) {
+                numDiffs = diffBrilligRows.length;
+                core.info(`Format Brillig markdown rows`);
+                [summaryRows, fullReportRows] = (0, program_1.formatBrilligRows)(diffBrilligRows, summaryQuantile);
+            }
+            else {
+                core.info(`Format ACIR markdown rows`);
+                [summaryRows, fullReportRows] = (0, program_1.formatCircuitRows)(diffCircuitRows, summaryQuantile);
+            }
+            core.info(`Format markdown of ${numDiffs} diffs`);
+            // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
+            const markdown = (0, program_1.formatMarkdownDiff)(header, repository, github_1.context.sha, summaryRows, fullReportRows, !brillig_report, refCommitHash, summaryQuantile);
+            core.info(`Format shell of ${numDiffs} diffs`);
+            let shell;
+            if (brillig_report) {
+                core.info(`Format Brillig diffs`);
+                const [summaryRowsShell, fullReportRowsShell] = (0, program_1.formatShellBrilligRows)(diffBrilligRows, summaryQuantile);
+                shell = (0, program_1.formatShellDiffBrillig)(diffCircuitRows, summaryRowsShell, fullReportRowsShell, summaryQuantile);
+            }
+            else {
+                core.info(`Format ACIR diffs`);
+                const [summaryRowsShell, fullReportRowsShell] = (0, program_1.formatShellCircuitRows)(diffCircuitRows, summaryQuantile);
+                shell = (0, program_1.formatShellDiff)(diffCircuitRows, summaryRowsShell, fullReportRowsShell, summaryQuantile);
+            }
             core.endGroup();
             console.log(shell);
-            if (diffRows.length > 0) {
+            if (diffCircuitRows.length > 0) {
                 core.setOutput("shell", shell);
                 core.setOutput("markdown", markdown);
             }
@@ -451,17 +577,21 @@ const loadReports = (content) => {
     return JSON.parse(content);
 };
 exports.loadReports = loadReports;
-const computedWorkspaceDiff = (sourceReport, compareReport) => ({
-    programs: (0, exports.computeProgramDiffs)(sourceReport.programs, compareReport.programs),
-    contracts: (0, exports.computeContractDiffs)(sourceReport.contracts, compareReport.contracts),
-});
+const computedWorkspaceDiff = (sourceReport, compareReport) => {
+    const [diffCircuits, diffBrilligs] = (0, exports.computeProgramDiffs)(sourceReport.programs, compareReport.programs);
+    return {
+        programs: diffCircuits,
+        unconstrained_functions: diffBrilligs,
+        contracts: (0, exports.computeContractDiffs)(sourceReport.contracts, compareReport.contracts),
+    };
+};
 exports.computedWorkspaceDiff = computedWorkspaceDiff;
 const computeProgramDiffs = (sourceReports, compareReports) => {
     const sourceReportNames = sourceReports.map((report) => report.package_name);
     const commonReportNames = compareReports
         .map((report) => report.package_name)
         .filter((name) => sourceReportNames.includes(name));
-    return commonReportNames
+    const diffCircuits = commonReportNames
         .map((reportName) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const srcReport = sourceReports.find((report) => report.package_name == reportName);
@@ -472,6 +602,30 @@ const computeProgramDiffs = (sourceReports, compareReports) => {
     })
         .filter((diff) => !isEmptyDiff(diff))
         .sort((diff1, diff2) => Math.max(diff2.circuit_size.percentage) - Math.max(diff1.circuit_size.percentage));
+    const diffBrilligs = commonReportNames
+        .map((reportName) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const srcReport = sourceReports.find((report) => report.package_name == reportName);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const cmpReport = compareReports.find((report) => report.package_name == reportName);
+        if (srcReport.unconstrained_functions.length === 0 ||
+            cmpReport.unconstrained_functions.length === 0) {
+            return {
+                name: "",
+                opcodes: {
+                    previous: 0,
+                    current: 0,
+                    delta: 0,
+                    percentage: 0,
+                },
+            };
+        }
+        // For now we fetch just the main of each program
+        return computeUnconstrainedDiff(srcReport.unconstrained_functions[0], cmpReport.unconstrained_functions[0], reportName);
+    })
+        .filter((diff) => !isEmptyDiffBrillig(diff))
+        .sort((diff1, diff2) => Math.max(diff2.opcodes.percentage) - Math.max(diff1.opcodes.percentage));
+    return [diffCircuits, diffBrilligs];
 };
 exports.computeProgramDiffs = computeProgramDiffs;
 const computeCircuitDiff = (sourceReport, compareReport, 
@@ -479,11 +633,20 @@ const computeCircuitDiff = (sourceReport, compareReport,
 reportName) => {
     return {
         name: reportName,
-        acir_opcodes: (0, exports.variation)(compareReport.acir_opcodes, sourceReport.acir_opcodes),
+        opcodes: (0, exports.variation)(compareReport.opcodes, sourceReport.opcodes),
         circuit_size: (0, exports.variation)(compareReport.circuit_size, sourceReport.circuit_size),
     };
 };
-const isEmptyDiff = (diff) => diff.acir_opcodes.delta === 0 && diff.circuit_size.delta === 0;
+const computeUnconstrainedDiff = (sourceReport, compareReport, 
+// We want the name of the package that represents the entire program in our report
+reportName) => {
+    return {
+        name: reportName,
+        opcodes: (0, exports.variation)(compareReport.opcodes, sourceReport.opcodes),
+    };
+};
+const isEmptyDiff = (diff) => diff.opcodes.delta === 0 && diff.circuit_size.delta === 0;
+const isEmptyDiffBrillig = (diff) => diff.opcodes.delta === 0;
 const computeContractDiffs = (sourceReports, compareReports) => {
     const sourceReportNames = sourceReports.map((report) => report.name);
     const commonReportNames = compareReports
@@ -510,6 +673,7 @@ const computeContractDiff = (sourceReport, compareReport) => {
         const programReport = {
             package_name: func.name,
             functions: [func],
+            unconstrained_functions: [],
         };
         return programReport;
     });
@@ -517,10 +681,11 @@ const computeContractDiff = (sourceReport, compareReport) => {
         const programReport = {
             package_name: func.name,
             functions: [func],
+            unconstrained_functions: [],
         };
         return programReport;
     });
-    const functionDiffs = (0, exports.computeProgramDiffs)(sourceFunctionsAsProgram, compareFunctionsAsProgram);
+    const [functionDiffs] = (0, exports.computeProgramDiffs)(sourceFunctionsAsProgram, compareFunctionsAsProgram);
     return {
         name: sourceReport.name,
         functions: functionDiffs,

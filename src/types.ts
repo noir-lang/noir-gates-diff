@@ -2,14 +2,20 @@ import * as core from "@actions/core";
 
 export interface CircuitReport {
   name: string;
-  acir_opcodes: number;
+  opcodes: number;
   circuit_size: number;
+}
+
+export interface BrilligReport {
+  name: string;
+  opcodes: number;
 }
 
 export interface ProgramReport {
   // Name of the program package
   package_name: string;
   functions: CircuitReport[];
+  unconstrained_functions: BrilligReport[];
 }
 
 export interface ContractReport {
@@ -24,19 +30,25 @@ export interface WorkspaceReport {
 }
 
 export interface WorkspaceDiffReport {
-  programs: DiffProgram[];
+  programs: DiffCircuit[];
+  unconstrained_functions: DiffBrillig[];
   contracts: ContractDiffReport[];
 }
 
 export interface ContractDiffReport {
   name: string;
-  functions: DiffProgram[];
+  functions: DiffCircuit[];
 }
 
-export interface DiffProgram {
+export interface DiffCircuit {
   name: string;
-  acir_opcodes: DiffCell;
+  opcodes: DiffCell;
   circuit_size: DiffCell;
+}
+
+export interface DiffBrillig {
+  name: string;
+  opcodes: DiffCell;
 }
 
 export interface DiffCell {
@@ -46,10 +58,10 @@ export interface DiffCell {
   percentage: number;
 }
 
-export type SortCriterion = keyof DiffProgram;
+export type SortCriterion = keyof DiffCircuit;
 export type SortOrder = "asc" | "desc";
 
-const validSortCriteria = ["name", "acir_opcodes", "circuit_size"] as SortCriterion[];
+const validSortCriteria = ["name", "opcodes", "circuit_size"] as SortCriterion[];
 const validSortOrders = ["asc", "desc"] as SortOrder[];
 
 export const isSortCriteriaValid = (sortCriteria: string[]): sortCriteria is SortCriterion[] => {

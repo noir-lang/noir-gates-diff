@@ -5,8 +5,14 @@
         "functions": [
           {
             "name": "main",
-            "acir_opcodes": 1,
+            "opcodes": 1,
             "circuit_size": 7
+          }
+        ],
+        "unconstrained_functions": [
+          {
+            "name": "main",
+            "opcodes": 1
           }
         ]
       },
@@ -15,8 +21,14 @@
         "functions": [
           {
             "name": "main",
-            "acir_opcodes": 4,
+            "opcodes": 4,
             "circuit_size": 8
+          }
+        ],
+        "unconstrained_functions": [
+          {
+            "name": "main",
+            "opcodes": 4
           }
         ]
       },
@@ -25,8 +37,14 @@
         "functions": [
           {
             "name": "main",
-            "acir_opcodes": 4,
+            "opcodes": 4,
             "circuit_size": 8
+          }
+        ],
+        "unconstrained_functions": [
+          {
+            "name": "main",
+            "opcodes": 4
           }
         ]
       },
@@ -35,8 +53,14 @@
         "functions": [
           {
             "name": "main",
-            "acir_opcodes": 4,
+            "opcodes": 4,
             "circuit_size": 8
+          }
+        ],
+        "unconstrained_functions": [
+          {
+            "name": "main",
+            "opcodes": 4
           }
         ]
       }
@@ -47,42 +71,42 @@
           "functions": [
               {
                   "name": "a",
-                  "acir_opcodes": 1,
+                  "opcodes": 1,
                   "circuit_size": 7
               },
               {
                   "name": "b",
-                  "acir_opcodes": 4,
+                  "opcodes": 4,
                   "circuit_size": 8
               },
               {
                   "name": "c",
-                  "acir_opcodes": 500,
+                  "opcodes": 500,
                   "circuit_size": 1000
               },
               {
                   "name": "d",
-                  "acir_opcodes": 500,
+                  "opcodes": 500,
                   "circuit_size": 1000
               },
               {
                   "name": "e",
-                  "acir_opcodes": 50,
+                  "opcodes": 50,
                   "circuit_size": 100
               },
               {
                   "name": "f",
-                  "acir_opcodes": 50,
+                  "opcodes": 50,
                   "circuit_size": 100
               },
               {
                   "name": "g",
-                  "acir_opcodes": 50,
+                  "opcodes": 50,
                   "circuit_size": 100
               },
               {
                   "name": "h",
-                  "acir_opcodes": 50,
+                  "opcodes": 50,
                   "circuit_size": 100
               }
           ]
@@ -92,12 +116,12 @@
           "functions": [
               {
                   "name": "a",
-                  "acir_opcodes": 1,
+                  "opcodes": 1,
                   "circuit_size": 7
               },
               {
                   "name": "b",
-                  "acir_opcodes": 4,
+                  "opcodes": 4,
                   "circuit_size": 8
               }
           ]

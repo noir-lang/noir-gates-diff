@@ -3,11 +3,13 @@ import _orderBy from "lodash/orderBy";
 import {
   ContractDiffReport,
   ContractReport,
-  DiffProgram,
+  DiffCircuit,
   CircuitReport,
   WorkspaceDiffReport,
   WorkspaceReport,
   ProgramReport,
+  BrilligReport,
+  DiffBrillig,
 } from "./types";
 
 export const variation = (current: number, previous: number) => {
@@ -28,21 +30,28 @@ export const loadReports = (content: string): WorkspaceReport => {
 export const computedWorkspaceDiff = (
   sourceReport: WorkspaceReport,
   compareReport: WorkspaceReport
-): WorkspaceDiffReport => ({
-  programs: computeProgramDiffs(sourceReport.programs, compareReport.programs),
-  contracts: computeContractDiffs(sourceReport.contracts, compareReport.contracts),
-});
+): WorkspaceDiffReport => {
+  const [diffCircuits, diffBrilligs] = computeProgramDiffs(
+    sourceReport.programs,
+    compareReport.programs
+  );
+  return {
+    programs: diffCircuits,
+    unconstrained_functions: diffBrilligs,
+    contracts: computeContractDiffs(sourceReport.contracts, compareReport.contracts),
+  };
+};
 
 export const computeProgramDiffs = (
   sourceReports: ProgramReport[],
   compareReports: ProgramReport[]
-): DiffProgram[] => {
+): [DiffCircuit[], DiffBrillig[]] => {
   const sourceReportNames = sourceReports.map((report) => report.package_name);
   const commonReportNames = compareReports
     .map((report) => report.package_name)
     .filter((name) => sourceReportNames.includes(name));
 
-  return commonReportNames
+  const diffCircuits = commonReportNames
     .map((reportName) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const srcReport = sourceReports.find((report) => report.package_name == reportName)!;
@@ -57,6 +66,41 @@ export const computeProgramDiffs = (
       (diff1, diff2) =>
         Math.max(diff2.circuit_size.percentage) - Math.max(diff1.circuit_size.percentage)
     );
+
+  const diffBrilligs = commonReportNames
+    .map((reportName) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const srcReport = sourceReports.find((report) => report.package_name == reportName)!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const cmpReport = compareReports.find((report) => report.package_name == reportName)!;
+
+      if (
+        srcReport.unconstrained_functions.length === 0 ||
+        cmpReport.unconstrained_functions.length === 0
+      ) {
+        return {
+          name: "",
+          opcodes: {
+            previous: 0,
+            current: 0,
+            delta: 0,
+            percentage: 0,
+          },
+        };
+      }
+      // For now we fetch just the main of each program
+      return computeUnconstrainedDiff(
+        srcReport.unconstrained_functions[0],
+        cmpReport.unconstrained_functions[0],
+        reportName
+      );
+    })
+    .filter((diff) => !isEmptyDiffBrillig(diff))
+    .sort(
+      (diff1, diff2) => Math.max(diff2.opcodes.percentage) - Math.max(diff1.opcodes.percentage)
+    );
+
+  return [diffCircuits, diffBrilligs];
 };
 
 const computeCircuitDiff = (
@@ -64,16 +108,30 @@ const computeCircuitDiff = (
   compareReport: CircuitReport,
   // We want the name of the package that represents the entire program in our report
   reportName: string
-): DiffProgram => {
+): DiffCircuit => {
   return {
     name: reportName,
-    acir_opcodes: variation(compareReport.acir_opcodes, sourceReport.acir_opcodes),
+    opcodes: variation(compareReport.opcodes, sourceReport.opcodes),
     circuit_size: variation(compareReport.circuit_size, sourceReport.circuit_size),
   };
 };
 
-const isEmptyDiff = (diff: DiffProgram): boolean =>
-  diff.acir_opcodes.delta === 0 && diff.circuit_size.delta === 0;
+const computeUnconstrainedDiff = (
+  sourceReport: BrilligReport,
+  compareReport: BrilligReport,
+  // We want the name of the package that represents the entire program in our report
+  reportName: string
+): DiffBrillig => {
+  return {
+    name: reportName,
+    opcodes: variation(compareReport.opcodes, sourceReport.opcodes),
+  };
+};
+
+const isEmptyDiff = (diff: DiffCircuit): boolean =>
+  diff.opcodes.delta === 0 && diff.circuit_size.delta === 0;
+
+const isEmptyDiffBrillig = (diff: DiffBrillig): boolean => diff.opcodes.delta === 0;
 
 export const computeContractDiffs = (
   sourceReports: ContractReport[],
@@ -116,6 +174,7 @@ const computeContractDiff = (
     const programReport: ProgramReport = {
       package_name: func.name,
       functions: [func],
+      unconstrained_functions: [],
     };
     return programReport;
   });
@@ -123,10 +182,11 @@ const computeContractDiff = (
     const programReport: ProgramReport = {
       package_name: func.name,
       functions: [func],
+      unconstrained_functions: [],
     };
     return programReport;
   });
-  const functionDiffs = computeProgramDiffs(sourceFunctionsAsProgram, compareFunctionsAsProgram);
+  const [functionDiffs] = computeProgramDiffs(sourceFunctionsAsProgram, compareFunctionsAsProgram);
 
   return {
     name: sourceReport.name,
