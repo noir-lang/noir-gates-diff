@@ -69,7 +69,7 @@ async function run() {
         );
 
         if (!artifact) {
-          await new Promise((resolve) => setTimeout(resolve, 500)); // avoid reaching the API rate limit
+          await new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
 
           continue;
         }

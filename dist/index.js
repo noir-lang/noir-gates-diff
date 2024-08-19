@@ -440,7 +440,7 @@ function run() {
                             const res = _c;
                             const artifact = res.data.find((artifact) => !artifact.expired && artifact.name === baseReport);
                             if (!artifact) {
-                                yield new Promise((resolve) => setTimeout(resolve, 500)); // avoid reaching the API rate limit
+                                yield new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
                                 continue;
                             }
                             artifactId = artifact.id;
