@@ -21,6 +21,7 @@ const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
 const header = core.getInput("header");
 const brillig_report = core.getInput("brillig_report");
+const brillig_report_bytes = core.getInput("brillig_report_bytes");
 const summaryQuantile = parseFloat(core.getInput("summaryQuantile"));
 // const sortCriteria = core.getInput("sortCriteria").split(",");
 // const sortOrders = core.getInput("sortOrders").split(",");
@@ -149,6 +150,7 @@ async function run() {
       summaryRows,
       fullReportRows,
       !brillig_report,
+      brillig_report_bytes == "true",
       refCommitHash,
       summaryQuantile
     );

@@ -55,6 +55,7 @@ describe("Markdown format", () => {
         summaryRows,
         fullReportRows,
         true,
+        false,
         undefined,
         0.8
       )
@@ -69,6 +70,7 @@ describe("Markdown format", () => {
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
         summaryRowsBrillig,
         fullReportRowsBrillig,
+        false,
         false,
         undefined,
         0.8
@@ -92,7 +94,8 @@ describe("Markdown format", () => {
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
         summaryRows,
         fullReportRows,
-        true
+        true,
+        false
       )
     );
 
@@ -105,6 +108,7 @@ describe("Markdown format", () => {
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
         summaryRowsBrillig,
         fullReportRowsBrillig,
+        false,
         false,
         undefined,
         0.8

@@ -243,10 +243,10 @@ const formatBrilligRows = (diffs, summaryQuantile = 0.8) => {
 exports.formatBrilligRows = formatBrilligRows;
 const formatMarkdownDiff = (header, repository, commitHash, summaryRows, fullReportRows, 
 // Flag to distinguish the markdown columns that should be used
-circuitReport, refCommitHash, summaryQuantile = 0.8) => {
+circuitReport, brillig_report_bytes, refCommitHash, summaryQuantile = 0.8) => {
     const diffReport = [header, "", (0, utils_1.generateCommitInfo)(repository, commitHash, refCommitHash)];
     if (fullReportRows.length === 0)
-        return diffReport.concat(["", "### There are no changes in circuit sizes"]).join("\n").trim();
+        return diffReport.concat(["", "### There are no changes in sizes"]).join("\n").trim();
     let MARKDOWN_SUMMARY_COLS;
     let MARKDOWN_DIFF_COLS;
     if (circuitReport) {
@@ -256,6 +256,10 @@ circuitReport, refCommitHash, summaryQuantile = 0.8) => {
     else {
         MARKDOWN_SUMMARY_COLS = MARKDOWN_SUMMARY_COLS_BRILLIG;
         MARKDOWN_DIFF_COLS = MARKDOWN_DIFF_COLS_BRILLIG;
+        if (brillig_report_bytes) {
+            MARKDOWN_SUMMARY_COLS[2].txt = "Bytecode size in bytes (+/-)";
+            MARKDOWN_DIFF_COLS[2].txt = "Bytecode size in bytes (+/-)";
+        }
     }
     const summaryHeader = MARKDOWN_SUMMARY_COLS.map((entry) => entry.txt)
         .join(" | ")
@@ -396,6 +400,7 @@ const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
 const header = core.getInput("header");
 const brillig_report = core.getInput("brillig_report");
+const brillig_report_bytes = core.getInput("brillig_report_bytes");
 const summaryQuantile = parseFloat(core.getInput("summaryQuantile"));
 // const sortCriteria = core.getInput("sortCriteria").split(",");
 // const sortOrders = core.getInput("sortOrders").split(",");
@@ -512,7 +517,7 @@ function run() {
             }
             core.info(`Format markdown of ${numDiffs} diffs`);
             // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
-            const markdown = (0, program_1.formatMarkdownDiff)(header, repository, github_1.context.sha, summaryRows, fullReportRows, !brillig_report, refCommitHash, summaryQuantile);
+            const markdown = (0, program_1.formatMarkdownDiff)(header, repository, github_1.context.sha, summaryRows, fullReportRows, !brillig_report, brillig_report_bytes == "true", refCommitHash, summaryQuantile);
             core.info(`Format shell of ${numDiffs} diffs`);
             let shell;
             if (brillig_report) {
