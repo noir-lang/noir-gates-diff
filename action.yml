@@ -34,6 +34,9 @@ inputs:
   brillig_report:
     description: States whether we want to generate a report of ACIR opcodes or Brillig opcodes.
     default: false
+  brillig_report_bytes:
+    description: States whether the Brillig report is done with bytecode sizes rather than opcodes.
+    default: false
   # sortCriteria:
   #   description: The list of criteria to order diff rows by in the report (name | min | avg | median | max | calls), separated by a comma. Must have the same length as sortOrders.
   #   required: false

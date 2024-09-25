@@ -191,6 +191,7 @@ export const formatShellDiffBrillig = (
   diffs: DiffBrillig[],
   summaryRows: string[],
   fullReportRows: string[],
+  brillig_report_bytes: boolean,
   summaryQuantile = 0.8
 ) => {
   const maxProgramLength = Math.max(8, ...diffs.map(({ name }) => name.length));
@@ -208,6 +209,11 @@ export const formatShellDiffBrillig = (
     { txt: "Brillig opcodes (+/-)", length: 33 },
     { txt: "", length: 0 },
   ];
+
+  if (brillig_report_bytes) {
+    SHELL_SUMMARY_COLS[2].txt = "Bytecode size in bytes (+/-)";
+    SHELL_DIFF_COLS[2].txt = "Bytecode size in bytes (+/-)";
+  }
 
   const summaryHeader = SHELL_SUMMARY_COLS.map((entry) =>
     colors.bold(center(entry.txt, entry.length || 0))
@@ -389,12 +395,13 @@ export const formatMarkdownDiff = (
   fullReportRows: string[],
   // Flag to distinguish the markdown columns that should be used
   circuitReport: boolean,
+  brillig_report_bytes: boolean,
   refCommitHash?: string,
   summaryQuantile = 0.8
 ) => {
   const diffReport = [header, "", generateCommitInfo(repository, commitHash, refCommitHash)];
   if (fullReportRows.length === 0)
-    return diffReport.concat(["", "### There are no changes in circuit sizes"]).join("\n").trim();
+    return diffReport.concat(["", "### There are no changes in sizes"]).join("\n").trim();
 
   let MARKDOWN_SUMMARY_COLS;
   let MARKDOWN_DIFF_COLS;
@@ -404,6 +411,10 @@ export const formatMarkdownDiff = (
   } else {
     MARKDOWN_SUMMARY_COLS = MARKDOWN_SUMMARY_COLS_BRILLIG;
     MARKDOWN_DIFF_COLS = MARKDOWN_DIFF_COLS_BRILLIG;
+    if (brillig_report_bytes) {
+      MARKDOWN_SUMMARY_COLS[2].txt = "Bytecode size in bytes (+/-)";
+      MARKDOWN_DIFF_COLS[2].txt = "Bytecode size in bytes (+/-)";
+    }
   }
 
   const summaryHeader = MARKDOWN_SUMMARY_COLS.map((entry) => entry.txt)

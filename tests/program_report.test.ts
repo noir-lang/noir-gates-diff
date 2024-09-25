@@ -55,6 +55,7 @@ describe("Markdown format", () => {
         summaryRows,
         fullReportRows,
         true,
+        false,
         undefined,
         0.8
       )
@@ -69,6 +70,7 @@ describe("Markdown format", () => {
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
         summaryRowsBrillig,
         fullReportRowsBrillig,
+        false,
         false,
         undefined,
         0.8
@@ -92,7 +94,8 @@ describe("Markdown format", () => {
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
         summaryRows,
         fullReportRows,
-        true
+        true,
+        false
       )
     );
 
@@ -105,6 +108,7 @@ describe("Markdown format", () => {
         "d62d23148ca73df77cd4378ee1b3c17f1f303dbf",
         summaryRowsBrillig,
         fullReportRowsBrillig,
+        false,
         false,
         undefined,
         0.8
@@ -125,7 +129,9 @@ describe("Shell format", () => {
     console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
 
     const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
-    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
+    console.log(
+      formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig, false)
+    );
   });
 
   it("should compare 1 to 2", () => {
@@ -139,7 +145,9 @@ describe("Shell format", () => {
     console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
 
     const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
-    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
+    console.log(
+      formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig, false)
+    );
   });
 
   // This test is just to make sure that we are accurately resetting our reference
@@ -165,7 +173,9 @@ describe("Shell format", () => {
     console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
 
     const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
-    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
+    console.log(
+      formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig, false)
+    );
   });
 
   it("should compare 2 to 1", () => {
@@ -179,6 +189,8 @@ describe("Shell format", () => {
     console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
 
     const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
-    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
+    console.log(
+      formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig, false)
+    );
   });
 });
