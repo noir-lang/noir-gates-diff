@@ -191,6 +191,7 @@ export const formatShellDiffBrillig = (
   diffs: DiffBrillig[],
   summaryRows: string[],
   fullReportRows: string[],
+  brillig_report_bytes: boolean,
   summaryQuantile = 0.8
 ) => {
   const maxProgramLength = Math.max(8, ...diffs.map(({ name }) => name.length));
@@ -208,6 +209,11 @@ export const formatShellDiffBrillig = (
     { txt: "Brillig opcodes (+/-)", length: 33 },
     { txt: "", length: 0 },
   ];
+
+  if (brillig_report_bytes) {
+    SHELL_SUMMARY_COLS[2].txt = "Bytecode size in bytes (+/-)";
+    SHELL_DIFF_COLS[2].txt = "Bytecode size in bytes (+/-)";
+  }
 
   const summaryHeader = SHELL_SUMMARY_COLS.map((entry) =>
     colors.bold(center(entry.txt, entry.length || 0))

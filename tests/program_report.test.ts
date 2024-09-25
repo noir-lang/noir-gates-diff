@@ -129,7 +129,9 @@ describe("Shell format", () => {
     console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
 
     const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
-    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
+    console.log(
+      formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig, false)
+    );
   });
 
   it("should compare 1 to 2", () => {
@@ -143,7 +145,9 @@ describe("Shell format", () => {
     console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
 
     const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
-    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
+    console.log(
+      formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig, false)
+    );
   });
 
   // This test is just to make sure that we are accurately resetting our reference
@@ -169,7 +173,9 @@ describe("Shell format", () => {
     console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
 
     const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
-    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
+    console.log(
+      formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig, false)
+    );
   });
 
   it("should compare 2 to 1", () => {
@@ -183,6 +189,8 @@ describe("Shell format", () => {
     console.log(formatShellDiff(circuitDiffs, summaryRows, fullReportRows));
 
     const [summaryRowsBrillig, fullReportRowsBrillig] = formatShellBrilligRows(brilligDiffs);
-    console.log(formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig));
+    console.log(
+      formatShellDiffBrillig(brilligDiffs, summaryRowsBrillig, fullReportRowsBrillig, false)
+    );
   });
 });

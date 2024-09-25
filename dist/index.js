@@ -114,7 +114,7 @@ const formatShellBrilligRows = (diffs, summaryQuantile = 0.8) => {
     return [summaryRows, fullReportRows];
 };
 exports.formatShellBrilligRows = formatShellBrilligRows;
-const formatShellDiffBrillig = (diffs, summaryRows, fullReportRows, summaryQuantile = 0.8) => {
+const formatShellDiffBrillig = (diffs, summaryRows, fullReportRows, brillig_report_bytes, summaryQuantile = 0.8) => {
     const maxProgramLength = Math.max(8, ...diffs.map(({ name }) => name.length));
     const SHELL_SUMMARY_COLS = [
         { txt: "", length: 0 },
@@ -128,6 +128,10 @@ const formatShellDiffBrillig = (diffs, summaryRows, fullReportRows, summaryQuant
         { txt: "Brillig opcodes (+/-)", length: 33 },
         { txt: "", length: 0 },
     ];
+    if (brillig_report_bytes) {
+        SHELL_SUMMARY_COLS[2].txt = "Bytecode size in bytes (+/-)";
+        SHELL_DIFF_COLS[2].txt = "Bytecode size in bytes (+/-)";
+    }
     const summaryHeader = SHELL_SUMMARY_COLS.map((entry) => colors_1.default.bold((0, utils_1.center)(entry.txt, entry.length || 0)))
         .join(" | ")
         .trim();
@@ -523,7 +527,7 @@ function run() {
             if (brillig_report) {
                 core.info(`Format Brillig diffs`);
                 const [summaryRowsShell, fullReportRowsShell] = (0, program_1.formatShellBrilligRows)(diffBrilligRows, summaryQuantile);
-                shell = (0, program_1.formatShellDiffBrillig)(diffCircuitRows, summaryRowsShell, fullReportRowsShell, summaryQuantile);
+                shell = (0, program_1.formatShellDiffBrillig)(diffCircuitRows, summaryRowsShell, fullReportRowsShell, brillig_report_bytes == "true", summaryQuantile);
             }
             else {
                 core.info(`Format ACIR diffs`);
@@ -532,7 +536,7 @@ function run() {
             }
             core.endGroup();
             console.log(shell);
-            if (diffCircuitRows.length > 0) {
+            if (numDiffs > 0) {
                 core.setOutput("shell", shell);
                 core.setOutput("markdown", markdown);
             }

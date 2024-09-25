@@ -167,6 +167,7 @@ async function run() {
         diffCircuitRows,
         summaryRowsShell,
         fullReportRowsShell,
+        brillig_report_bytes == "true",
         summaryQuantile
       );
     } else {
@@ -187,7 +188,7 @@ async function run() {
 
     console.log(shell);
 
-    if (diffCircuitRows.length > 0) {
+    if (numDiffs > 0) {
       core.setOutput("shell", shell);
       core.setOutput("markdown", markdown);
     }
