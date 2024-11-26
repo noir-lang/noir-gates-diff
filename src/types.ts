@@ -58,6 +58,15 @@ export interface DiffCell {
   percentage: number;
 }
 
+export interface MemoryReport {
+  artifact_name: string;
+  peak_memory: string;
+}
+
+export interface MemoryReports {
+  memory_reports: MemoryReport[];
+}
+
 export type SortCriterion = keyof DiffCircuit;
 export type SortOrder = "asc" | "desc";
 

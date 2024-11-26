@@ -15,13 +15,14 @@ import {
   formatShellDiff,
   formatShellDiffBrillig,
 } from "./format/program";
-import { loadReports, computeProgramDiffs } from "./report";
+import { loadReports, computeProgramDiffs, memoryReports, formatMemoryReport } from "./report";
 
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
 const header = core.getInput("header");
 const brillig_report = core.getInput("brillig_report");
 const brillig_report_bytes = core.getInput("brillig_report_bytes");
+const memory_report = core.getInput("memory_report");
 const summaryQuantile = parseFloat(core.getInput("summaryQuantile"));
 // const sortCriteria = core.getInput("sortCriteria").split(",");
 // const sortOrders = core.getInput("sortOrders").split(",");
@@ -109,21 +110,30 @@ async function run() {
   }
 
   try {
-    core.startGroup("Load gas reports");
-    core.info(`Loading gas reports from "${localReportPath}"`);
+    core.startGroup("Load reports");
+    core.info(`Loading reports from "${localReportPath}"`);
     const compareContent = fs.readFileSync(localReportPath, "utf8");
-    referenceContent ??= compareContent; // if no source gas reports were loaded, defaults to the current gas reports
 
-    core.info(`Mapping compared gas reports`);
+    if (memory_report) {
+      core.info(`Format Memory markdown rows`);
+      const memoryContent = memoryReports(compareContent);
+      const markdown = formatMemoryReport(memoryContent);
+      core.setOutput("markdown", markdown);
+      return;
+    }
+
+    referenceContent ??= compareContent; // if no source reports were loaded, defaults to the current reports
+
+    core.info(`Mapping compared reports`);
     const compareReports = loadReports(compareContent);
     core.info(`Got ${compareReports.programs.length} compare programs`);
 
-    core.info(`Mapping reference gas reports`);
+    core.info(`Mapping reference reports`);
     const referenceReports = loadReports(referenceContent);
     core.info(`Got ${compareReports.programs.length} reference programs`);
     core.endGroup();
 
-    core.startGroup("Compute gas diff");
+    core.startGroup("Compute diff");
     const [diffCircuitRows, diffBrilligRows] = computeProgramDiffs(
       referenceReports.programs,
       compareReports.programs
@@ -141,8 +151,6 @@ async function run() {
       [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
     }
 
-    core.info(`Format markdown of ${numDiffs} diffs`);
-    // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
     const markdown = formatMarkdownDiff(
       header,
       repository,

@@ -10,6 +10,7 @@ import {
   ProgramReport,
   BrilligReport,
   DiffBrillig,
+  MemoryReport,
 } from "./types";
 
 export const variation = (current: number, previous: number) => {
@@ -25,6 +26,10 @@ export const variation = (current: number, previous: number) => {
 
 export const loadReports = (content: string): WorkspaceReport => {
   return JSON.parse(content);
+};
+
+export const memoryReports = (content: string): MemoryReport[] => {
+  return JSON.parse(content).memory_reports;
 };
 
 export const computedWorkspaceDiff = (
@@ -192,4 +197,19 @@ const computeContractDiff = (
     name: sourceReport.name,
     functions: functionDiffs,
   };
+};
+
+export const formatMemoryReport = (memReports: MemoryReport[]): string => {
+  let markdown = "## Peak Memory Sample\n | Program | Peak Memory |\n | --- | --- |\n";
+  expect(memReports.length).toBeGreaterThan(0);
+  for (let i = 0; i < memReports.length; i++) {
+    markdown = markdown.concat(
+      " | ",
+      memReports[i].artifact_name,
+      " | ",
+      memReports[i].peak_memory,
+      " |\n"
+    );
+  }
+  return markdown;
 };
