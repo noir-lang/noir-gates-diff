@@ -405,6 +405,7 @@ const report = core.getInput("report");
 const header = core.getInput("header");
 const brillig_report = core.getInput("brillig_report");
 const brillig_report_bytes = core.getInput("brillig_report_bytes");
+const memory_report = core.getInput("memory_report");
 const summaryQuantile = parseFloat(core.getInput("summaryQuantile"));
 // const sortCriteria = core.getInput("sortCriteria").split(",");
 // const sortOrders = core.getInput("sortOrders").split(",");
@@ -494,18 +495,25 @@ function run() {
             }
         }
         try {
-            core.startGroup("Load gas reports");
-            core.info(`Loading gas reports from "${localReportPath}"`);
+            core.startGroup("Load reports");
+            core.info(`Loading reports from "${localReportPath}"`);
             const compareContent = fs.readFileSync(localReportPath, "utf8");
-            referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source gas reports were loaded, defaults to the current gas reports
-            core.info(`Mapping compared gas reports`);
+            if (memory_report) {
+                core.info(`Format Memory markdown rows`);
+                const memoryContent = (0, report_1.memoryReports)(compareContent);
+                const markdown = (0, report_1.formatMemoryReport)(memoryContent);
+                core.setOutput("markdown", markdown);
+                return;
+            }
+            referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source reports were loaded, defaults to the current reports
+            core.info(`Mapping compared reports`);
             const compareReports = (0, report_1.loadReports)(compareContent);
             core.info(`Got ${compareReports.programs.length} compare programs`);
-            core.info(`Mapping reference gas reports`);
+            core.info(`Mapping reference reports`);
             const referenceReports = (0, report_1.loadReports)(referenceContent);
             core.info(`Got ${compareReports.programs.length} reference programs`);
             core.endGroup();
-            core.startGroup("Compute gas diff");
+            core.startGroup("Compute diff");
             const [diffCircuitRows, diffBrilligRows] = (0, report_1.computeProgramDiffs)(referenceReports.programs, compareReports.programs);
             let numDiffs = diffCircuitRows.length;
             let summaryRows;
@@ -519,8 +527,6 @@ function run() {
                 core.info(`Format ACIR markdown rows`);
                 [summaryRows, fullReportRows] = (0, program_1.formatCircuitRows)(diffCircuitRows, summaryQuantile);
             }
-            core.info(`Format markdown of ${numDiffs} diffs`);
-            // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
             const markdown = (0, program_1.formatMarkdownDiff)(header, repository, github_1.context.sha, summaryRows, fullReportRows, !brillig_report, brillig_report_bytes == "true", refCommitHash, summaryQuantile);
             core.info(`Format shell of ${numDiffs} diffs`);
             let shell;
@@ -571,7 +577,7 @@ run();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.computeContractDiffs = exports.computeProgramDiffs = exports.computedWorkspaceDiff = exports.loadReports = exports.variation = void 0;
+exports.formatMemoryReport = exports.computeContractDiffs = exports.computeProgramDiffs = exports.computedWorkspaceDiff = exports.memoryReports = exports.loadReports = exports.variation = void 0;
 const variation = (current, previous) => {
     const delta = current - previous;
     return {
@@ -586,6 +592,10 @@ const loadReports = (content) => {
     return JSON.parse(content);
 };
 exports.loadReports = loadReports;
+const memoryReports = (content) => {
+    return JSON.parse(content).memory_reports;
+};
+exports.memoryReports = memoryReports;
 const computedWorkspaceDiff = (sourceReport, compareReport) => {
     const [diffCircuits, diffBrilligs] = (0, exports.computeProgramDiffs)(sourceReport.programs, compareReport.programs);
     return {
@@ -700,6 +710,15 @@ const computeContractDiff = (sourceReport, compareReport) => {
         functions: functionDiffs,
     };
 };
+const formatMemoryReport = (memReports) => {
+    let markdown = "## Peak Memory Sample\n | Program | Peak Memory |\n | --- | --- |\n";
+    expect(memReports.length).toBeGreaterThan(0);
+    for (let i = 0; i < memReports.length; i++) {
+        markdown = markdown.concat(" | ", memReports[i].artifact_name, " | ", memReports[i].peak_memory, " |\n");
+    }
+    return markdown;
+};
+exports.formatMemoryReport = formatMemoryReport;
 
 
 /***/ }),
