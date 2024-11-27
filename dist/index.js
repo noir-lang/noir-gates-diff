@@ -433,6 +433,17 @@ function run() {
         catch (error) {
             return core.setFailed(error.message);
         }
+        // avoid the failing artifact download temporarily, for debugging purposes
+        if (memory_report) {
+            core.startGroup("Load reports");
+            core.info(`Loading reports from "${localReportPath}"`);
+            const compareContent = fs.readFileSync(localReportPath, "utf8");
+            core.info(`Format Memory markdown rows`);
+            const memoryContent = (0, report_1.memoryReports)(compareContent);
+            const markdown = (0, report_1.formatMemoryReport)(memoryContent);
+            core.setOutput("markdown", markdown);
+            return;
+        }
         // cannot use artifactClient because downloads are limited to uploads in the same workflow run
         // cf. https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#downloading-or-deleting-artifacts
         if (github_1.context.eventName === "pull_request") {
