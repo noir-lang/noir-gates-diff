@@ -201,7 +201,6 @@ const computeContractDiff = (
 
 export const formatMemoryReport = (memReports: MemoryReport[]): string => {
   let markdown = "## Peak Memory Sample\n | Program | Peak Memory |\n | --- | --- |\n";
-  expect(memReports.length).toBeGreaterThan(0);
   for (let i = 0; i < memReports.length; i++) {
     markdown = markdown.concat(
       " | ",

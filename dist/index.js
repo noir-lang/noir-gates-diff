@@ -723,7 +723,6 @@ const computeContractDiff = (sourceReport, compareReport) => {
 };
 const formatMemoryReport = (memReports) => {
     let markdown = "## Peak Memory Sample\n | Program | Peak Memory |\n | --- | --- |\n";
-    expect(memReports.length).toBeGreaterThan(0);
     for (let i = 0; i < memReports.length; i++) {
         markdown = markdown.concat(" | ", memReports[i].artifact_name, " | ", memReports[i].peak_memory, " |\n");
     }
