@@ -451,7 +451,6 @@ function run() {
                             const res = _c;
                             const artifact = res.data.find((artifact) => !artifact.expired && artifact.name === baseReport);
                             if (!artifact) {
-                                core.info(`DEBUG: searching..."${res.data}"`);
                                 yield new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
                                 continue;
                             }

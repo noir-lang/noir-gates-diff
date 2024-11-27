@@ -72,7 +72,6 @@ async function run() {
         );
 
         if (!artifact) {
-          core.info(`DEBUG: searching..."${res.data}"`);
           await new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
 
           continue;
