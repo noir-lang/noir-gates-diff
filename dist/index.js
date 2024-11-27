@@ -451,7 +451,8 @@ function run() {
                             const res = _c;
                             const artifact = res.data.find((artifact) => !artifact.expired && artifact.name === baseReport);
                             if (!artifact) {
-                                yield new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
+                                core.info(`DEBUG: searching with reduced timeout`);
+                                yield new Promise((resolve) => setTimeout(resolve, 90)); // avoid reaching the API rate limit
                                 continue;
                             }
                             artifactId = artifact.id;
@@ -482,7 +483,7 @@ function run() {
                     });
                     const zip = new adm_zip_1.default(Buffer.from(res.data));
                     for (const entry of zip.getEntries()) {
-                        core.info(`Loading gas reports from "${entry.entryName}"`);
+                        core.info(`Loading reports from "${entry.entryName}"`);
                         referenceContent = zip.readAsText(entry);
                     }
                     core.endGroup();

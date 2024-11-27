@@ -72,7 +72,8 @@ async function run() {
         );
 
         if (!artifact) {
-          await new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
+          core.info(`DEBUG: searching with reduced timeout`);
+          await new Promise((resolve) => setTimeout(resolve, 90)); // avoid reaching the API rate limit
 
           continue;
         }
@@ -99,7 +100,7 @@ async function run() {
 
         const zip = new Zip(Buffer.from(res.data as ArrayBuffer));
         for (const entry of zip.getEntries()) {
-          core.info(`Loading gas reports from "${entry.entryName}"`);
+          core.info(`Loading reports from "${entry.entryName}"`);
           referenceContent = zip.readAsText(entry);
         }
         core.endGroup();
