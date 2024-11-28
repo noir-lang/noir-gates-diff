@@ -40,6 +40,7 @@ const { owner, repo } = context.repo;
 const repository = owner + "/" + repo;
 
 let referenceContent: string;
+let compareContent: string;
 let refCommitHash: string | undefined;
 
 async function run() {
@@ -49,6 +50,8 @@ async function run() {
   try {
     // Upload the gates report to be used as a reference in later runs.
     await uploadArtifact();
+    core.info(`Loading reports from "${localReportPath}"`);
+    compareContent = fs.readFileSync(localReportPath, "utf8");
   } catch (error) {
     return core.setFailed((error as Error).message);
   }
@@ -114,8 +117,6 @@ async function run() {
 
   try {
     core.startGroup("Load reports");
-    core.info(`Loading reports from "${localReportPath}"`);
-    const compareContent = fs.readFileSync(localReportPath, "utf8");
     referenceContent ??= compareContent; // if no source reports were loaded, defaults to the current reports
 
     if (memory_report) {

@@ -419,6 +419,7 @@ const localReportPath = (0, path_1.resolve)(report);
 const { owner, repo } = github_1.context.repo;
 const repository = owner + "/" + repo;
 let referenceContent;
+let compareContent;
 let refCommitHash;
 function run() {
     var _a, e_1, _b, _c;
@@ -429,6 +430,8 @@ function run() {
         try {
             // Upload the gates report to be used as a reference in later runs.
             yield uploadArtifact();
+            core.info(`Loading reports from "${localReportPath}"`);
+            compareContent = fs.readFileSync(localReportPath, "utf8");
         }
         catch (error) {
             return core.setFailed(error.message);
@@ -501,17 +504,17 @@ function run() {
         }
         try {
             core.startGroup("Load reports");
-            core.info(`Loading reports from "${localReportPath}"`);
-            const compareContent = fs.readFileSync(localReportPath, "utf8");
+            referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source reports were loaded, defaults to the current reports
             if (memory_report) {
                 core.info(`Format Memory markdown rows`);
                 const memoryContent = (0, report_1.memoryReports)(compareContent);
+                core.info(`local mem report: ${memoryContent.length} programs`);
                 const referenceReports = (0, report_1.memoryReports)(referenceContent);
+                core.info(`ref mem report: ${memoryContent.length} programs`);
                 const markdown = (0, report_1.computeMemoryDiff)(referenceReports, memoryContent);
                 core.setOutput("markdown", markdown);
                 return;
             }
-            referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source reports were loaded, defaults to the current reports
             core.info(`Mapping compared reports`);
             const compareReports = (0, report_1.loadReports)(compareContent);
             core.info(`Got ${compareReports.programs.length} compare programs`);
