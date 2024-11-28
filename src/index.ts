@@ -116,6 +116,7 @@ async function run() {
     core.startGroup("Load reports");
     core.info(`Loading reports from "${localReportPath}"`);
     const compareContent = fs.readFileSync(localReportPath, "utf8");
+    referenceContent ??= compareContent; // if no source reports were loaded, defaults to the current reports
 
     if (memory_report) {
       core.info(`Format Memory markdown rows`);
@@ -125,8 +126,6 @@ async function run() {
       core.setOutput("markdown", markdown);
       return;
     }
-
-    referenceContent ??= compareContent; // if no source reports were loaded, defaults to the current reports
 
     core.info(`Mapping compared reports`);
     const compareReports = loadReports(compareContent);
