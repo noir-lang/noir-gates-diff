@@ -122,9 +122,7 @@ async function run() {
     if (memory_report) {
       core.info(`Format Memory markdown rows`);
       const memoryContent = memoryReports(compareContent);
-      core.info(`local mem report: ${memoryContent.length} programs`);
       const referenceReports = memoryReports(referenceContent);
-      core.info(`ref mem report: ${memoryContent.length} programs`);
       const markdown = computeMemoryDiff(referenceReports, memoryContent);
       core.setOutput("markdown", markdown);
       return;
