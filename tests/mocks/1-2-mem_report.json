@@ -1,0 +1,16 @@
+{"memory_reports": [ 
+ {
+    "artifact_name":"keccak256",
+    "peak_memory":"95.19M"
+ }
+ ,
+ {
+    "artifact_name":"workspace",
+    "peak_memory":"103.04M"
+ }
+ ,
+ {
+    "artifact_name":"regression_4709",
+    "peak_memory":"749.30M"
+ }
+]}

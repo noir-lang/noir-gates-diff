@@ -15,7 +15,7 @@ import {
   formatShellDiff,
   formatShellDiffBrillig,
 } from "./format/program";
-import { loadReports, computeProgramDiffs, memoryReports, formatMemoryReport } from "./report";
+import { loadReports, computeProgramDiffs, memoryReports, computeMemoryDiff } from "./report";
 
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
@@ -53,18 +53,6 @@ async function run() {
     return core.setFailed((error as Error).message);
   }
 
-  // avoid the failing artifact download temporarily, for debugging purposes
-  if (memory_report) {
-    core.startGroup("Load reports");
-    core.info(`Loading reports from "${localReportPath}"`);
-    const compareContent = fs.readFileSync(localReportPath, "utf8");
-    core.info(`Format Memory markdown rows`);
-    const memoryContent = memoryReports(compareContent);
-    const markdown = formatMemoryReport(memoryContent);
-    core.setOutput("markdown", markdown);
-    return;
-  }
-
   // cannot use artifactClient because downloads are limited to uploads in the same workflow run
   // cf. https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#downloading-or-deleting-artifacts
   if (context.eventName === "pull_request") {
@@ -72,17 +60,20 @@ async function run() {
       core.startGroup(
         `Searching artifact "${baseReport}" on repository "${repository}", on branch "${baseBranch}"`
       );
-
+      let count = 100;
       let artifactId: number | null = null;
       // Artifacts are returned in most recent first order.
       for await (const res of octokit.paginate.iterator(octokit.rest.actions.listArtifactsForRepo, {
         owner,
         repo,
       })) {
+        if (count == 0) {
+          break;
+        }
         const artifact = res.data.find(
           (artifact) => !artifact.expired && artifact.name === baseReport
         );
-
+        count = count - 1;
         if (!artifact) {
           await new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
 
@@ -129,7 +120,8 @@ async function run() {
     if (memory_report) {
       core.info(`Format Memory markdown rows`);
       const memoryContent = memoryReports(compareContent);
-      const markdown = formatMemoryReport(memoryContent);
+      const referenceReports = memoryReports(referenceContent);
+      const markdown = computeMemoryDiff(referenceReports, memoryContent);
       core.setOutput("markdown", markdown);
       return;
     }

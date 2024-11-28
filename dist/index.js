@@ -433,22 +433,12 @@ function run() {
         catch (error) {
             return core.setFailed(error.message);
         }
-        // avoid the failing artifact download temporarily, for debugging purposes
-        if (memory_report) {
-            core.startGroup("Load reports");
-            core.info(`Loading reports from "${localReportPath}"`);
-            const compareContent = fs.readFileSync(localReportPath, "utf8");
-            core.info(`Format Memory markdown rows`);
-            const memoryContent = (0, report_1.memoryReports)(compareContent);
-            const markdown = (0, report_1.formatMemoryReport)(memoryContent);
-            core.setOutput("markdown", markdown);
-            return;
-        }
         // cannot use artifactClient because downloads are limited to uploads in the same workflow run
         // cf. https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#downloading-or-deleting-artifacts
         if (github_1.context.eventName === "pull_request") {
             try {
                 core.startGroup(`Searching artifact "${baseReport}" on repository "${repository}", on branch "${baseBranch}"`);
+                let count = 100;
                 let artifactId = null;
                 try {
                     // Artifacts are returned in most recent first order.
@@ -460,7 +450,11 @@ function run() {
                         _e = false;
                         try {
                             const res = _c;
+                            if (count == 0) {
+                                break;
+                            }
                             const artifact = res.data.find((artifact) => !artifact.expired && artifact.name === baseReport);
+                            count = count - 1;
                             if (!artifact) {
                                 yield new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
                                 continue;
@@ -512,7 +506,8 @@ function run() {
             if (memory_report) {
                 core.info(`Format Memory markdown rows`);
                 const memoryContent = (0, report_1.memoryReports)(compareContent);
-                const markdown = (0, report_1.formatMemoryReport)(memoryContent);
+                const referenceReports = (0, report_1.memoryReports)(referenceContent);
+                const markdown = (0, report_1.computeMemoryDiff)(referenceReports, memoryContent);
                 core.setOutput("markdown", markdown);
                 return;
             }
@@ -588,7 +583,7 @@ run();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.formatMemoryReport = exports.computeContractDiffs = exports.computeProgramDiffs = exports.computedWorkspaceDiff = exports.memoryReports = exports.loadReports = exports.variation = void 0;
+exports.computeMemoryDiff = exports.formatMemoryReport = exports.computeContractDiffs = exports.computeProgramDiffs = exports.computedWorkspaceDiff = exports.memoryReports = exports.loadReports = exports.variation = void 0;
 const variation = (current, previous) => {
     const delta = current - previous;
     return {
@@ -729,6 +724,45 @@ const formatMemoryReport = (memReports) => {
     return markdown;
 };
 exports.formatMemoryReport = formatMemoryReport;
+const computeMemoryDiff = (refReports, memReports) => {
+    let markdown = "";
+    const diff_percentage = [];
+    let diff_column = false;
+    if (refReports.length === memReports.length) {
+        for (let i = 0; i < refReports.length; i++) {
+            let diff_str = "N/A";
+            if (refReports[i].artifact_name === memReports[i].artifact_name) {
+                const compPeak = memReports[i].peak_memory;
+                const refPeak = refReports[i].peak_memory;
+                let diff = 0;
+                if (compPeak[compPeak.length - 1] == refPeak[refPeak.length - 1]) {
+                    const compPeakValue = parseInt(compPeak.substring(0, compPeak.length - 1));
+                    const refPeakValue = parseInt(refPeak.substring(0, refPeak.length - 1));
+                    diff = Math.floor(((compPeakValue - refPeakValue) / refPeakValue) * 100);
+                }
+                else {
+                    diff = 100;
+                }
+                if (diff != 0) {
+                    diff_column = true;
+                }
+                diff_str = diff.toString() + "%";
+            }
+            diff_percentage.push(diff_str);
+        }
+    }
+    if (diff_column == true) {
+        markdown = "## Peak Memory Sample\n | Program | Peak Memory | % |\n | --- | --- | --- |\n";
+        for (let i = 0; i < memReports.length; i++) {
+            markdown = markdown.concat(" | ", memReports[i].artifact_name, " | ", memReports[i].peak_memory, " | ", diff_percentage[i], " |\n");
+        }
+    }
+    else {
+        markdown = (0, exports.formatMemoryReport)(memReports);
+    }
+    return markdown;
+};
+exports.computeMemoryDiff = computeMemoryDiff;
 
 
 /***/ }),
