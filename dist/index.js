@@ -437,6 +437,7 @@ function run() {
         if (github_1.context.eventName === "pull_request") {
             try {
                 core.startGroup(`Searching artifact "${baseReport}" on repository "${repository}", on branch "${baseBranch}"`);
+                let count = 100;
                 let artifactId = null;
                 try {
                     // Artifacts are returned in most recent first order.
@@ -448,7 +449,11 @@ function run() {
                         _e = false;
                         try {
                             const res = _c;
+                            if (count == 0) {
+                                break;
+                            }
                             const artifact = res.data.find((artifact) => !artifact.expired && artifact.name === baseReport);
+                            count = count - 1;
                             if (!artifact) {
                                 yield new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
                                 continue;
