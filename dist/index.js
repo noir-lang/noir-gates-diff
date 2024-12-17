@@ -1,6 +1,154 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 7917:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.uploadArtifact = exports.findPreviousArtifact = void 0;
+const adm_zip_1 = __importDefault(__nccwpck_require__(6761));
+const path_1 = __nccwpck_require__(1017);
+const artifact = __importStar(__nccwpck_require__(2605));
+const core = __importStar(__nccwpck_require__(2186));
+const github_1 = __nccwpck_require__(5438);
+const { owner, repo } = github_1.context.repo;
+// cannot use artifactClient because downloads are limited to uploads in the same workflow run
+// cf. https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#downloading-or-deleting-artifacts
+function findPreviousArtifact(token, baseReport, repository, baseBranch) {
+    var _a, e_1, _b, _c;
+    var _d;
+    return __awaiter(this, void 0, void 0, function* () {
+        core.startGroup(`Searching artifact "${baseReport}" on repository "${repository}", on branch "${baseBranch}"`);
+        const octokit = (0, github_1.getOctokit)(token);
+        let count = 100;
+        let artifactId = null;
+        let refCommitHash = undefined;
+        try {
+            // Artifacts are returned in most recent first order.
+            for (var _e = true, _f = __asyncValues(octokit.paginate.iterator(octokit.rest.actions.listArtifactsForRepo, {
+                owner,
+                repo,
+            })), _g; _g = yield _f.next(), _a = _g.done, !_a;) {
+                _c = _g.value;
+                _e = false;
+                try {
+                    const res = _c;
+                    if (count == 0) {
+                        break;
+                    }
+                    const artifact = res.data.find((artifact) => !artifact.expired && artifact.name === baseReport);
+                    count = count - 1;
+                    if (!artifact) {
+                        yield new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
+                        continue;
+                    }
+                    artifactId = artifact.id;
+                    refCommitHash = (_d = artifact.workflow_run) === null || _d === void 0 ? void 0 : _d.head_sha;
+                    core.info(`Found artifact named "${baseReport}" with ID "${artifactId}" from commit "${refCommitHash}"`);
+                    break;
+                }
+                finally {
+                    _e = true;
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (!_e && !_a && (_b = _f.return)) yield _b.call(_f);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        core.endGroup();
+        if (artifactId) {
+            core.startGroup(`Downloading artifact "${baseReport}" of repository "${repository}" with ID "${artifactId}"`);
+            const res = yield octokit.rest.actions.downloadArtifact({
+                owner,
+                repo,
+                artifact_id: artifactId,
+                archive_format: "zip",
+            });
+            let referenceContent = "";
+            const zip = new adm_zip_1.default(Buffer.from(res.data));
+            for (const entry of zip.getEntries()) {
+                core.info(`Loading gas reports from "${entry.entryName}"`);
+                referenceContent = zip.readAsText(entry);
+            }
+            core.endGroup();
+            return [refCommitHash, referenceContent];
+        }
+        else {
+            core.error(`No workflow run found with an artifact named "${baseReport}"`);
+            throw Error(`No workflow run found with an artifact named "${baseReport}"`);
+        }
+    });
+}
+exports.findPreviousArtifact = findPreviousArtifact;
+function uploadArtifact(headBranch, report) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const headBranchEscaped = headBranch.replace(/[/\\]/g, "-");
+        const outReport = `${headBranchEscaped}.${report}`;
+        const localReportPath = (0, path_1.resolve)(report);
+        const artifactClient = artifact.create();
+        core.startGroup(`Upload new report from "${localReportPath}" as artifact named "${outReport}"`);
+        const uploadResponse = yield artifactClient.uploadArtifact(outReport, [localReportPath], (0, path_1.dirname)(localReportPath), {
+            continueOnError: false,
+        });
+        if (uploadResponse.failedItems.length > 0)
+            throw Error("Failed to upload gas report.");
+        core.info(`Artifact ${uploadResponse.artifactName} has been successfully uploaded!`);
+        core.endGroup();
+    });
+}
+exports.uploadArtifact = uploadArtifact;
+
+
+/***/ }),
+
 /***/ 1578:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -381,23 +529,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const adm_zip_1 = __importDefault(__nccwpck_require__(6761));
 const fs = __importStar(__nccwpck_require__(7147));
 const path_1 = __nccwpck_require__(1017);
-const artifact = __importStar(__nccwpck_require__(2605));
 const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
+const artifact_1 = __nccwpck_require__(7917);
 const program_1 = __nccwpck_require__(1578);
 const report_1 = __nccwpck_require__(8269);
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
@@ -412,134 +549,47 @@ const baseBranch = core.getInput("base");
 const headBranch = core.getInput("head");
 const baseBranchEscaped = baseBranch.replace(/[/\\]/g, "-");
 const baseReport = `${baseBranchEscaped}.${report}`;
-const octokit = (0, github_1.getOctokit)(token);
-const artifactClient = artifact.create();
 const localReportPath = (0, path_1.resolve)(report);
 const { owner, repo } = github_1.context.repo;
 const repository = owner + "/" + repo;
-let referenceContent;
-let refCommitHash;
 function run() {
-    var _a, e_1, _b, _c;
-    var _d;
     return __awaiter(this, void 0, void 0, function* () {
         // if (!isSortCriteriaValid(sortCriteria)) return;
         // if (!isSortOrdersValid(sortOrders)) return;
         try {
             // Upload the gates report to be used as a reference in later runs.
-            yield uploadArtifact();
+            yield (0, artifact_1.uploadArtifact)(headBranch, report);
         }
         catch (error) {
             return core.setFailed(error.message);
         }
-        // cannot use artifactClient because downloads are limited to uploads in the same workflow run
-        // cf. https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#downloading-or-deleting-artifacts
+        let referenceContent;
+        let refCommitHash;
         if (github_1.context.eventName === "pull_request") {
+            // If we're on a pull request then we want to pull the most recent report from the base branch.
             try {
-                core.startGroup(`Searching artifact "${baseReport}" on repository "${repository}", on branch "${baseBranch}"`);
-                let count = 100;
-                let artifactId = null;
-                try {
-                    // Artifacts are returned in most recent first order.
-                    for (var _e = true, _f = __asyncValues(octokit.paginate.iterator(octokit.rest.actions.listArtifactsForRepo, {
-                        owner,
-                        repo,
-                    })), _g; _g = yield _f.next(), _a = _g.done, !_a;) {
-                        _c = _g.value;
-                        _e = false;
-                        try {
-                            const res = _c;
-                            if (count == 0) {
-                                break;
-                            }
-                            const artifact = res.data.find((artifact) => !artifact.expired && artifact.name === baseReport);
-                            count = count - 1;
-                            if (!artifact) {
-                                yield new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
-                                continue;
-                            }
-                            artifactId = artifact.id;
-                            refCommitHash = (_d = artifact.workflow_run) === null || _d === void 0 ? void 0 : _d.head_sha;
-                            core.info(`Found artifact named "${baseReport}" with ID "${artifactId}" from commit "${refCommitHash}"`);
-                            break;
-                        }
-                        finally {
-                            _e = true;
-                        }
-                    }
-                }
-                catch (e_1_1) { e_1 = { error: e_1_1 }; }
-                finally {
-                    try {
-                        if (!_e && !_a && (_b = _f.return)) yield _b.call(_f);
-                    }
-                    finally { if (e_1) throw e_1.error; }
-                }
-                core.endGroup();
-                if (artifactId) {
-                    core.startGroup(`Downloading artifact "${baseReport}" of repository "${repository}" with ID "${artifactId}"`);
-                    const res = yield octokit.rest.actions.downloadArtifact({
-                        owner,
-                        repo,
-                        artifact_id: artifactId,
-                        archive_format: "zip",
-                    });
-                    const zip = new adm_zip_1.default(Buffer.from(res.data));
-                    for (const entry of zip.getEntries()) {
-                        core.info(`Loading gas reports from "${entry.entryName}"`);
-                        referenceContent = zip.readAsText(entry);
-                    }
-                    core.endGroup();
-                }
-                else
-                    core.error(`No workflow run found with an artifact named "${baseReport}"`);
+                [refCommitHash, referenceContent] = yield (0, artifact_1.findPreviousArtifact)(token, baseReport, repository, baseBranch);
             }
             catch (error) {
                 return core.setFailed(error.message);
             }
         }
+        else {
+            // If we don't have a comparison branch then we cannot make a diff so return early.
+            core.info(`Ending early as no report to compare against`);
+            return;
+        }
         try {
-            core.startGroup("Load gas reports");
-            core.info(`Loading gas reports from "${localReportPath}"`);
-            const compareContent = fs.readFileSync(localReportPath, "utf8");
-            referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source gas reports were loaded, defaults to the current gas reports
-            core.info(`Mapping compared gas reports`);
-            const compareReports = (0, report_1.loadReports)(compareContent);
-            core.info(`Got ${compareReports.programs.length} compare programs`);
-            core.info(`Mapping reference gas reports`);
-            const referenceReports = (0, report_1.loadReports)(referenceContent);
-            core.info(`Got ${compareReports.programs.length} reference programs`);
-            core.endGroup();
-            core.startGroup("Compute gas diff");
+            const [referenceReports, compareReports] = loadReports2(referenceContent);
+            core.startGroup("Compute gates diff");
             const [diffCircuitRows, diffBrilligRows] = (0, report_1.computeProgramDiffs)(referenceReports.programs, compareReports.programs);
-            let numDiffs = diffCircuitRows.length;
-            let summaryRows;
-            let fullReportRows;
-            if (brillig_report) {
-                numDiffs = diffBrilligRows.length;
-                core.info(`Format Brillig markdown rows`);
-                [summaryRows, fullReportRows] = (0, program_1.formatBrilligRows)(diffBrilligRows, summaryQuantile);
-            }
-            else {
-                core.info(`Format ACIR markdown rows`);
-                [summaryRows, fullReportRows] = (0, program_1.formatCircuitRows)(diffCircuitRows, summaryQuantile);
-            }
-            core.info(`Format markdown of ${numDiffs} diffs`);
-            // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
-            const markdown = (0, program_1.formatMarkdownDiff)(header, repository, github_1.context.sha, summaryRows, fullReportRows, !brillig_report, brillig_report_bytes == "true", refCommitHash, summaryQuantile);
-            core.info(`Format shell of ${numDiffs} diffs`);
-            let shell;
-            if (brillig_report) {
-                core.info(`Format Brillig diffs`);
-                const [summaryRowsShell, fullReportRowsShell] = (0, program_1.formatShellBrilligRows)(diffBrilligRows, summaryQuantile);
-                shell = (0, program_1.formatShellDiffBrillig)(diffCircuitRows, summaryRowsShell, fullReportRowsShell, brillig_report_bytes == "true", summaryQuantile);
-            }
-            else {
-                core.info(`Format ACIR diffs`);
-                const [summaryRowsShell, fullReportRowsShell] = (0, program_1.formatShellCircuitRows)(diffCircuitRows, summaryQuantile);
-                shell = (0, program_1.formatShellDiff)(diffCircuitRows, summaryRowsShell, fullReportRowsShell, summaryQuantile);
-            }
             core.endGroup();
+            const numDiffs = brillig_report ? diffBrilligRows.length : diffCircuitRows.length;
+            if (numDiffs == 0) {
+                core.info(`Ending early as reports diff shows no difference`);
+                return;
+            }
+            const [shell, markdown] = formatReport(diffCircuitRows, diffBrilligRows, refCommitHash);
             console.log(shell);
             if (numDiffs > 0) {
                 core.setOutput("shell", shell);
@@ -551,21 +601,52 @@ function run() {
         }
     });
 }
-function uploadArtifact() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const headBranchEscaped = headBranch.replace(/[/\\]/g, "-");
-        const outReport = `${headBranchEscaped}.${report}`;
-        core.startGroup(`Upload new report from "${localReportPath}" as artifact named "${outReport}"`);
-        const uploadResponse = yield artifactClient.uploadArtifact(outReport, [localReportPath], (0, path_1.dirname)(localReportPath), {
-            continueOnError: false,
-        });
-        if (uploadResponse.failedItems.length > 0)
-            throw Error("Failed to upload gas report.");
-        core.info(`Artifact ${uploadResponse.artifactName} has been successfully uploaded!`);
-        core.endGroup();
-    });
+function loadReports2(referenceContent) {
+    core.startGroup("Load gas reports");
+    core.info(`Loading gas reports from "${localReportPath}"`);
+    const compareContent = fs.readFileSync(localReportPath, "utf8");
+    referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source gas reports were loaded, defaults to the current gas reports
+    core.info(`Mapping compared gas reports`);
+    const compareReports = (0, report_1.loadReports)(compareContent);
+    core.info(`Got ${compareReports.programs.length} compare programs`);
+    core.info(`Mapping reference gas reports`);
+    const referenceReports = (0, report_1.loadReports)(referenceContent);
+    core.info(`Got ${compareReports.programs.length} reference programs`);
+    core.endGroup();
+    return [referenceReports, compareReports];
 }
 run();
+function formatReport(diffCircuitRows, diffBrilligRows, refCommitHash) {
+    core.startGroup("Formatting gates diff");
+    let summaryRows;
+    let fullReportRows;
+    if (brillig_report) {
+        core.info(`Format Brillig markdown rows`);
+        [summaryRows, fullReportRows] = (0, program_1.formatBrilligRows)(diffBrilligRows, summaryQuantile);
+    }
+    else {
+        core.info(`Format ACIR markdown rows`);
+        [summaryRows, fullReportRows] = (0, program_1.formatCircuitRows)(diffCircuitRows, summaryQuantile);
+    }
+    core.info(`Format markdown of ${fullReportRows.length} diffs`);
+    // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
+    const markdown = (0, program_1.formatMarkdownDiff)(header, repository, github_1.context.sha, summaryRows, fullReportRows, !brillig_report, brillig_report_bytes == "true", refCommitHash, summaryQuantile);
+    core.info(`Format shell of ${fullReportRows.length} diffs`);
+    let shell;
+    if (brillig_report) {
+        core.info(`Format Brillig diffs`);
+        const [summaryRowsShell, fullReportRowsShell] = (0, program_1.formatShellBrilligRows)(diffBrilligRows, summaryQuantile);
+        shell = (0, program_1.formatShellDiffBrillig)(diffCircuitRows, summaryRowsShell, fullReportRowsShell, brillig_report_bytes == "true", summaryQuantile);
+    }
+    else {
+        core.info(`Format ACIR diffs`);
+        const [summaryRowsShell, fullReportRowsShell] = (0, program_1.formatShellCircuitRows)(diffCircuitRows, summaryQuantile);
+        shell = (0, program_1.formatShellDiff)(diffCircuitRows, summaryRowsShell, fullReportRowsShell, summaryQuantile);
+    }
+    core.endGroup();
+    console.log(shell);
+    return [shell, markdown];
+}
 
 
 /***/ }),
