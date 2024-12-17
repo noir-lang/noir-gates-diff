@@ -14,7 +14,7 @@ import {
   formatShellDiff,
   formatShellDiffBrillig,
 } from "./format/program";
-import { computeProgramDiffs } from "./report";
+import { computeProgramDiffs, parseReport } from "./report";
 import { DiffBrillig, DiffCircuit, WorkspaceReport } from "./types";
 
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
@@ -102,11 +102,11 @@ function loadReports(referenceContent: string): [WorkspaceReport, WorkspaceRepor
   const compareContent = fs.readFileSync(localReportPath, "utf8");
 
   core.info(`Mapping compared gas reports`);
-  const compareReports: WorkspaceReport = JSON.parse(compareContent);
+  const compareReports = parseReport(compareContent);
   core.info(`Got ${compareReports.programs.length} compare programs`);
 
   core.info(`Mapping reference gas reports`);
-  const referenceReports: WorkspaceReport = JSON.parse(referenceContent);
+  const referenceReports = parseReport(referenceContent);
   core.info(`Got ${compareReports.programs.length} reference programs`);
   core.endGroup();
 

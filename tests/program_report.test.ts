@@ -9,14 +9,14 @@ import {
   formatShellDiff,
   formatShellDiffBrillig,
 } from "../src/format/program";
-import { computeProgramDiffs } from "../src/report";
+import { computeProgramDiffs, parseReport } from "../src/report";
 import { ProgramReport } from "../src/types";
 
 const srcContent = fs.readFileSync("tests/mocks/gas_report.2.json", "utf8");
 const cmpContent = fs.readFileSync("tests/mocks/gas_report.1.json", "utf8");
 
-const srcContractReports: ProgramReport[] = JSON.parse(srcContent).programs;
-const cmpContractReports: ProgramReport[] = JSON.parse(cmpContent).programs;
+const srcContractReports: ProgramReport[] = parseReport(srcContent).programs;
+const cmpContractReports: ProgramReport[] = parseReport(cmpContent).programs;
 
 describe("Markdown format", () => {
   // shows how the runner will run a javascript action with env / stdout protocol
