@@ -59,17 +59,21 @@ async function run() {
       core.startGroup(
         `Searching artifact "${baseReport}" on repository "${repository}", on branch "${baseBranch}"`
       );
-
+      let count = 100;
       let artifactId: number | null = null;
       // Artifacts are returned in most recent first order.
       for await (const res of octokit.paginate.iterator(octokit.rest.actions.listArtifactsForRepo, {
         owner,
         repo,
       })) {
+        if (count == 0) {
+          break;
+        }
         const artifact = res.data.find(
           (artifact) => !artifact.expired && artifact.name === baseReport
         );
 
+        count = count - 1;
         if (!artifact) {
           await new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
 
