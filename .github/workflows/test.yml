@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
 
 # This will cancel previous runs when a branch or PR is updated
 concurrency:
@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   test:
-    name: Integration Tests (Node)
+    name: Test
     runs-on: ubuntu-latest
     timeout-minutes: 30
 

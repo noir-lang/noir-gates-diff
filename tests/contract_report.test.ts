@@ -1,13 +1,13 @@
 import * as fs from "fs";
 
 import { formatMarkdownDiff, formatShellDiff } from "../src/format/contract";
-import { loadReports, computeContractDiffs } from "../src/report";
+import { computeContractDiffs } from "../src/report";
 
 const srcContent = fs.readFileSync("tests/mocks/gas_report.2.json", "utf8");
 const cmpContent = fs.readFileSync("tests/mocks/gas_report.1.json", "utf8");
 
-const srcContractReports = loadReports(srcContent).contracts;
-const cmpContractReports = loadReports(cmpContent).contracts;
+const srcContractReports = JSON.parse(srcContent).contracts;
+const cmpContractReports = JSON.parse(cmpContent).contracts;
 
 describe("Markdown format", () => {
   // shows how the runner will run a javascript action with env / stdout protocol

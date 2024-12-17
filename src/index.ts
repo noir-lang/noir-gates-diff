@@ -1,11 +1,10 @@
-import Zip from "adm-zip";
 import * as fs from "fs";
-import { dirname, resolve } from "path";
+import { resolve } from "path";
 
-import * as artifact from "@actions/artifact";
 import * as core from "@actions/core";
-import { context, getOctokit } from "@actions/github";
+import { context } from "@actions/github";
 
+import { uploadArtifact, findPreviousArtifact } from "./artifact";
 import {
   formatBrilligRows,
   formatCircuitRows,
@@ -15,7 +14,8 @@ import {
   formatShellDiff,
   formatShellDiffBrillig,
 } from "./format/program";
-import { loadReports, computeProgramDiffs } from "./report";
+import { computeProgramDiffs } from "./report";
+import { DiffBrillig, DiffCircuit, WorkspaceReport } from "./types";
 
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
@@ -31,15 +31,10 @@ const headBranch = core.getInput("head");
 const baseBranchEscaped = baseBranch.replace(/[/\\]/g, "-");
 const baseReport = `${baseBranchEscaped}.${report}`;
 
-const octokit = getOctokit(token);
-const artifactClient = artifact.create();
 const localReportPath = resolve(report);
 
 const { owner, repo } = context.repo;
 const repository = owner + "/" + repo;
-
-let referenceContent: string;
-let refCommitHash: string | undefined;
 
 async function run() {
   // if (!isSortCriteriaValid(sortCriteria)) return;
@@ -47,148 +42,48 @@ async function run() {
 
   try {
     // Upload the gates report to be used as a reference in later runs.
-    await uploadArtifact();
+    await uploadArtifact(headBranch, report);
   } catch (error) {
     return core.setFailed((error as Error).message);
   }
 
-  // cannot use artifactClient because downloads are limited to uploads in the same workflow run
-  // cf. https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts#downloading-or-deleting-artifacts
+  let referenceContent: string;
+  let refCommitHash: string;
   if (context.eventName === "pull_request") {
+    // If we're on a pull request then we want to pull the most recent report from the base branch.
     try {
-      core.startGroup(
-        `Searching artifact "${baseReport}" on repository "${repository}", on branch "${baseBranch}"`
+      [refCommitHash, referenceContent] = await findPreviousArtifact(
+        token,
+        baseReport,
+        repository,
+        baseBranch
       );
-      let count = 100;
-      let artifactId: number | null = null;
-      // Artifacts are returned in most recent first order.
-      for await (const res of octokit.paginate.iterator(octokit.rest.actions.listArtifactsForRepo, {
-        owner,
-        repo,
-      })) {
-        if (count == 0) {
-          break;
-        }
-        const artifact = res.data.find(
-          (artifact) => !artifact.expired && artifact.name === baseReport
-        );
-
-        count = count - 1;
-        if (!artifact) {
-          await new Promise((resolve) => setTimeout(resolve, 900)); // avoid reaching the API rate limit
-
-          continue;
-        }
-
-        artifactId = artifact.id;
-        refCommitHash = artifact.workflow_run?.head_sha;
-        core.info(
-          `Found artifact named "${baseReport}" with ID "${artifactId}" from commit "${refCommitHash}"`
-        );
-        break;
-      }
-      core.endGroup();
-
-      if (artifactId) {
-        core.startGroup(
-          `Downloading artifact "${baseReport}" of repository "${repository}" with ID "${artifactId}"`
-        );
-        const res = await octokit.rest.actions.downloadArtifact({
-          owner,
-          repo,
-          artifact_id: artifactId,
-          archive_format: "zip",
-        });
-
-        const zip = new Zip(Buffer.from(res.data as ArrayBuffer));
-        for (const entry of zip.getEntries()) {
-          core.info(`Loading gas reports from "${entry.entryName}"`);
-          referenceContent = zip.readAsText(entry);
-        }
-        core.endGroup();
-      } else core.error(`No workflow run found with an artifact named "${baseReport}"`);
     } catch (error) {
       return core.setFailed((error as Error).message);
     }
+  } else {
+    // If we don't have a comparison branch then we cannot make a diff so return early.
+    core.info(`Ending early as no report to compare against`);
+    return;
   }
 
   try {
-    core.startGroup("Load gas reports");
-    core.info(`Loading gas reports from "${localReportPath}"`);
-    const compareContent = fs.readFileSync(localReportPath, "utf8");
-    referenceContent ??= compareContent; // if no source gas reports were loaded, defaults to the current gas reports
+    const [referenceReports, compareReports] = loadReports(referenceContent);
 
-    core.info(`Mapping compared gas reports`);
-    const compareReports = loadReports(compareContent);
-    core.info(`Got ${compareReports.programs.length} compare programs`);
-
-    core.info(`Mapping reference gas reports`);
-    const referenceReports = loadReports(referenceContent);
-    core.info(`Got ${compareReports.programs.length} reference programs`);
-    core.endGroup();
-
-    core.startGroup("Compute gas diff");
+    core.startGroup("Compute gates diff");
     const [diffCircuitRows, diffBrilligRows] = computeProgramDiffs(
       referenceReports.programs,
       compareReports.programs
     );
-
-    let numDiffs = diffCircuitRows.length;
-    let summaryRows;
-    let fullReportRows;
-    if (brillig_report) {
-      numDiffs = diffBrilligRows.length;
-      core.info(`Format Brillig markdown rows`);
-      [summaryRows, fullReportRows] = formatBrilligRows(diffBrilligRows, summaryQuantile);
-    } else {
-      core.info(`Format ACIR markdown rows`);
-      [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
-    }
-
-    core.info(`Format markdown of ${numDiffs} diffs`);
-    // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
-    const markdown = formatMarkdownDiff(
-      header,
-      repository,
-      context.sha,
-      summaryRows,
-      fullReportRows,
-      !brillig_report,
-      brillig_report_bytes == "true",
-      refCommitHash,
-      summaryQuantile
-    );
-    core.info(`Format shell of ${numDiffs} diffs`);
-
-    let shell;
-    if (brillig_report) {
-      core.info(`Format Brillig diffs`);
-      const [summaryRowsShell, fullReportRowsShell] = formatShellBrilligRows(
-        diffBrilligRows,
-        summaryQuantile
-      );
-      shell = formatShellDiffBrillig(
-        diffCircuitRows,
-        summaryRowsShell,
-        fullReportRowsShell,
-        brillig_report_bytes == "true",
-        summaryQuantile
-      );
-    } else {
-      core.info(`Format ACIR diffs`);
-      const [summaryRowsShell, fullReportRowsShell] = formatShellCircuitRows(
-        diffCircuitRows,
-        summaryQuantile
-      );
-      shell = formatShellDiff(
-        diffCircuitRows,
-        summaryRowsShell,
-        fullReportRowsShell,
-        summaryQuantile
-      );
-    }
-
     core.endGroup();
+
+    const numDiffs = brillig_report ? diffBrilligRows.length : diffCircuitRows.length;
+    if (numDiffs == 0) {
+      core.info(`Ending early as reports diff shows no difference`);
+      return;
+    }
+
+    const [shell, markdown] = formatReport(diffCircuitRows, diffBrilligRows, refCommitHash);
 
     console.log(shell);
 
@@ -201,24 +96,85 @@ async function run() {
   }
 }
 
-async function uploadArtifact() {
-  const headBranchEscaped = headBranch.replace(/[/\\]/g, "-");
-  const outReport = `${headBranchEscaped}.${report}`;
+function loadReports(referenceContent: string): [WorkspaceReport, WorkspaceReport] {
+  core.startGroup("Load gas reports");
+  core.info(`Loading gas reports from "${localReportPath}"`);
+  const compareContent = fs.readFileSync(localReportPath, "utf8");
 
-  core.startGroup(`Upload new report from "${localReportPath}" as artifact named "${outReport}"`);
-  const uploadResponse = await artifactClient.uploadArtifact(
-    outReport,
-    [localReportPath],
-    dirname(localReportPath),
-    {
-      continueOnError: false,
-    }
-  );
+  core.info(`Mapping compared gas reports`);
+  const compareReports: WorkspaceReport = JSON.parse(compareContent);
+  core.info(`Got ${compareReports.programs.length} compare programs`);
 
-  if (uploadResponse.failedItems.length > 0) throw Error("Failed to upload gas report.");
-
-  core.info(`Artifact ${uploadResponse.artifactName} has been successfully uploaded!`);
+  core.info(`Mapping reference gas reports`);
+  const referenceReports: WorkspaceReport = JSON.parse(referenceContent);
+  core.info(`Got ${compareReports.programs.length} reference programs`);
   core.endGroup();
+
+  return [referenceReports, compareReports];
+}
+
+function formatReport(
+  diffCircuitRows: DiffCircuit[],
+  diffBrilligRows: DiffBrillig[],
+  refCommitHash: string
+): [string, string] {
+  core.startGroup("Formatting diff");
+
+  let summaryRows;
+  let fullReportRows;
+  if (brillig_report) {
+    core.info(`Format Brillig markdown rows`);
+    [summaryRows, fullReportRows] = formatBrilligRows(diffBrilligRows, summaryQuantile);
+  } else {
+    core.info(`Format ACIR markdown rows`);
+    [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
+  }
+
+  core.info(`Format markdown of ${fullReportRows.length} diffs`);
+  const markdown = formatMarkdownDiff(
+    header,
+    repository,
+    context.sha,
+    summaryRows,
+    fullReportRows,
+    !brillig_report,
+    brillig_report_bytes == "true",
+    refCommitHash,
+    summaryQuantile
+  );
+  core.info(`Format shell of ${fullReportRows.length} diffs`);
+
+  let shell;
+  if (brillig_report) {
+    core.info(`Format Brillig diffs`);
+    const [summaryRowsShell, fullReportRowsShell] = formatShellBrilligRows(
+      diffBrilligRows,
+      summaryQuantile
+    );
+    shell = formatShellDiffBrillig(
+      diffCircuitRows,
+      summaryRowsShell,
+      fullReportRowsShell,
+      brillig_report_bytes == "true",
+      summaryQuantile
+    );
+  } else {
+    core.info(`Format ACIR diffs`);
+    const [summaryRowsShell, fullReportRowsShell] = formatShellCircuitRows(
+      diffCircuitRows,
+      summaryQuantile
+    );
+    shell = formatShellDiff(
+      diffCircuitRows,
+      summaryRowsShell,
+      fullReportRowsShell,
+      summaryQuantile
+    );
+  }
+
+  core.endGroup();
+
+  return [shell, markdown];
 }
 
 run();

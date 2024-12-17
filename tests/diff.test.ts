@@ -1,14 +1,14 @@
 import * as fs from "fs";
 
-import { computeProgramDiffs, loadReports } from "../src/report";
-import { DiffBrillig, DiffCircuit } from "../src/types";
+import { computeProgramDiffs } from "../src/report";
+import { DiffBrillig, DiffCircuit, ProgramReport } from "../src/types";
 
 const srcContent = fs.readFileSync("tests/mocks/gas_report.2.json", "utf8");
 const cmpContent = fs.readFileSync("tests/mocks/gas_report.1.json", "utf8");
 
 describe("Program diffs", () => {
-  const srcProgramReports = loadReports(srcContent).programs;
-  const cmpProgramReports = loadReports(cmpContent).programs;
+  const srcProgramReports: ProgramReport[] = JSON.parse(srcContent).programs;
+  const cmpProgramReports: ProgramReport[] = JSON.parse(cmpContent).programs;
 
   it("should diff 1 and 2 successfully", () => {
     const expectedDiffCircuits: DiffCircuit[] = [

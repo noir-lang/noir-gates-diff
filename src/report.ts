@@ -23,10 +23,6 @@ export const variation = (current: number, previous: number) => {
   };
 };
 
-export const loadReports = (content: string): WorkspaceReport => {
-  return JSON.parse(content);
-};
-
 export const computedWorkspaceDiff = (
   sourceReport: WorkspaceReport,
   compareReport: WorkspaceReport
