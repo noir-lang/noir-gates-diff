@@ -12,6 +12,10 @@ import {
   DiffBrillig,
 } from "./types";
 
+export const parseReport = (content: string): WorkspaceReport => {
+  return JSON.parse(content);
+};
+
 export const variation = (current: number, previous: number) => {
   const delta = current - previous;
 
@@ -21,10 +25,6 @@ export const variation = (current: number, previous: number) => {
     delta,
     percentage: previous !== 0 ? (100 * delta) / previous : Infinity,
   };
-};
-
-export const loadReports = (content: string): WorkspaceReport => {
-  return JSON.parse(content);
 };
 
 export const computedWorkspaceDiff = (
