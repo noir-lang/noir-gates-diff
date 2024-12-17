@@ -580,7 +580,7 @@ function run() {
             return;
         }
         try {
-            const [referenceReports, compareReports] = loadReports2(referenceContent);
+            const [referenceReports, compareReports] = loadReports(referenceContent);
             core.startGroup("Compute gates diff");
             const [diffCircuitRows, diffBrilligRows] = (0, report_1.computeProgramDiffs)(referenceReports.programs, compareReports.programs);
             core.endGroup();
@@ -601,23 +601,21 @@ function run() {
         }
     });
 }
-function loadReports2(referenceContent) {
+function loadReports(referenceContent) {
     core.startGroup("Load gas reports");
     core.info(`Loading gas reports from "${localReportPath}"`);
     const compareContent = fs.readFileSync(localReportPath, "utf8");
-    referenceContent !== null && referenceContent !== void 0 ? referenceContent : (referenceContent = compareContent); // if no source gas reports were loaded, defaults to the current gas reports
     core.info(`Mapping compared gas reports`);
-    const compareReports = (0, report_1.loadReports)(compareContent);
+    const compareReports = (0, report_1.parseReport)(compareContent);
     core.info(`Got ${compareReports.programs.length} compare programs`);
     core.info(`Mapping reference gas reports`);
-    const referenceReports = (0, report_1.loadReports)(referenceContent);
+    const referenceReports = (0, report_1.parseReport)(referenceContent);
     core.info(`Got ${compareReports.programs.length} reference programs`);
     core.endGroup();
     return [referenceReports, compareReports];
 }
-run();
 function formatReport(diffCircuitRows, diffBrilligRows, refCommitHash) {
-    core.startGroup("Formatting gates diff");
+    core.startGroup("Formatting diff");
     let summaryRows;
     let fullReportRows;
     if (brillig_report) {
@@ -629,7 +627,6 @@ function formatReport(diffCircuitRows, diffBrilligRows, refCommitHash) {
         [summaryRows, fullReportRows] = (0, program_1.formatCircuitRows)(diffCircuitRows, summaryQuantile);
     }
     core.info(`Format markdown of ${fullReportRows.length} diffs`);
-    // const [summaryRows, fullReportRows] = formatCircuitRows(diffCircuitRows, summaryQuantile);
     const markdown = (0, program_1.formatMarkdownDiff)(header, repository, github_1.context.sha, summaryRows, fullReportRows, !brillig_report, brillig_report_bytes == "true", refCommitHash, summaryQuantile);
     core.info(`Format shell of ${fullReportRows.length} diffs`);
     let shell;
@@ -644,9 +641,9 @@ function formatReport(diffCircuitRows, diffBrilligRows, refCommitHash) {
         shell = (0, program_1.formatShellDiff)(diffCircuitRows, summaryRowsShell, fullReportRowsShell, summaryQuantile);
     }
     core.endGroup();
-    console.log(shell);
     return [shell, markdown];
 }
+run();
 
 
 /***/ }),
@@ -657,7 +654,11 @@ function formatReport(diffCircuitRows, diffBrilligRows, refCommitHash) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.computeContractDiffs = exports.computeProgramDiffs = exports.computedWorkspaceDiff = exports.loadReports = exports.variation = void 0;
+exports.computeContractDiffs = exports.computeProgramDiffs = exports.computedWorkspaceDiff = exports.variation = exports.parseReport = void 0;
+const parseReport = (content) => {
+    return JSON.parse(content);
+};
+exports.parseReport = parseReport;
 const variation = (current, previous) => {
     const delta = current - previous;
     return {
@@ -668,10 +669,6 @@ const variation = (current, previous) => {
     };
 };
 exports.variation = variation;
-const loadReports = (content) => {
-    return JSON.parse(content);
-};
-exports.loadReports = loadReports;
 const computedWorkspaceDiff = (sourceReport, compareReport) => {
     const [diffCircuits, diffBrilligs] = (0, exports.computeProgramDiffs)(sourceReport.programs, compareReport.programs);
     return {
