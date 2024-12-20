@@ -10,11 +10,9 @@ import {
   ProgramReport,
   BrilligReport,
   DiffBrillig,
-} from "./types";
+} from "../types";
 
-export const parseReport = (content: string): WorkspaceReport => {
-  return JSON.parse(content);
-};
+export { parseReport } from "./parsing";
 
 export const variation = (current: number, previous: number) => {
   const delta = current - previous;

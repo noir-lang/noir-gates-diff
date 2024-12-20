@@ -536,7 +536,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
 const artifact_1 = __nccwpck_require__(7917);
 const program_1 = __nccwpck_require__(1578);
-const report_1 = __nccwpck_require__(8269);
+const report_1 = __nccwpck_require__(4909);
 const token = process.env.GITHUB_TOKEN || core.getInput("token");
 const report = core.getInput("report");
 const header = core.getInput("header");
@@ -602,15 +602,19 @@ function run() {
     });
 }
 function loadReports(referenceContent) {
-    core.startGroup("Load gas reports");
-    core.info(`Loading gas reports from "${localReportPath}"`);
+    core.startGroup("Load gate reports");
+    core.info(`Loading gate reports from "${localReportPath}"`);
     const compareContent = fs.readFileSync(localReportPath, "utf8");
-    core.info(`Mapping compared gas reports`);
+    core.info(`Mapping compared gate reports`);
     const compareReports = (0, report_1.parseReport)(compareContent);
     core.info(`Got ${compareReports.programs.length} compare programs`);
-    core.info(`Mapping reference gas reports`);
+    core.info(`Mapping reference gate reports`);
     const referenceReports = (0, report_1.parseReport)(referenceContent);
     core.info(`Got ${compareReports.programs.length} reference programs`);
+    core.endGroup();
+    core.startGroup("Print gate reports");
+    core.info(JSON.stringify(compareReports));
+    core.info(JSON.stringify(referenceReports));
     core.endGroup();
     return [referenceReports, compareReports];
 }
@@ -648,17 +652,15 @@ run();
 
 /***/ }),
 
-/***/ 8269:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ 4909:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.computeContractDiffs = exports.computeProgramDiffs = exports.computedWorkspaceDiff = exports.variation = exports.parseReport = void 0;
-const parseReport = (content) => {
-    return JSON.parse(content);
-};
-exports.parseReport = parseReport;
+var parsing_1 = __nccwpck_require__(5087);
+Object.defineProperty(exports, "parseReport", ({ enumerable: true, get: function () { return parsing_1.parseReport; } }));
 const variation = (current, previous) => {
     const delta = current - previous;
     return {
@@ -800,6 +802,105 @@ const computeContractDiff = (sourceReport, compareReport) => {
         functions: functionDiffs,
     };
 };
+
+
+/***/ }),
+
+/***/ 5087:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseReport = void 0;
+const parseReport = (content) => {
+    var _a, _b, _c, _d;
+    const report = JSON.parse(content);
+    report.programs = (_b = (_a = report.programs) === null || _a === void 0 ? void 0 : _a.map(parseProgramReport)) !== null && _b !== void 0 ? _b : [];
+    report.contracts = (_d = (_c = report.contracts) === null || _c === void 0 ? void 0 : _c.map(parseContractReport)) !== null && _d !== void 0 ? _d : [];
+    if (isWorkspaceReport(report)) {
+        return report;
+    }
+    else {
+        console.log(report);
+        throw Error("Report is invalid");
+    }
+};
+exports.parseReport = parseReport;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseProgramReport(report) {
+    var _a, _b, _c, _d;
+    report.functions = (_b = (_a = report.functions) === null || _a === void 0 ? void 0 : _a.map(parseCircuitReport)) !== null && _b !== void 0 ? _b : [];
+    report.unconstrained_functions = (_d = (_c = report.unconstrained_functions) === null || _c === void 0 ? void 0 : _c.map(parseBrilligReport)) !== null && _d !== void 0 ? _d : [];
+    if (isProgramReport(report)) {
+        return report;
+    }
+    else {
+        console.log(report);
+        throw Error(`Program report is invalid: ${report}`);
+    }
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseContractReport(report) {
+    var _a, _b;
+    report.functions = (_b = (_a = report.functions) === null || _a === void 0 ? void 0 : _a.map(parseCircuitReport)) !== null && _b !== void 0 ? _b : [];
+    if (isContractReport(report)) {
+        return report;
+    }
+    else {
+        console.log(report);
+        throw Error(`Contract report is invalid: ${JSON.stringify(report)}`);
+    }
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseCircuitReport(report) {
+    // Currently this the wrong key is used so we rename it.
+    if (typeof report.acir_opcodes !== "undefined" && typeof report.opcodes == "undefined") {
+        report.opcodes = report.acir_opcodes;
+        delete report.acir_opcodes;
+    }
+    if (isCircuitReport(report)) {
+        return report;
+    }
+    else {
+        console.log(report);
+        throw Error("Circuit report is invalid");
+    }
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseBrilligReport(report) {
+    if (isBrilligReport(report)) {
+        return report;
+    }
+    else {
+        console.log(report);
+        throw Error("Brillig report is invalid");
+    }
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isWorkspaceReport(report) {
+    return report.programs.every(isProgramReport) && report.contracts.every(isContractReport);
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isProgramReport(report) {
+    return (typeof report.package_name == "string" &&
+        report.functions.every(isCircuitReport) &&
+        report.unconstrained_functions.every(isBrilligReport));
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isContractReport(report) {
+    return typeof report.name == "string" && report.functions.every(isCircuitReport);
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isCircuitReport(report) {
+    return (typeof report.name == "string" &&
+        typeof report.opcodes == "number" &&
+        typeof report.circuit_size == "number");
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isBrilligReport(report) {
+    return typeof report.name == "string" && typeof report.opcodes == "number";
+}
 
 
 /***/ }),

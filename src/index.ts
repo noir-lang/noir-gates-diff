@@ -97,17 +97,24 @@ async function run() {
 }
 
 function loadReports(referenceContent: string): [WorkspaceReport, WorkspaceReport] {
-  core.startGroup("Load gas reports");
-  core.info(`Loading gas reports from "${localReportPath}"`);
+  core.startGroup("Load gate reports");
+  core.info(`Loading gate reports from "${localReportPath}"`);
   const compareContent = fs.readFileSync(localReportPath, "utf8");
 
-  core.info(`Mapping compared gas reports`);
+  core.info(`Mapping compared gate reports`);
   const compareReports = parseReport(compareContent);
   core.info(`Got ${compareReports.programs.length} compare programs`);
 
-  core.info(`Mapping reference gas reports`);
+  core.info(`Mapping reference gate reports`);
   const referenceReports = parseReport(referenceContent);
   core.info(`Got ${compareReports.programs.length} reference programs`);
+  core.endGroup();
+
+  core.startGroup("Print gate reports");
+
+  core.info(JSON.stringify(compareReports));
+  core.info(JSON.stringify(referenceReports));
+
   core.endGroup();
 
   return [referenceReports, compareReports];
