@@ -1,0 +1,2264 @@
+{
+    "programs": [
+        {
+            "package_name": "1327_concrete_in_generic",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 22
+                }
+            ]
+        },
+        {
+            "package_name": "1_mul",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 63
+                }
+            ]
+        },
+        {
+            "package_name": "2_div",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 54
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_constant_reference_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 84
+                }
+            ]
+        },
+        {
+            "package_name": "cast_bool",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 27
+                }
+            ]
+        },
+        {
+            "package_name": "custom_entry",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 24
+                }
+            ]
+        },
+        {
+            "package_name": "databus_in_fn_with_empty_arr",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 56
+                }
+            ]
+        },
+        {
+            "package_name": "databus_two_calldata_simple",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 86
+                }
+            ]
+        },
+        {
+            "package_name": "field_attribute",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "global_consts",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 227
+                }
+            ]
+        },
+        {
+            "package_name": "pedersen_hash",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 373
+                }
+            ]
+        },
+        {
+            "package_name": "pred_eq",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 24
+                }
+            ]
+        },
+        {
+            "package_name": "prelude",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 188
+                }
+            ]
+        },
+        {
+            "package_name": "reference_counts",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 473
+                }
+            ]
+        },
+        {
+            "package_name": "sha256_var_witness_const_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1308
+                }
+            ]
+        },
+        {
+            "package_name": "verify_honk_proof",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 67
+                }
+            ]
+        },
+        {
+            "package_name": "array_neq",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 101
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_cow",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 372
+                }
+            ]
+        },
+        {
+            "package_name": "ecdsa_secp256k1",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 908
+                }
+            ]
+        },
+        {
+            "package_name": "regression_6674_3",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 555
+                }
+            ]
+        },
+        {
+            "package_name": "simple_print",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 200
+                }
+            ]
+        },
+        {
+            "package_name": "slice_regex",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 2233
+                }
+            ]
+        },
+        {
+            "package_name": "array_dynamic_blackbox_input",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1032
+                }
+            ]
+        },
+        {
+            "package_name": "simple_shift_left_right",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 29
+                }
+            ]
+        },
+        {
+            "package_name": "slice_dynamic_index",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 2507
+                }
+            ]
+        },
+        {
+            "package_name": "6",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1191
+                }
+            ]
+        },
+        {
+            "package_name": "to_bytes_integration",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 88
+                }
+            ]
+        },
+        {
+            "package_name": "trait_as_return_type",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 20
+                }
+            ]
+        },
+        {
+            "package_name": "traits_in_crates_1",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "tuple_inputs",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 366
+                }
+            ]
+        },
+        {
+            "package_name": "witness_compression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 29
+                }
+            ]
+        },
+        {
+            "package_name": "wrapping_operations",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 52
+                }
+            ]
+        },
+        {
+            "package_name": "4_sub",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 36
+                }
+            ]
+        },
+        {
+            "package_name": "bench_2_to_17",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 328
+                }
+            ]
+        },
+        {
+            "package_name": "negated_jmpif_condition",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 35
+                }
+            ]
+        },
+        {
+            "package_name": "nested_array_dynamic",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 2457
+                }
+            ]
+        },
+        {
+            "package_name": "regression_6734",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 18
+                }
+            ]
+        },
+        {
+            "package_name": "regression_6834",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 56
+                }
+            ]
+        },
+        {
+            "package_name": "regression_capacity_tracker",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 237
+                }
+            ]
+        },
+        {
+            "package_name": "regression_unsafe_no_predicates",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 32
+                }
+            ]
+        },
+        {
+            "package_name": "sha256",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 2408
+                }
+            ]
+        },
+        {
+            "package_name": "5_over",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 40
+                }
+            ]
+        },
+        {
+            "package_name": "bit_not",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "bit_shifts_runtime",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 268
+                }
+            ]
+        },
+        {
+            "package_name": "fold_2_to_17",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 584
+                }
+            ]
+        },
+        {
+            "package_name": "sha256_var_padding_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 5129
+                }
+            ]
+        },
+        {
+            "package_name": "aes128_encrypt",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 552
+                }
+            ]
+        },
+        {
+            "package_name": "ecdsa_secp256r1",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 247
+                }
+            ]
+        },
+        {
+            "package_name": "fold_call_witness_condition",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 115
+                }
+            ]
+        },
+        {
+            "package_name": "hash_to_field",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 139
+                }
+            ]
+        },
+        {
+            "package_name": "loop_invariant_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 137
+                }
+            ]
+        },
+        {
+            "package_name": "nested_arrays_from_brillig",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 65
+                }
+            ]
+        },
+        {
+            "package_name": "pedersen_commitment",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 209
+                }
+            ]
+        },
+        {
+            "package_name": "poseidonsponge_x5_254",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 4264
+                }
+            ]
+        },
+        {
+            "package_name": "7",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 144
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_block_parameter_liveness",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 4897
+                }
+            ]
+        },
+        {
+            "package_name": "ecdsa_secp256r1_3x",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 681
+                }
+            ]
+        },
+        {
+            "package_name": "main_return",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 20
+                }
+            ]
+        },
+        {
+            "package_name": "modules",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "no_predicates_basic",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "pedersen_check",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 565
+                }
+            ]
+        },
+        {
+            "package_name": "reference_only_used_as_alias",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 44
+                }
+            ]
+        },
+        {
+            "package_name": "references",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 154
+                }
+            ]
+        },
+        {
+            "package_name": "regression_4088",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 24
+                }
+            ]
+        },
+        {
+            "package_name": "regression_5045",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 87
+                }
+            ]
+        },
+        {
+            "package_name": "regression_5615",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 18
+                }
+            ]
+        },
+        {
+            "package_name": "regression_6674_2",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 250
+                }
+            ]
+        },
+        {
+            "package_name": "regression_method_cannot_be_found",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 71
+                }
+            ]
+        },
+        {
+            "package_name": "sha256_brillig_performance_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1662
+                }
+            ]
+        },
+        {
+            "package_name": "array_dynamic",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 319
+                }
+            ]
+        },
+        {
+            "package_name": "conditional_regression_421",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 83
+                }
+            ]
+        },
+        {
+            "package_name": "conditional_regression_short_circuit",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1264
+                }
+            ]
+        },
+        {
+            "package_name": "to_be_bytes",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 212
+                }
+            ]
+        },
+        {
+            "package_name": "to_le_bytes",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 122
+                }
+            ]
+        },
+        {
+            "package_name": "traits_in_crates_2",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "tuples",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 39
+                }
+            ]
+        },
+        {
+            "package_name": "u128",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 2757
+                }
+            ]
+        },
+        {
+            "package_name": "array_if_cond_simple",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 132
+                }
+            ]
+        },
+        {
+            "package_name": "bool_or",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 27
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_blake2s",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 144
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_cow_assign",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 141
+                }
+            ]
+        },
+        {
+            "package_name": "derive",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 138
+                }
+            ]
+        },
+        {
+            "package_name": "fold_complex_outputs",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 481
+                }
+            ]
+        },
+        {
+            "package_name": "poseidon2",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 335
+                }
+            ]
+        },
+        {
+            "package_name": "regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 945
+                }
+            ]
+        },
+        {
+            "package_name": "return_twice",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 23
+                }
+            ]
+        },
+        {
+            "package_name": "sha256_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 6920
+                }
+            ]
+        },
+        {
+            "package_name": "array_len",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 96
+                }
+            ]
+        },
+        {
+            "package_name": "binary_operator_overloading",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 396
+                }
+            ]
+        },
+        {
+            "package_name": "closures_mut_ref",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 25
+                }
+            ]
+        },
+        {
+            "package_name": "conditional_1",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1188
+                }
+            ]
+        },
+        {
+            "package_name": "side_effects_constrain_array",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 129
+                }
+            ]
+        },
+        {
+            "package_name": "signed_arithmetic",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 252
+                }
+            ]
+        },
+        {
+            "package_name": "signed_division",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 201
+                }
+            ]
+        },
+        {
+            "package_name": "simple_comparison",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 31
+                }
+            ]
+        },
+        {
+            "package_name": "simple_radix",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 74
+                }
+            ]
+        },
+        {
+            "package_name": "slice_coercion",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 331
+                }
+            ]
+        },
+        {
+            "package_name": "struct",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 30
+                }
+            ]
+        },
+        {
+            "package_name": "struct_fields_ordering",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 31
+                }
+            ]
+        },
+        {
+            "package_name": "submodules",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 27
+                }
+            ]
+        },
+        {
+            "package_name": "to_bits",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 201
+                }
+            ]
+        },
+        {
+            "package_name": "type_aliases",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 57
+                }
+            ]
+        },
+        {
+            "package_name": "u16_support",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 49
+                }
+            ]
+        },
+        {
+            "package_name": "unsafe_range_constraint",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 27
+                }
+            ]
+        },
+        {
+            "package_name": "6_array",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 392
+                }
+            ]
+        },
+        {
+            "package_name": "debug_logs",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 5148
+                }
+            ]
+        },
+        {
+            "package_name": "assign_ex",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 32
+                }
+            ]
+        },
+        {
+            "package_name": "bench_ecdsa_secp256k1",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 247
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_uninitialized_arrays",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 51
+                }
+            ]
+        },
+        {
+            "package_name": "conditional_regression_547",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 20
+                }
+            ]
+        },
+        {
+            "package_name": "conditional_regression_661",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 127
+                }
+            ]
+        },
+        {
+            "package_name": "databus_two_calldata",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 214
+                }
+            ]
+        },
+        {
+            "package_name": "embedded_curve_ops",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 262
+                }
+            ]
+        },
+        {
+            "package_name": "inline_decompose_hint_brillig_call",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 20
+                }
+            ]
+        },
+        {
+            "package_name": "keccak256",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 2197
+                }
+            ]
+        },
+        {
+            "package_name": "sha256_var_size_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1726
+                }
+            ]
+        },
+        {
+            "package_name": "wildcard_type",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 298
+                }
+            ]
+        },
+        {
+            "package_name": "7_function",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 579
+                }
+            ]
+        },
+        {
+            "package_name": "fold_after_inlined_calls",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 25
+                }
+            ]
+        },
+        {
+            "package_name": "fold_numeric_generic_poseidon",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 763
+                }
+            ]
+        },
+        {
+            "package_name": "signed_cmp",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 104
+                }
+            ]
+        },
+        {
+            "package_name": "signed_div",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 178
+                }
+            ]
+        },
+        {
+            "package_name": "simple_add_and_ret_arr",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 46
+                }
+            ]
+        },
+        {
+            "package_name": "simple_array_param",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 47
+                }
+            ]
+        },
+        {
+            "package_name": "simple_bitwise",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 57
+                }
+            ]
+        },
+        {
+            "package_name": "simple_not",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 23
+                }
+            ]
+        },
+        {
+            "package_name": "simple_program_addition",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 23
+                }
+            ]
+        },
+        {
+            "package_name": "single_verify_proof",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 67
+                }
+            ]
+        },
+        {
+            "package_name": "slice_loop",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 269
+                }
+            ]
+        },
+        {
+            "package_name": "strings",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 917
+                }
+            ]
+        },
+        {
+            "package_name": "array_dedup_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 259
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_oracle",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 370
+                }
+            ]
+        },
+        {
+            "package_name": "double_verify_proof",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 79
+                }
+            ]
+        },
+        {
+            "package_name": "fold_basic",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "hashmap",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 21813
+                }
+            ]
+        },
+        {
+            "package_name": "arithmetic_binary_operations",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 36
+                }
+            ]
+        },
+        {
+            "package_name": "as_witness",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 20
+                }
+            ]
+        },
+        {
+            "package_name": "bigint",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 2195
+                }
+            ]
+        },
+        {
+            "package_name": "regression_4449",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 751
+                }
+            ]
+        },
+        {
+            "package_name": "struct_array_inputs",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 62
+                }
+            ]
+        },
+        {
+            "package_name": "struct_inputs",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 258
+                }
+            ]
+        },
+        {
+            "package_name": "to_bytes_consistent",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 135
+                }
+            ]
+        },
+        {
+            "package_name": "trait_impl_base_type",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 28
+                }
+            ]
+        },
+        {
+            "package_name": "uhashmap",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 14019
+                }
+            ]
+        },
+        {
+            "package_name": "array_dynamic_nested_blackbox_input",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 901
+                }
+            ]
+        },
+        {
+            "package_name": "regression_3394",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 113
+                }
+            ]
+        },
+        {
+            "package_name": "regression_3607",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 52
+                }
+            ]
+        },
+        {
+            "package_name": "regression_3889",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 24
+                }
+            ]
+        },
+        {
+            "package_name": "regression_4124",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 24
+                }
+            ]
+        },
+        {
+            "package_name": "regression_5252",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 4604
+                }
+            ]
+        },
+        {
+            "package_name": "3_add",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 53
+                }
+            ]
+        },
+        {
+            "package_name": "bit_and",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 54
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_arrays",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 115
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_nested_arrays",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 182
+                }
+            ]
+        },
+        {
+            "package_name": "fold_distinct_return",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 35
+                }
+            ]
+        },
+        {
+            "package_name": "if_else_chain",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 101
+                }
+            ]
+        },
+        {
+            "package_name": "import",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 44
+                }
+            ]
+        },
+        {
+            "package_name": "inline_never_basic",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "nested_array_in_slice",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1232
+                }
+            ]
+        },
+        {
+            "package_name": "regression_2660",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 42
+                }
+            ]
+        },
+        {
+            "package_name": "regression_3051",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 163
+                }
+            ]
+        },
+        {
+            "package_name": "regression_4709",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 133737
+                }
+            ]
+        },
+        {
+            "package_name": "array_to_slice_constant_length",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 19
+                }
+            ]
+        },
+        {
+            "package_name": "blake3",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 144
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_conditional",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 33
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_fns_as_values",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 20
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_pedersen",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 565
+                }
+            ]
+        },
+        {
+            "package_name": "loop",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 25
+                }
+            ]
+        },
+        {
+            "package_name": "modulus",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1762
+                }
+            ]
+        },
+        {
+            "package_name": "regression_4202",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 125
+                }
+            ]
+        },
+        {
+            "package_name": "regression_5435",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 39
+                }
+            ]
+        },
+        {
+            "package_name": "regression_6451",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 48
+                }
+            ]
+        },
+        {
+            "package_name": "regression_6674_1",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 247
+                }
+            ]
+        },
+        {
+            "package_name": "regression_mem_op_predicate",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 110
+                }
+            ]
+        },
+        {
+            "package_name": "regression_struct_array_conditional",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 576
+                }
+            ]
+        },
+        {
+            "package_name": "sha2_byte",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 2775
+                }
+            ]
+        },
+        {
+            "package_name": "array_to_slice",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 718
+                }
+            ]
+        },
+        {
+            "package_name": "integer_array_indexing",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 61
+                }
+            ]
+        },
+        {
+            "package_name": "main_bool_arg",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 66
+                }
+            ]
+        },
+        {
+            "package_name": "modules_more",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "nested_array_dynamic_simple",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 104
+                }
+            ]
+        },
+        {
+            "package_name": "nested_dyn_array_regression_5782",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 172
+                }
+            ]
+        },
+        {
+            "package_name": "poseidon_bn254_hash",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 5435
+                }
+            ]
+        },
+        {
+            "package_name": "array_sort",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 296
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_cow_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 2167
+                }
+            ]
+        },
+        {
+            "package_name": "slices",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 2186
+                }
+            ]
+        },
+        {
+            "package_name": "array_eq",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 99
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_calls_array",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 97
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_calls_conditionals",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 129
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_rc_regression_6123",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 170
+                }
+            ]
+        },
+        {
+            "package_name": "conditional_2",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 116
+                }
+            ]
+        },
+        {
+            "package_name": "databus",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 72
+                }
+            ]
+        },
+        {
+            "package_name": "diamond_deps_0",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "fmtstr_with_global",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 104
+                }
+            ]
+        },
+        {
+            "package_name": "fold_fibonacci",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 76
+                }
+            ]
+        },
+        {
+            "package_name": "hint_black_box",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 336
+                }
+            ]
+        },
+        {
+            "package_name": "missing_closure_env",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 24
+                }
+            ]
+        },
+        {
+            "package_name": "no_predicates_brillig",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 37
+                }
+            ]
+        },
+        {
+            "package_name": "no_predicates_numeric_generic_poseidon",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 763
+                }
+            ]
+        },
+        {
+            "package_name": "signed_comparison",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 128
+                }
+            ]
+        },
+        {
+            "package_name": "simple_2d_array",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 106
+                }
+            ]
+        },
+        {
+            "package_name": "simple_mut",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 23
+                }
+            ]
+        },
+        {
+            "package_name": "simple_shield",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 908
+                }
+            ]
+        },
+        {
+            "package_name": "unary_operator_overloading",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 49
+                }
+            ]
+        },
+        {
+            "package_name": "xor",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 30
+                }
+            ]
+        },
+        {
+            "package_name": "assert",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 24
+                }
+            ]
+        },
+        {
+            "package_name": "assert_statement",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 26
+                }
+            ]
+        },
+        {
+            "package_name": "bit_shifts_comptime",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 41
+                }
+            ]
+        },
+        {
+            "package_name": "break_and_continue",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 64
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_acir_as_brillig",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 37
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_identity_function",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 19
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_not",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 35
+                }
+            ]
+        },
+        {
+            "package_name": "conditional_regression_underflow",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 40
+                }
+            ]
+        },
+        {
+            "package_name": "double_verify_honk_proof",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 79
+                }
+            ]
+        },
+        {
+            "package_name": "generics",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 94
+                }
+            ]
+        },
+        {
+            "package_name": "merkle_insert",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 765
+                }
+            ]
+        },
+        {
+            "package_name": "ram_blowup_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 969
+                }
+            ]
+        },
+        {
+            "package_name": "array_dynamic_main_output",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 92
+                }
+            ]
+        },
+        {
+            "package_name": "bool_not",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 24
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_calls",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 37
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_loop_size_regression",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 20
+                }
+            ]
+        },
+        {
+            "package_name": "brillig_recursion",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 76
+                }
+            ]
+        },
+        {
+            "package_name": "databus_composite_calldata",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 390
+                }
+            ]
+        },
+        {
+            "package_name": "fold_basic_nested_call",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 28
+                }
+            ]
+        },
+        {
+            "package_name": "higher_order_functions",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 677
+                }
+            ]
+        },
+        {
+            "package_name": "poseidon_bn254_hash_width_3",
+            "functions": [],
+            "unconstrained_functions": [
+                {
+                    "name": "main",
+                    "opcodes": 5435
+                }
+            ]
+        }
+    ]
+}

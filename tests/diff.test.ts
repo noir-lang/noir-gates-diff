@@ -5,10 +5,12 @@ import { DiffBrillig, DiffCircuit, ProgramReport } from "../src/types";
 
 const srcContent = fs.readFileSync("tests/mocks/gas_report.2.json", "utf8");
 const cmpContent = fs.readFileSync("tests/mocks/gas_report.1.json", "utf8");
+const brilligContent = fs.readFileSync("tests/mocks/brillig_report.json", "utf8");
 
 describe("Program diffs", () => {
   const srcProgramReports: ProgramReport[] = parseReport(srcContent).programs;
   const cmpProgramReports: ProgramReport[] = parseReport(cmpContent).programs;
+  const brilligProgramReports: ProgramReport[] = parseReport(brilligContent).programs;
 
   it("should diff 1 and 2 successfully", () => {
     const expectedDiffCircuits: DiffCircuit[] = [
@@ -51,5 +53,12 @@ describe("Program diffs", () => {
 
   it("should return zero diff for identical reports", () => {
     expect(computeProgramDiffs(srcProgramReports, srcProgramReports)).toStrictEqual([[], []]);
+  });
+
+  it("should return zero diff for brillig reports", () => {
+    expect(computeProgramDiffs(brilligProgramReports, brilligProgramReports)).toStrictEqual([
+      [],
+      [],
+    ]);
   });
 });
