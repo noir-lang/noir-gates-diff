@@ -740,7 +740,6 @@ exports.computeProgramDiffs = computeProgramDiffs;
 const computeCircuitDiff = (sourceReport, compareReport, 
 // We want the name of the package that represents the entire program in our report
 reportName) => {
-    console.log(reportName);
     return {
         name: reportName,
         opcodes: (0, exports.variation)(compareReport.opcodes, sourceReport.opcodes),

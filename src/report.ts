@@ -127,7 +127,6 @@ const computeCircuitDiff = (
   // We want the name of the package that represents the entire program in our report
   reportName: string
 ): DiffCircuit => {
-  console.log(reportName);
   return {
     name: reportName,
     opcodes: variation(compareReport.opcodes, sourceReport.opcodes),
