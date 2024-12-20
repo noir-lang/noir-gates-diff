@@ -689,6 +689,23 @@ const computeProgramDiffs = (sourceReports, compareReports) => {
         const srcReport = sourceReports.find((report) => report.package_name == reportName);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const cmpReport = compareReports.find((report) => report.package_name == reportName);
+        if (srcReport.functions.length === 0 || cmpReport.functions.length === 0) {
+            return {
+                name: "",
+                opcodes: {
+                    previous: 0,
+                    current: 0,
+                    delta: 0,
+                    percentage: 0,
+                },
+                circuit_size: {
+                    previous: 0,
+                    current: 0,
+                    delta: 0,
+                    percentage: 0,
+                },
+            };
+        }
         // For now we fetch just the main of each program
         return computeCircuitDiff(srcReport.functions[0], cmpReport.functions[0], reportName);
     })
@@ -723,6 +740,7 @@ exports.computeProgramDiffs = computeProgramDiffs;
 const computeCircuitDiff = (sourceReport, compareReport, 
 // We want the name of the package that represents the entire program in our report
 reportName) => {
+    console.log(reportName);
     return {
         name: reportName,
         opcodes: (0, exports.variation)(compareReport.opcodes, sourceReport.opcodes),
