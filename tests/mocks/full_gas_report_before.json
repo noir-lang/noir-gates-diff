@@ -1,0 +1,1193 @@
+{
+    "programs": [
+        {
+            "package_name": "empty_nested",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 0,
+                    "circuit_size": 16
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "empty_nested_simulated",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 16
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "parity_base",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 3557,
+                    "circuit_size": 29954
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "parity_root",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 4290,
+                    "circuit_size": 3487877
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_empty",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 967,
+                    "circuit_size": 864991
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_empty_simulated",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 16
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_init",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 27953,
+                    "circuit_size": 48559
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_init_simulated",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_inner",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 46260,
+                    "circuit_size": 89036
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_inner_simulated",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 97779,
+                    "circuit_size": 647146
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_0_0_0_0_0_64_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 29821,
+                    "circuit_size": 59894
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_0_0_0_0_64_0_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 15344,
+                    "circuit_size": 98242
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_0_0_0_64_0_0_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 31356,
+                    "circuit_size": 274496
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_0_0_64_0_0_0_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 13114,
+                    "circuit_size": 36896
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_0_64_0_0_0_0_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 30010,
+                    "circuit_size": 262750
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_16_16_16_16_16_16_16_16_16",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 49811,
+                    "circuit_size": 214738
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_16_4_4_4_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 50308,
+                    "circuit_size": 201509
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_16_4_4_4_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 46099,
+                    "circuit_size": 195485
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_16_4_4_4_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 52345,
+                    "circuit_size": 208299
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_16_4_4_4_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 48136,
+                    "circuit_size": 202276
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_16_4_4_64_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 52946,
+                    "circuit_size": 217842
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_16_4_4_64_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 48737,
+                    "circuit_size": 211819
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_16_4_4_64_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 54983,
+                    "circuit_size": 224633
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_16_4_4_64_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 50774,
+                    "circuit_size": 218610
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_4_4_4_4_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 46484,
+                    "circuit_size": 156561
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_4_4_4_4_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 42275,
+                    "circuit_size": 150537
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_4_4_4_4_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 48521,
+                    "circuit_size": 163351
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_4_4_4_4_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 44312,
+                    "circuit_size": 157328
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_4_4_4_64_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 49122,
+                    "circuit_size": 172894
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_4_4_4_64_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 44913,
+                    "circuit_size": 166871
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_4_4_4_64_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 51159,
+                    "circuit_size": 179685
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_16_32_4_4_4_64_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 46950,
+                    "circuit_size": 173662
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_32_32_32_32_32_32_32_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 67396,
+                    "circuit_size": 360945
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_16_4_4_4_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 46720,
+                    "circuit_size": 158723
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_16_4_4_4_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 42511,
+                    "circuit_size": 152699
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_16_4_4_4_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 48757,
+                    "circuit_size": 165513
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_16_4_4_4_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 44548,
+                    "circuit_size": 159490
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_16_4_4_64_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 49358,
+                    "circuit_size": 175056
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_16_4_4_64_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 45149,
+                    "circuit_size": 169033
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_16_4_4_64_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 51395,
+                    "circuit_size": 181847
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_16_4_4_64_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 47186,
+                    "circuit_size": 175824
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_4_4_4_4_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 42896,
+                    "circuit_size": 113775
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_4_4_4_4_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 38687,
+                    "circuit_size": 107751
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_4_4_4_4_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 44933,
+                    "circuit_size": 120565
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_4_4_4_4_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 40724,
+                    "circuit_size": 114542
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_4_4_4_64_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 45534,
+                    "circuit_size": 130108
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_4_4_4_64_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 41325,
+                    "circuit_size": 124085
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_4_4_4_64_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 47571,
+                    "circuit_size": 136899
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_32_4_32_4_4_4_64_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 43362,
+                    "circuit_size": 130876
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_4_4_4_4_4_4_4_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 36615,
+                    "circuit_size": 105077
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_64_0_0_0_0_0_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 13114,
+                    "circuit_size": 36896
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_0_0_0_0_0_64_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_0_0_0_0_64_0_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_0_0_0_64_0_0_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_0_0_64_0_0_0_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_0_64_0_0_0_0_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_16_16_16_16_16_16_16_16_16",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_16_4_4_4_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_16_4_4_4_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_16_4_4_4_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_16_4_4_4_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_16_4_4_64_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_16_4_4_64_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_16_4_4_64_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_16_4_4_64_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_4_4_4_4_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_4_4_4_4_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_4_4_4_4_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_4_4_4_4_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_4_4_4_64_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_4_4_4_64_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_4_4_4_64_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_16_32_4_4_4_64_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_32_32_32_32_32_32_32_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_16_4_4_4_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_16_4_4_4_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_16_4_4_4_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_16_4_4_4_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_16_4_4_64_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_16_4_4_64_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_16_4_4_64_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_16_4_4_64_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_4_4_4_4_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_4_4_4_4_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_4_4_4_4_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_4_4_4_4_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_4_4_4_64_4_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_4_4_4_64_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_4_4_4_64_64_32",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_32_4_32_4_4_4_64_64_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_4_4_4_4_4_4_4_4_4",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_reset_simulated_64_0_0_0_0_0_0_0_0",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_tail",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 5342,
+                    "circuit_size": 27493
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_tail_simulated",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_tail_to_public",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 15896,
+                    "circuit_size": 42345
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "private_kernel_tail_to_public_simulated",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 21
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "rollup_base_private",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 3619773,
+                    "circuit_size": 11224925
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "rollup_base_private_simulated",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 16
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "rollup_base_public",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 3851252,
+                    "circuit_size": 12617703
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "rollup_base_public_simulated",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 16
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "rollup_block_merge",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 32406,
+                    "circuit_size": 1900773
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "rollup_block_root",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 682326,
+                    "circuit_size": 4293357
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "rollup_block_root_empty",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 990,
+                    "circuit_size": 3787
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "rollup_block_root_simulated",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1,
+                    "circuit_size": 16
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "rollup_merge",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 1791,
+                    "circuit_size": 1744924
+                }
+            ],
+            "unconstrained_functions": []
+        },
+        {
+            "package_name": "rollup_root",
+            "functions": [
+                {
+                    "name": "main",
+                    "opcodes": 32390,
+                    "circuit_size": 1900759
+                }
+            ],
+            "unconstrained_functions": []
+        }
+    ],
+    "contracts": []
+}
