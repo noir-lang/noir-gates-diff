@@ -1,130 +1,130 @@
 {
-    "programs": [
-      {
-        "package_name": "a",
-        "functions": [
-          {
-            "name": "main",
-            "opcodes": 1,
-            "circuit_size": 7
-          }
-        ],
-        "unconstrained_functions": [
-          {
-            "name": "main",
-            "opcodes": 1
-          }
-        ]
-      },
-      {
-        "package_name": "b",
-        "functions": [
-          {
-            "name": "main",
-            "opcodes": 4,
-            "circuit_size": 8
-          }
-        ],
-        "unconstrained_functions": [
-          {
-            "name": "main",
-            "opcodes": 4
-          }
-        ]
-      },
-      {
-        "package_name": "c",
-        "functions": [
-          {
-            "name": "main",
-            "opcodes": 4,
-            "circuit_size": 8
-          }
-        ],
-        "unconstrained_functions": [
-          {
-            "name": "main",
-            "opcodes": 4
-          }
-        ]
-      },
-      {
-        "package_name": "d",
-        "functions": [
-          {
-            "name": "main",
-            "opcodes": 4,
-            "circuit_size": 8
-          }
-        ],
-        "unconstrained_functions": [
-          {
-            "name": "main",
-            "opcodes": 4
-          }
-        ]
-      }
-    ],
-    "contracts": [
-      {
+  "programs": [
+    {
+      "package_name": "a",
+      "functions": [
+        {
+          "name": "main",
+          "opcodes": 1,
+          "circuit_size": 7
+        }
+      ],
+      "unconstrained_functions": [
+        {
+          "name": "main",
+          "opcodes": 1
+        }
+      ]
+    },
+    {
+      "package_name": "b",
+      "functions": [
+        {
+          "name": "main",
+          "opcodes": 4,
+          "circuit_size": 8
+        }
+      ],
+      "unconstrained_functions": [
+        {
+          "name": "main",
+          "opcodes": 4
+        }
+      ]
+    },
+    {
+      "package_name": "c",
+      "functions": [
+        {
+          "name": "main",
+          "opcodes": 4,
+          "circuit_size": 8
+        }
+      ],
+      "unconstrained_functions": [
+        {
+          "name": "main",
+          "opcodes": 4
+        }
+      ]
+    },
+    {
+      "package_name": "d",
+      "functions": [
+        {
+          "name": "main",
+          "opcodes": 4,
+          "circuit_size": 8
+        }
+      ],
+      "unconstrained_functions": [
+        {
+          "name": "main",
+          "opcodes": 4
+        }
+      ]
+    }
+  ],
+  "contracts": [
+    {
+      "name": "a",
+      "functions": [
+        {
           "name": "a",
-          "functions": [
-              {
-                  "name": "a",
-                  "opcodes": 1,
-                  "circuit_size": 7
-              },
-              {
-                  "name": "b",
-                  "opcodes": 4,
-                  "circuit_size": 8
-              },
-              {
-                  "name": "c",
-                  "opcodes": 500,
-                  "circuit_size": 1000
-              },
-              {
-                  "name": "d",
-                  "opcodes": 500,
-                  "circuit_size": 1000
-              },
-              {
-                  "name": "e",
-                  "opcodes": 50,
-                  "circuit_size": 100
-              },
-              {
-                  "name": "f",
-                  "opcodes": 50,
-                  "circuit_size": 100
-              },
-              {
-                  "name": "g",
-                  "opcodes": 50,
-                  "circuit_size": 100
-              },
-              {
-                  "name": "h",
-                  "opcodes": 50,
-                  "circuit_size": 100
-              }
-          ]
-      },
-      {
+          "opcodes": 1,
+          "circuit_size": 7
+        },
+        {
           "name": "b",
-          "functions": [
-              {
-                  "name": "a",
-                  "opcodes": 1,
-                  "circuit_size": 7
-              },
-              {
-                  "name": "b",
-                  "opcodes": 4,
-                  "circuit_size": 8
-              }
-          ]
-      }
-    ]
+          "opcodes": 4,
+          "circuit_size": 8
+        },
+        {
+          "name": "c",
+          "opcodes": 500,
+          "circuit_size": 1000
+        },
+        {
+          "name": "d",
+          "opcodes": 500,
+          "circuit_size": 1000
+        },
+        {
+          "name": "e",
+          "opcodes": 50,
+          "circuit_size": 100
+        },
+        {
+          "name": "f",
+          "opcodes": 50,
+          "circuit_size": 100
+        },
+        {
+          "name": "g",
+          "opcodes": 50,
+          "circuit_size": 100
+        },
+        {
+          "name": "h",
+          "opcodes": 50,
+          "circuit_size": 100
+        }
+      ]
+    },
+    {
+      "name": "b",
+      "functions": [
+        {
+          "name": "a",
+          "opcodes": 1,
+          "circuit_size": 7
+        },
+        {
+          "name": "b",
+          "opcodes": 4,
+          "circuit_size": 8
+        }
+      ]
+    }
+  ]
 }
