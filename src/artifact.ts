@@ -1,7 +1,7 @@
 import Zip from "adm-zip";
 import { dirname, resolve } from "path";
 
-import {DefaultArtifactClient} from '@actions/artifact'
+import { DefaultArtifactClient } from "@actions/artifact";
 import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
@@ -80,15 +80,14 @@ export async function uploadArtifact(headBranch: string, report: string) {
 
   const localReportPath = resolve(report);
 
-  const artifactClient = new DefaultArtifactClient()
+  const artifactClient = new DefaultArtifactClient();
 
   core.startGroup(`Upload new report from "${localReportPath}" as artifact named "${outReport}"`);
   const uploadResponse = await artifactClient.uploadArtifact(
     outReport,
     [localReportPath],
-    dirname(localReportPath),
+    dirname(localReportPath)
   );
-
 
   core.info(`Artifact ${uploadResponse.id} has been successfully uploaded!`);
   core.endGroup();
