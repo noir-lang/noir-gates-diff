@@ -11,6 +11,12 @@ runs:
         cache: 'yarn'
         cache-dependency-path: 'yarn.lock'
     
+    - name: set Yarn version
+      run: |
+        corepack enable 
+        yarn set version 4.5.2
+      shell: bash
+
     - name: Install
       run: yarn --immutable
       shell: bash
