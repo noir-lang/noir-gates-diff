@@ -1,7 +1,7 @@
 import Zip from "adm-zip";
 import { dirname, resolve } from "path";
 
-import * as artifact from "@actions/artifact";
+import {DefaultArtifactClient} from '@actions/artifact'
 import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
@@ -80,20 +80,16 @@ export async function uploadArtifact(headBranch: string, report: string) {
 
   const localReportPath = resolve(report);
 
-  const artifactClient = artifact.create();
+  const artifactClient = new DefaultArtifactClient()
 
   core.startGroup(`Upload new report from "${localReportPath}" as artifact named "${outReport}"`);
   const uploadResponse = await artifactClient.uploadArtifact(
     outReport,
     [localReportPath],
     dirname(localReportPath),
-    {
-      continueOnError: false,
-    }
   );
 
-  if (uploadResponse.failedItems.length > 0) throw Error("Failed to upload gas report.");
 
-  core.info(`Artifact ${uploadResponse.artifactName} has been successfully uploaded!`);
+  core.info(`Artifact ${uploadResponse.id} has been successfully uploaded!`);
   core.endGroup();
 }

@@ -97,3 +97,12 @@ Thumbs.db
 # Ignore built ts files
 tests/runner
 lib
+
+# Yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
