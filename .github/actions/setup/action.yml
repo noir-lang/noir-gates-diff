@@ -4,13 +4,19 @@ description: Installs the workspace's yarn dependencies and caches them
 runs:
   using: composite
   steps:
+    - name: set Yarn version
+      run: |
+        corepack enable 
+        yarn set version 4.5.2
+      shell: bash
+
     - uses: actions/setup-node@v4
       id: node
       with:
         node-version: v20.18.1
         cache: 'yarn'
         cache-dependency-path: 'yarn.lock'
-    
+
     - name: Install
       run: yarn --immutable
       shell: bash
