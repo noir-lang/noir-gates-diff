@@ -25,9 +25,12 @@ export async function findPreviousArtifact(
   let artifactId: number | null = null;
   let refCommitHash: string | undefined = undefined;
   // Artifacts are returned in most recent first order.
+  // Filter by name on the server: listing every artifact of a large repository can fail
+  // with an empty 500 response.
   for await (const res of octokit.paginate.iterator(octokit.rest.actions.listArtifactsForRepo, {
     owner,
     repo,
+    name: baseReport,
   })) {
     if (count == 0) {
       break;

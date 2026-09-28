@@ -69,9 +69,12 @@ function findPreviousArtifact(token, baseReport, repository, baseBranch) {
         let refCommitHash = undefined;
         try {
             // Artifacts are returned in most recent first order.
+            // Filter by name on the server: listing every artifact of a large repository can fail
+            // with an empty 500 response.
             for (var _e = true, _f = __asyncValues(octokit.paginate.iterator(octokit.rest.actions.listArtifactsForRepo, {
                 owner,
                 repo,
+                name: baseReport,
             })), _g; _g = yield _f.next(), _a = _g.done, !_a;) {
                 _c = _g.value;
                 _e = false;
