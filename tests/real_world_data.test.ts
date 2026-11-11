@@ -181,7 +181,7 @@ describe("Program diffs", () => {
 
     const [summaryRows, fullReportRows] = formatCircuitRows(expectedCircuitDiffs, 0.8);
     fs.writeFileSync(
-      "tests/mocks/1-2-program-acir.md",
+      "tests/mocks/real-world-program-acir.md",
       formatMarkdownDiff(
         "# Changes to gas cost",
         "Rubilmax/foundry-gas-diff",
