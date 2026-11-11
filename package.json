@@ -14,12 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TomAFrench/noir-gates-diff.git"
+    "url": "git+https://github.com/noir-lang/noir-gates-diff.git"
   },
   "bugs": {
-    "url": "https://github.com/TomAFrench/noir-gates-diff/issues"
+    "url": "https://github.com/noir-lang/noir-gates-diff/issues"
   },
-  "homepage": "https://github.com/TomAFrench/noir-gates-diff#readme",
+  "homepage": "https://github.com/noir-lang/noir-gates-diff#readme",
   "keywords": [
     "Noir",
     "Nargo",
